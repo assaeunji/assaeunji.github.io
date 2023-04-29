@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Prior: Dirichlet Distribution디리슐레 분포 (Dirichlet dist.)는 다항분포 (Multinomial dist.)의 확률을 모델링하는 분포로, 베타분포의 확장판이다. 베타분포가 이항분포의 사전분포로 쓰여 켤레 관계를 형성하는 것처럼 multivariate 버전으로 디리슐레 분포가 다항분포의 사전분포로 쓰인다.또한, 디리슐레 분">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dirichlet Distribution: Conjugate Prior for Multinomial Distribution">
+<meta property="og:url" content="http://assaeunji.github.io/2019/01/05/2019-01-05-dirichlet/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="Prior: Dirichlet Distribution디리슐레 분포 (Dirichlet dist.)는 다항분포 (Multinomial dist.)의 확률을 모델링하는 분포로, 베타분포의 확장판이다. 베타분포가 이항분포의 사전분포로 쓰여 켤레 관계를 형성하는 것처럼 multivariate 버전으로 디리슐레 분포가 다항분포의 사전분포로 쓰인다.또한, 디리슐레 분">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-01-04T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:author" content="Eunxji Lee">
+<meta property="article:tag" content="dirichlet">
+<meta property="article:tag" content="bayesian">
+<meta property="article:tag" content="multinomial">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/2019/01/05/2019-01-05-dirichlet/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/2019/01/05/2019-01-05-dirichlet/","path":"2019/01/05/2019-01-05-dirichlet/","title":"Dirichlet Distribution: Conjugate Prior for Multinomial Distribution"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Dirichlet Distribution: Conjugate Prior for Multinomial Distribution | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Prior-Dirichlet-Distribution"><span class="nav-number">1.</span> <span class="nav-text">Prior: Dirichlet Distribution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition"><span class="nav-number">1.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Likelihood-Multinomial-Distribution"><span class="nav-number">2.</span> <span class="nav-text">Likelihood: Multinomial Distribution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition-1"><span class="nav-number">2.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conjugacy-Dirichlet-amp-Multinomial-Distribution"><span class="nav-number">3.</span> <span class="nav-text">Conjugacy: Dirichlet &amp; Multinomial Distribution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Posterior-Dirichlet-Distribution"><span class="nav-number">4.</span> <span class="nav-text">Posterior: Dirichlet Distribution</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunxji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/2019/01/05/2019-01-05-dirichlet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunxji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Dirichlet Distribution: Conjugate Prior for Multinomial Distribution | Be Geeky">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dirichlet Distribution: Conjugate Prior for Multinomial Distribution
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-01-05 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-05T00:00:00+09:00">2019-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Bayesian/" itemprop="url" rel="index"><span itemprop="name">Bayesian</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Prior-Dirichlet-Distribution"><a href="#Prior-Dirichlet-Distribution" class="headerlink" title="Prior: Dirichlet Distribution"></a><strong>Prior: Dirichlet Distribution</strong></h2><p>디리슐레 분포 (Dirichlet dist.)는 다항분포 (Multinomial dist.)의 확률을 모델링하는 분포로, 베타분포의 확장판이다. 베타분포가 이항분포의 사전분포로 쓰여 켤레 관계를 형성하는 것처럼 multivariate 버전으로 디리슐레 분포가 다항분포의 <em>사전분포</em>로 쓰인다.<br>또한, 디리슐레 분포의 무한대 확장판 “디리슐레 과정”은 클러스터 개수를 조정하는 사전분포로 쓰인다. 이는 다음 포스트에서 설명할 것이다. </p>
+<p> 디리슐레 분포의 정의는 다음과 같다.</p>
+<h3 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h3><p>$$G_1,G_2,\ldots, G_{k+1}$$개의 <strong>독립</strong>인 확률변수가 각각 $$\alpha_i$$와 $$\beta&#x3D;1$$의 모수를 가진 감마분포를 따른다 하자. ($$i&#x3D;1,\ldots,k$$). 즉,</p>
+<p>$$<br>\begin{aligned}<br>G_1 &amp;\sim \text{Gam}(\alpha_1, 1)\<br>G_2 &amp;\sim \text{Gam}(\alpha_2, 1)\<br>&amp;\vdots\<br>G_k &amp;\sim \text{Gam}(\alpha_k, 1)\<br>G_{k+1} &amp;\sim \text{Gam}(\alpha_{k+1}, 1)<br>\end{aligned}<br>$$</p>
+<p>이때, $$\theta_i &#x3D; \frac{G_i}{G_1+G_2+ \ldots +G_{k+1}}$$, $$\theta_{k+1} &#x3D; \sum_{i&#x3D;1}^{k+1} G_i$$ 라 정의하면, 다음의 성질을 만족한다.</p>
+<ul>
+<li>$$\theta_i &#x3D; \frac{G_i}{\sum_{i&#x3D;1}^{k+1}G_i}&#x3D;\frac{G_i}{\theta_{k+1}},\ i&#x3D;1,\ldots,k$$, $$\theta_{k+1} &#x3D; \sum_{i&#x3D;1}^{k+1} G_i$$</li>
+<li>$$(\theta_1,\theta_2,\ldots,\theta_k) \sim \text{Dirichlet} (\alpha_1,\alpha_2,\ldots,\alpha_k, \alpha_{k+1})$$, $$\theta_{k+1} \sim \text{Gam}(\sum_{i&#x3D;1}^{k+1} \alpha_i,1)$$</li>
+</ul>
+<p> 여기서 주의할 점은, $$k$$개의 확률 $$\theta_i$$ ($i&#x3D;1,\ldots,k$)을 모델링하는 데 필요한 모수는 $$\alpha_1,\ldots, \alpha_{k+1}$$로 $$k+1$$개라는 점이다.</p>
+<p>이에 대한 $$\boldsymbol{\theta}&#x3D;(\theta_1,\ldots,\theta_k)$$의 결합 p.d.f.는 다음과 같다:</p>
+<p>$$<br>\begin{aligned}<br>p(\theta_1\ldots,\theta_k|\alpha_1,\ldots,\alpha_k,\alpha_{k+1}) &amp;&#x3D; \frac{\Gamma(\alpha_1+\ldots+\alpha_k+\alpha_{k+1})}{\Gamma(\alpha_1)\cdots \Gamma(\alpha_k)\Gamma(\alpha_{k+1})} \theta_1^{\alpha_1-1}\cdots \theta_k^{\alpha_k-1}\left(1-\sum_{i&#x3D;1}^{k} \theta_i \right)^{\alpha_{k+1}-1}\<br>p(\boldsymbol{\theta}|\boldsymbol{\alpha})&amp;&#x3D;\frac{\Gamma(\sum_{i&#x3D;1}^{k+1}\alpha_i)}{\prod_{i&#x3D;1}^{k+1}\Gamma(\alpha_i)} \prod_{i&#x3D;1}^{k}\theta_i^{\alpha_i-1} \propto \prod_{i&#x3D;1}^{k}\theta_i^{\alpha_i-1}<br>\end{aligned}<br>$$</p>
+<p>cf. 베타분포는 감마분포를 따르는 확률변수 $$2$$개로 구성된다. 즉, $$G_1,\ G_2$$가 각각 $$G_1\sim \text{Gam}(\alpha_1,1)$$, $$G_2 \sim \text{Gam}(\alpha_2,1)$$를 따른다 할 때, $$\theta &#x3D; \frac{X_1}{X_1+X_2} \sim \text{Beta}(\alpha_1, \alpha_2)$$이다.</p>
+<hr>
+<h2 id="Likelihood-Multinomial-Distribution"><a href="#Likelihood-Multinomial-Distribution" class="headerlink" title="Likelihood: Multinomial Distribution"></a><strong>Likelihood: Multinomial Distribution</strong></h2><p>다항분포도 디리슐레분포와 마찬가지로, 이항분포의 multivariate 버전이다. 즉, 2개의 선택지 대신 $$k$$개의 선택지가 있을 때, 각각 선택지가 $$\theta_i$$의 확률로 뽑힌다. 명확한 정의는 다음과 같다.</p>
+<h3 id="Definition-1"><a href="#Definition-1" class="headerlink" title="Definition"></a>Definition</h3><p>확률 벡터 $$\mathbf{X} &#x3D; (X_1,\ldots,X_k)$$가 모수 $$n$$과 $$\boldsymbol{\theta} &#x3D; (\theta_1,\ldots, \theta_k)$$를 가진 다항분포일 때, 다음의 p.d.f를 가진다:</p>
+<p>$$<br>f(\boldsymbol{x}|n,\boldsymbol{\theta}) &#x3D; \binom{n}{x_1,\ldots, x_k} \theta_1^{x_1} \cdots \theta_k^{x_k} &#x3D; \binom{n}{x_1,\ldots, x_k} \prod_{i&#x3D;1}^{k} \theta_i^{x_i}<br>$$</p>
+<ul>
+<li>$$\sum_j p_j &#x3D; 1$$</li>
+</ul>
+<hr>
+<h2 id="Conjugacy-Dirichlet-amp-Multinomial-Distribution"><a href="#Conjugacy-Dirichlet-amp-Multinomial-Distribution" class="headerlink" title="Conjugacy: Dirichlet &amp; Multinomial Distribution"></a><strong>Conjugacy: Dirichlet &amp; Multinomial Distribution</strong></h2><p>디리슐레 분포(Dirichlet distribution)는 다항분포 (Multinomial distribution)의 확률 $$\theta_i$$를 모델링하는데 쓰이는 사전분포이다. 여기서 Conjugacy가 성립한다.  그렇다면 여기서 conjugacy를 어떻게 해석해야 할까? 사전분포가 디리슐레 분포이고, 가능도가 다항분포이면 사후분포도 다시 디리슐레 분포를 따를 때, (즉, 사전분포와 사후분포의 형태가 같을 때) “켤레성”(conjugacy)을 띤다고 말한다.</p>
+<hr>
+<h2 id="Posterior-Dirichlet-Distribution"><a href="#Posterior-Dirichlet-Distribution" class="headerlink" title="Posterior: Dirichlet Distribution"></a><strong>Posterior: Dirichlet Distribution</strong></h2><p>사후분포 (posterior)는 베이즈 정리에 따라 사전분포 (prior)와 가능도 (likelihood)의 곱에 비례한다. 여기서의 사전분포와 가능도는 앞에서 정의한 것과 같이 </p>
+<ul>
+<li>사전분포: $$k$$개의 선택지에 대한 확률 $$\theta_i$$의 분포인 <strong>디리슐레 분포</strong></li>
+</ul>
+<p>$$<br>p(\boldsymbol{\theta}|\boldsymbol{\alpha}) &#x3D; \prod_{i&#x3D;1}^k \theta_i^{\alpha_i-1}<br>$$</p>
+<ul>
+<li>가능도: $k$개의 선택지 중 $i$번째 선택지를 뽑는 횟수 $$X_i$$의 분포인 <strong>다항 분포</strong></li>
+</ul>
+<p>$$<br>p(\mathbf{X}|\boldsymbol{\theta}) &#x3D; \prod_{i&#x3D;1}^{k} \theta_i^{x_i}<br>$$</p>
+<p>이다. 따라서 사후분포를 도출하면,</p>
+<p>$$<br>\begin{aligned}<br>\text{Posterior} &amp;\propto \text{Likelihood}\cdot \text{Prior}\<br>P(\boldsymbol{\theta}|\mathbf{X}, \boldsymbol{\alpha}) &amp;\propto p(\mathbf{X}|\boldsymbol{\theta}) \cdot p(\boldsymbol{\theta}|\boldsymbol{\alpha})\<br>&amp;\propto \prod^k_{i&#x3D;1} \theta_i^{\alpha_i+x_i-1}\<br>&amp;\sim \text{Dirichlet}(\alpha_1+x_1, \cdots, \alpha_k+x_k)<br>\end{aligned}<br>$$</p>
+<p>의 결과를 도출할 수 있다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/dirichlet/" rel="tag"># dirichlet</a>
+              <a href="/tags/bayesian/" rel="tag"># bayesian</a>
+              <a href="/tags/multinomial/" rel="tag"># multinomial</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/06/2019-01-06-dp/" rel="next" title="Dirichlet Process: Stick-Breaking Process">
+                  Dirichlet Process: Stick-Breaking Process <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunxji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
