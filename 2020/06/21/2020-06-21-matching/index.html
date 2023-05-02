@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook[link]{:target&#x3D;“_blank”}를 번역하면서, Matching과 Stratification을 이용한 인과관계 추론에 대해 정리하였습니다. 예시로 kaggle의 Bike Sharing Demand{:target&#x3D;“_blank”} 데이터를 이용해 인과 관계를 분석해보았습">
+    <meta name="description" content="이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook[link]를 번역하면서, Matching과 Stratification을 이용한 인과관계 추론에 대해 정리하였습니다. 예시로 kaggle의 Bike Sharing Demand 데이터를 이용해 인과 관계를 분석해보았습니다. 전체 코드는 이 곳에서 확인하실 수 있습니다.    Int">
 <meta property="og:type" content="article">
 <meta property="og:title" content="인과 관계 분석 시리즈 (3): 성향 점수 매칭 (Propensity Score Matching)과 층화 (Stratification)">
 <meta property="og:url" content="http://assaeunji.github.io/2020/06/21/2020-06-21-matching/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook[link]{:target&#x3D;“_blank”}를 번역하면서, Matching과 Stratification을 이용한 인과관계 추론에 대해 정리하였습니다. 예시로 kaggle의 Bike Sharing Demand{:target&#x3D;“_blank”} 데이터를 이용해 인과 관계를 분석해보았습">
+<meta property="og:description" content="이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook[link]를 번역하면서, Matching과 Stratification을 이용한 인과관계 추론에 대해 정리하였습니다. 예시로 kaggle의 Bike Sharing Demand 데이터를 이용해 인과 관계를 분석해보았습니다. 전체 코드는 이 곳에서 확인하실 수 있습니다.    Int">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/06/images/potential-ex1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/06/images/potential-ex1-1.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/06/images/potential-bike3.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/06/images/potential-analysis1.png">
 <meta property="article:published_time" content="2020-06-20T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:41.212Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="supervised-learning">
 <meta property="article:tag" content="python">
@@ -46,9 +46,9 @@
 <meta property="article:tag" content="probability">
 <meta property="article:tag" content="data-analysis">
 <meta property="article:tag" content="potential-outcome">
-<meta property="article:tag" content="propensity-score">
 <meta property="article:tag" content="matching">
 <meta property="article:tag" content="stratification">
+<meta property="article:tag" content="propensity-score">
 <meta property="article:tag" content="dowhy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://assaeunji.github.io/2020/06/images/potential-ex1.png">
@@ -108,7 +108,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -226,7 +226,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:18:41" itemprop="dateModified" datetime="2023-05-02T22:18:41+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -249,9 +249,9 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook<a target="_blank" rel="noopener" href="https://causalinference.gitlab.io/kdd-tutorial/methods.html"><code>[link]</code></a>{:target=“_blank”}를 번역하면서, <strong>Matching과 Stratification을 이용한 인과관계 추론</strong>에 대해 정리하였습니다.</li>
-<li>예시로 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data">kaggle의 Bike Sharing Demand</a>{:target=“_blank”} 데이터를 이용해 인과 관계를 분석해보았습니다.</li>
-<li>전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/bike-sharing-analysis/blob/master/bike-sharing.ipynb">이 곳</a>{:target=“_blank”}에서 확인하실 수 있습니다.</li>
+<li>이번 포스팅은 Amit Sharma, Emre Kiciman님의 gitbook<a target="_blank" rel="noopener" href="https://causalinference.gitlab.io/kdd-tutorial/methods.html"><code>[link]</code></a>를 번역하면서, <strong>Matching과 Stratification을 이용한 인과관계 추론</strong>에 대해 정리하였습니다.</li>
+<li>예시로 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data">kaggle의 Bike Sharing Demand</a> 데이터를 이용해 인과 관계를 분석해보았습니다.</li>
+<li>전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/bike-sharing-analysis/blob/master/bike-sharing.ipynb">이 곳</a>에서 확인하실 수 있습니다.</li>
 </ul>
 <hr />
 <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
@@ -301,7 +301,7 @@
 <p>이를 수식으로 나타내면 다음과 같습니다.</p>
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>P</mi><mo stretchy="false">[</mo><mi>T</mi><mo>=</mo><mn>1</mn><mi mathvariant="normal">∣</mi><mi>X</mi><mo>=</mo><mi>x</mi><mo stretchy="false">]</mo><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt; P[T=1 \vert  X=x] &lt; 1
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></span></p>
-<p>이 세 가정이 만족한다고 가정하고, Conditioning 방법은 처리와 결과에 관련있는 변수 (공변량)들을 최대한 고려해 변수 간 인과관계를 따져 처리 효과를 계산합니다. 이는 Bayesian Network에서 변수 간 인과관계를 파악하는 것과 일맥상통합니다. 자세한 내용은 <a href="https://assaeunji.github.io/bayesian/2020-04-12-gbn/">이전 포스팅</a>{:target=“_blank”}을 참조해주시길 바랍니다.</p>
+<p>이 세 가정이 만족한다고 가정하고, Conditioning 방법은 처리와 결과에 관련있는 변수 (공변량)들을 최대한 고려해 변수 간 인과관계를 따져 처리 효과를 계산합니다. 이는 Bayesian Network에서 변수 간 인과관계를 파악하는 것과 일맥상통합니다. 자세한 내용은 <a href="https://assaeunji.github.io/bayesian/2020-04-12-gbn/">이전 포스팅</a>을 참조해주시길 바랍니다.</p>
 <p>근데 만약 우리가 통제된 실험 환경을 조성하지 못한다면 실험 환경처럼 최대한 비슷하게 만드는 수밖에 없습니다. 이런 관측 환경에서의 인과 관계 추론 중 제가 소개할 방법은 두 가지입니다.</p>
 <ol>
 <li>Matching</li>
@@ -439,7 +439,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p>데이터에 따라 다릅니다. 전통적으로 100개 미만의 데이터에서는 5개의 층을 고르고, 10,000개 ~ 100만 개 정도의 데이터라면 100~1000개 정도의 층을 구합니다.</p>
 <hr />
 <h2 id="example-kaggle-자전거-수요-데이터"><a class="markdownIt-Anchor" href="#example-kaggle-자전거-수요-데이터"></a> Example : Kaggle 자전거 수요 데이터</h2>
-<p>인과 관계를 설명하기 위해 가져온 예시 데이터는 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data">kaggle의 Bike Sharing Demand</a>{:target=“_blank”}입니다. 간단한 EDA를 통해 처리와 교란변수를 결정하고 이를 바탕으로 Python의 <code>doWhy</code> 패키지를 이용해 인과관계를 추정해보도록 하겠습니다!</p>
+<p>인과 관계를 설명하기 위해 가져온 예시 데이터는 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data">kaggle의 Bike Sharing Demand</a>입니다. 간단한 EDA를 통해 처리와 교란변수를 결정하고 이를 바탕으로 Python의 <code>doWhy</code> 패키지를 이용해 인과관계를 추정해보도록 하겠습니다!</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">%pip install dowhy</span><br><span class="line"><span class="keyword">from</span> dowhy <span class="keyword">import</span> CausalModel</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.rcParams[<span class="string">&quot;font.family&quot;</span>] = <span class="string">&quot;nanumgothic&quot;</span></span><br><span class="line">bike = pd.read_csv(<span class="string">&quot;train.csv&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(bike.shape)</span><br></pre></td></tr></table></figure>
 <hr />
 <h3 id="데이터-설명"><a class="markdownIt-Anchor" href="#데이터-설명"></a> 데이터 설명</h3>
@@ -573,7 +573,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <hr />
 <h2 id="whats-next"><a class="markdownIt-Anchor" href="#whats-next"></a> What’s Next?</h2>
 <p>이 포스팅에서는 Matching과 Stratification에 따른 인과관계 추론 방법에 대해 정리하고, 공유 자전거 데이터를 바탕으로 인과관계를 추정해보았습니다.<br />
-인과 추론에 대한 더 쉬운 예제를 보려면 카카오 데이터분석가 이민호님 발표: Causal Inference <a target="_blank" rel="noopener" href="https://www.slideshare.net/lumiamitie/causal-inference-primer-20190601"><code>[link]</code></a>{:target=“_blank”}를 참고하시면 좋습니다.</p>
+인과 추론에 대한 더 쉬운 예제를 보려면 카카오 데이터분석가 이민호님 발표: Causal Inference <a target="_blank" rel="noopener" href="https://www.slideshare.net/lumiamitie/causal-inference-primer-20190601"><code>[link]</code></a>를 참고하시면 좋습니다.</p>
 <p>데이터를 분석해보며 든 생각은</p>
 <ul>
 <li>추정치 반박 (Refuting estimates) 부분에서 얼마나 효과 차이가 적어야 robust하다 말할 수 있는 지 기준이 없고</li>
@@ -582,8 +582,8 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </ul>
 <p>따라서 다음에는</p>
 <ul>
-<li>여러 기계학습 모형을 통해 인과관계를 추정하는 <a target="_blank" rel="noopener" href="https://causalml.readthedocs.io/en/latest/about.html"><code>causalml</code> 패키지</a>{:target=“_blank”}와</li>
-<li>변수 간의 관계를 파악하기 위한 <a target="_blank" rel="noopener" href="https://causalnex.readthedocs.io/en/latest/03_tutorial/03_tutorial.html"><code>causalnex</code> 패키지</a>{:target=“_blank”}</li>
+<li>여러 기계학습 모형을 통해 인과관계를 추정하는 <a target="_blank" rel="noopener" href="https://causalml.readthedocs.io/en/latest/about.html"><code>causalml</code> 패키지</a>와</li>
+<li>변수 간의 관계를 파악하기 위한 <a target="_blank" rel="noopener" href="https://causalnex.readthedocs.io/en/latest/03_tutorial/03_tutorial.html"><code>causalnex</code> 패키지</a></li>
 </ul>
 <p>를 사용해서 인과관계를 더 심도있고 정확하게 추론해보고자 합니다.</p>
 <hr />
@@ -591,20 +591,20 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <ul>
 <li>블로그 / 발표
 <ul>
-<li>카카오 데이터분석가 이민호님 발표: Causal Inference <a target="_blank" rel="noopener" href="https://www.slideshare.net/lumiamitie/causal-inference-primer-20190601"><code>[link]</code></a>{:target=“_blank”}</li>
-<li>Amit Sharma, Emre Kiciman님의 gitbook<a target="_blank" rel="noopener" href="https://causalinference.gitlab.io/kdd-tutorial/methods.html"><code>[link]</code></a>{:target=“_blank”}</li>
+<li>카카오 데이터분석가 이민호님 발표: Causal Inference <a target="_blank" rel="noopener" href="https://www.slideshare.net/lumiamitie/causal-inference-primer-20190601"><code>[link]</code></a></li>
+<li>Amit Sharma, Emre Kiciman님의 gitbook<a target="_blank" rel="noopener" href="https://causalinference.gitlab.io/kdd-tutorial/methods.html"><code>[link]</code></a></li>
 </ul>
 </li>
 <li>파이썬 패키지
 <ul>
-<li>Python <code>dowhy</code> Documentation <a target="_blank" rel="noopener" href="https://microsoft.github.io/dowhy/"><code>[link]</code></a>{:target=“_blank”}</li>
-<li>Python <code>causalml</code> Documentation <a target="_blank" rel="noopener" href="https://causalml.readthedocs.io/en/latest/about.html"><code>[link]</code></a>{:target=“_blank”}</li>
-<li>Python <code>causalnex</code> Documentation <a target="_blank" rel="noopener" href="https://causalnex.readthedocs.io/en/latest/03_tutorial/03_tutorial.html"><code>[link]</code></a>{:target=“_blank”}</li>
+<li>Python <code>dowhy</code> Documentation <a target="_blank" rel="noopener" href="https://microsoft.github.io/dowhy/"><code>[link]</code></a></li>
+<li>Python <code>causalml</code> Documentation <a target="_blank" rel="noopener" href="https://causalml.readthedocs.io/en/latest/about.html"><code>[link]</code></a></li>
+<li>Python <code>causalnex</code> Documentation <a target="_blank" rel="noopener" href="https://causalnex.readthedocs.io/en/latest/03_tutorial/03_tutorial.html"><code>[link]</code></a></li>
 </ul>
 </li>
 <li>데이터
 <ul>
-<li>kaggle의 Bike Sharing Demand 데이터<a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data"><code>[link]</code></a>{:target=“_blank”}</li>
+<li>kaggle의 Bike Sharing Demand 데이터<a target="_blank" rel="noopener" href="https://www.kaggle.com/c/bike-sharing-demand/data"><code>[link]</code></a></li>
 </ul>
 </li>
 </ul>
@@ -640,9 +640,9 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
               <a href="/tags/probability/" rel="tag"># probability</a>
               <a href="/tags/data-analysis/" rel="tag"># data-analysis</a>
               <a href="/tags/potential-outcome/" rel="tag"># potential-outcome</a>
-              <a href="/tags/propensity-score/" rel="tag"># propensity-score</a>
               <a href="/tags/matching/" rel="tag"># matching</a>
               <a href="/tags/stratification/" rel="tag"># stratification</a>
+              <a href="/tags/propensity-score/" rel="tag"># propensity-score</a>
               <a href="/tags/dowhy/" rel="tag"># dowhy</a>
           </div>
 

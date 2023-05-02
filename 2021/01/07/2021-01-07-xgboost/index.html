@@ -22,16 +22,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="오늘은 GBM에 대한 자세한 설명{:target&#x3D;“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드{:target&#x3D;“_blank”} 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳{:target&#x3D;“_blank”}에서 확인하">
+    <meta name="description" content="오늘은 GBM에 대한 자세한 설명에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳에서 확인하실 수 있습니다.    Introduction XGBoost는 eXtra Gradient Boos">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까?">
 <meta property="og:url" content="http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="오늘은 GBM에 대한 자세한 설명{:target&#x3D;“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드{:target&#x3D;“_blank”} 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳{:target&#x3D;“_blank”}에서 확인하">
+<meta property="og:description" content="오늘은 GBM에 대한 자세한 설명에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳에서 확인하실 수 있습니다.    Introduction XGBoost는 eXtra Gradient Boos">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2021/01/images/tree-titleimage.jpg">
 <meta property="article:published_time" content="2021-01-06T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:15:57.826Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="supervised-learning">
 <meta property="article:tag" content="boosting">
@@ -97,7 +97,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -220,7 +220,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:15:57" itemprop="dateModified" datetime="2023-05-02T22:15:57+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,9 +243,9 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>오늘은 <a href="https://assaeunji.github.io/machine%20learning/2020-09-05-gbm/">GBM에 대한 자세한 설명</a>{:target=“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다.</li>
-<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a>{:target=“_blank”} 책을 참고해 정리하였습니다.</li>
-<li>실습에 대한 전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/tree-based-analysis/blob/main/XGBoost-Santander.ipynb">이 곳</a>{:target=“_blank”}에서 확인하실 수 있습니다.</li>
+<li>오늘은 <a href="https://assaeunji.github.io/machine%20learning/2020-09-05-gbm/">GBM에 대한 자세한 설명</a>에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다.</li>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a> 책을 참고해 정리하였습니다.</li>
+<li>실습에 대한 전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/tree-based-analysis/blob/main/XGBoost-Santander.ipynb">이 곳</a>에서 확인하실 수 있습니다.</li>
 </ul>
 <hr />
 <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
@@ -264,7 +264,7 @@
 <p>사이킷런 API 기준으로 하이퍼 파라미터를 설명드리겠습니다.</p>
 <p><img src="../../images/xgboost_params.png" alt="" /></p>
 <p>위 표에서 중요도 순으로 정렬하여 색을 다르게 표현했습니다. 즉, learning_rate, n_estimators, max_depth, min_child_weight, gamma의 중요도가 가장 높고, 이후에 early_stopping_rounds, subsample, colsample_bytree를 건드린다 합니다.</p>
-<p>자세한 설명은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}을 참조해주시길 바랍니다.</p>
+<p>자세한 설명은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>을 참조해주시길 바랍니다.</p>
 <p>과적합 문제가 심각하면 다음과 같이 하이퍼 파라미터를 조정할 수 있습니다.</p>
 <ul>
 <li>learning_rate을 낮추고 n_estimators를 높여줍니다. (이 둘은 같이 움직입니다)</li>
@@ -283,7 +283,7 @@
 <p>기존의 XGBoost나 GBM은 트리의 깊이를 효과적으로 줄이기 위한 균형 트리 분할 (Level-Wise)을 사용합니다. <strong>최대한 균형 잡힌 트리</strong>를 유지하면서 분할하기 때문에 트리의 깊이가 최소화될 수 있습니다. 이러한 균형 잡힌 트리를 생성하는 이유는 <strong>과적합을 방지</strong>할 수 있다 알려져 있기 때문입니다. 그러나 균형을 맞추기 위한 시간이 오래 걸린다는 단점이 있습니다.</p>
 <p><img src="../../images/xgboost_leafwise.png" alt="" /></p>
 <p>이에 비해 LightGBM의 리프 중심 분할 (Leaf-wise)은 트리의 균형을 맞추지 않고 최대 손실 값을 가지는 리프 노드를 지속적으로 분할하면서 트리의 깊이가 깊어지고 <strong>비대칭적</strong>인 트리가 생성됩니다. 결과적으로 균형 트리 분할에 비해 손실값이 높은 노드에 대해 더 깊게 트리를 분할하며 손실값을 줄일 수 있기 때문에 다른 부스팅 계열 알고리즘보다 더 좋은 정확도나 비슷한 수준의 성능을 낼 수 있습니다.</p>
-<p><a target="_blank" rel="noopener" href="https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/">Which algorithm takes the crown: Light GBM vs XGBOOST?</a>{:target=“_blank”}에 따르면, 리프 중심 분할 방법은 복잡도가 증가하고 과적합 문제가 발생할 수 있다 합니다. 그러나, 이는 트리의 최대 깊이인 <code>max_depth</code>의 하이퍼 파라미터를 조정한다면 해결할 수 있는 문제라 합니다.</p>
+<p><a target="_blank" rel="noopener" href="https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/">Which algorithm takes the crown: Light GBM vs XGBOOST?</a>에 따르면, 리프 중심 분할 방법은 복잡도가 증가하고 과적합 문제가 발생할 수 있다 합니다. 그러나, 이는 트리의 최대 깊이인 <code>max_depth</code>의 하이퍼 파라미터를 조정한다면 해결할 수 있는 문제라 합니다.</p>
 <h3 id="lightgbm-설치"><a class="markdownIt-Anchor" href="#lightgbm-설치"></a> LightGBM 설치</h3>
 <p>XGBoost와 마찬가지로 pip3을 이용해 lightgbm 설치합니다.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install lightgbm</span><br></pre></td></tr></table></figure>
@@ -292,7 +292,7 @@
 <h3 id="lightgbm-하이퍼-파라미터"><a class="markdownIt-Anchor" href="#lightgbm-하이퍼-파라미터"></a> LightGBM 하이퍼 파라미터</h3>
 <p>LightGBM에 사용되는 하이퍼 파라미터는 다음과 같습니다.</p>
 <p><img src="../../images/lightgbm_params.png" alt="" /></p>
-<p>마찬가지로, 중요도 순으로 정렬하였고 자세한 내용은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}을 참조해주시길 바랍니다.</p>
+<p>마찬가지로, 중요도 순으로 정렬하였고 자세한 내용은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>을 참조해주시길 바랍니다.</p>
 <p>과적합 방지를 위한 하이퍼 파라미터 튜닝 방안은 다음과 같습니다.</p>
 <ul>
 <li>learning_rate를 작게 하면서 n_estimators를 크게 해봅니다.</li>
@@ -305,7 +305,7 @@
 <p>XGBoost와 마찬가지로 사이킷런 API를 이용하기 때문에 함수가 거의 비슷합니다 :&gt;</p>
 <hr />
 <h2 id="실습-캐글-산탄데르-고객-만족-예측"><a class="markdownIt-Anchor" href="#실습-캐글-산탄데르-고객-만족-예측"></a> 실습: 캐글 산탄데르 고객 만족 예측</h2>
-<p>이번에는 캐글의 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a>{:target=“_blank”}에 대해서 고객 만족 여부를 XGBoost와 LightGBM을 통해 예측해보겠습니다.</p>
+<p>이번에는 캐글의 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a>에 대해서 고객 만족 여부를 XGBoost와 LightGBM을 통해 예측해보겠습니다.</p>
 <p>분석의 목적은 370개의 피처로 주어진 데이터 세트 기반에서 고객 만족 여부를 예측하는 것입니다. 클래스 레이블 명은 TARGET이고, 1이면 불만을 가진 고객, 0이면 만족한 고객을 의미합니다.</p>
 <p>대부분 만족으로 응답한 고객이 많기 때문에 정확도 수치보단 ROC-AUC가 더 적합합니다. 따라서 평가 메트릭은 ROC-AUC로 하였습니다.</p>
 <h3 id="필요한-라이브러리"><a class="markdownIt-Anchor" href="#필요한-라이브러리"></a> 필요한 라이브러리</h3>
@@ -388,9 +388,9 @@
 <hr />
 <h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
 <ul>
-<li><a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a>{:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a>{:target=“_blank”}</li>
+<li><a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a></li>
 </ul>
 
     </div>

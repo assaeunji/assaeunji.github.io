@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, Raghavendra and Sanjay (2019){:target&#x3D;“_blank”}를 요약한 글입니다. 이와 동시에 제가 공부하고 싶은 이상 탐지 세부 분야를 정하기 위해 쓰게 되었습니다.    Anomaly vs. Novelty Anom">
+    <meta name="description" content="이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, Raghavendra and Sanjay (2019)를 요약한 글입니다. 이와 동시에 제가 공부하고 싶은 이상 탐지 세부 분야를 정하기 위해 쓰게 되었습니다.    Anomaly vs. Novelty Anomaly는 통계적 맥락에서 비정상치">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Introduction to Deep Anomaly Detection">
 <meta property="og:url" content="http://assaeunji.github.io/2020/03/10/2020-03-10-anomaly/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, Raghavendra and Sanjay (2019){:target&#x3D;“_blank”}를 요약한 글입니다. 이와 동시에 제가 공부하고 싶은 이상 탐지 세부 분야를 정하기 위해 쓰게 되었습니다.    Anomaly vs. Novelty Anom">
+<meta property="og:description" content="이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, Raghavendra and Sanjay (2019)를 요약한 글입니다. 이와 동시에 제가 공부하고 싶은 이상 탐지 세부 분야를 정하기 위해 쓰게 되었습니다.    Anomaly vs. Novelty Anomaly는 통계적 맥락에서 비정상치">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/anomaly-1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/anomaly-2.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/anomaly-context.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/anomaly-group.png">
 <meta property="article:published_time" content="2020-03-09T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T12:36:24.697Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:33.206Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="anomaly-detection">
 <meta property="article:tag" content="intro">
@@ -98,7 +98,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -216,7 +216,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 21:36:24" itemprop="dateModified" datetime="2023-05-02T21:36:24+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-02 22:18:33" itemprop="dateModified" datetime="2023-05-02T22:18:33+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -239,7 +239,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.03407">Raghavendra and Sanjay (2019)</a>{:target=“_blank”}를 요약한 글입니다.</li>
+<li>이 글은 Deep Anomaly Detection (이상치 탐지)의 개념, 분류, 산업 적용 분야를 소개하는 글로, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.03407">Raghavendra and Sanjay (2019)</a>를 요약한 글입니다.</li>
 <li>이와 동시에 제가 공부하고 싶은 이상 탐지 세부 분야를 정하기 위해 쓰게 되었습니다.</li>
 </ul>
 <hr />
@@ -251,11 +251,11 @@
 <p><img src="../../images/anomaly-1.png" alt="" /></p>
 <p>이상치 탐지 시 <strong>유의할 점</strong>은 다음과 같습니다.</p>
 <ul>
-<li>고전적인 머신러닝 방법으로도 효과가 좋은 경우도 있음 (예시: <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2018/sessions/NDC2018_0034.html#c=NDC2018&amp;k%5B%5D=%EC%9D%B4%EC%83%81">엄혜민님 발표자료</a>{:target=“_blank”}, <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2016/sessions/NDC2016_0052.html#k%5B%5D=%EC%96%B4%EB%B7%B0">김정주님 발표자료</a>){:target=“_blank”}</li>
+<li>고전적인 머신러닝 방법으로도 효과가 좋은 경우도 있음 (예시: <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2018/sessions/NDC2018_0034.html#c=NDC2018&amp;k%5B%5D=%EC%9D%B4%EC%83%81">엄혜민님 발표자료</a>, <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2016/sessions/NDC2016_0052.html#k%5B%5D=%EC%96%B4%EB%B7%B0">김정주님 발표자료</a>)</li>
 <li>이상치가 극단적으로 적고 정상 데이터가 대부분이기 때문에 class imbalance (클래스 불균형) 문제를 해결해야 함</li>
 <li>이상치의 특성과 산업 분야에 따라 달라지기 때문에 이를 유의해서 분석해야 함</li>
 </ul>
-<p>고전적인 머신러닝 방법은 <a target="_blank" rel="noopener" href="https://www.kihasa.re.kr/common/filedown.do?seq=41721">KIHASA 기계학습 기반 이상 탐지 기법 연구</a>{:target=“_blank”}에 자세히 요약되어 있습니다.</p>
+<p>고전적인 머신러닝 방법은 <a target="_blank" rel="noopener" href="https://www.kihasa.re.kr/common/filedown.do?seq=41721">KIHASA 기계학습 기반 이상 탐지 기법 연구</a>에 자세히 요약되어 있습니다.</p>
 <hr />
 <h2 id="deep-learning-based-anomaly-detection"><a class="markdownIt-Anchor" href="#deep-learning-based-anomaly-detection"></a> <strong>Deep Learning Based Anomaly Detection</strong></h2>
 <p>딥러닝 기반 이상치 탐지는 여러 측면에서 분류되고 그에 따른 분석 방법이 다르게 적용됩니다.</p>
@@ -424,18 +424,18 @@
 </ol>
 <hr />
 <h2 id="whats-next"><a class="markdownIt-Anchor" href="#whats-next"></a> <strong>What’s Next?</strong></h2>
-<p>제가 이 글을 준비한 이유는 “이상 탐지&quot;라는 넓은 주제에서 어떤 방법론을 공부하는 것이 좋을 지에 대해 알아보자는 취지였습니다. <a target="_blank" rel="noopener" href="https://research.sualab.com/introduction/review/2020/01/30/anomaly-detection-overview-1.html">Sualab Anomaly Detection 개요 글</a>{:target=”_blank&quot;}에서도 제가 참조한 논문을 더 자세하고 잘 리뷰해놨지만 제 입장에서 어떤 걸 더 중점적으로 파볼까?를 고민해보며 쓰게 되었습니다.</p>
+<p>제가 이 글을 준비한 이유는 &quot;이상 탐지&quot;라는 넓은 주제에서 어떤 방법론을 공부하는 것이 좋을 지에 대해 알아보자는 취지였습니다. <a target="_blank" rel="noopener" href="https://research.sualab.com/introduction/review/2020/01/30/anomaly-detection-overview-1.html">Sualab Anomaly Detection 개요 글</a>에서도 제가 참조한 논문을 더 자세하고 잘 리뷰해놨지만 제 입장에서 어떤 걸 더 중점적으로 파볼까?를 고민해보며 쓰게 되었습니다.</p>
 <p>제가 관심있는 주제는 게임 환경에서 이상치를 탐지하는 방법입니다.<br />
 게임 환경에서의 이상 탐지는 주로 <strong>게임 봇, 재화 이상치, 핵과 같은 cheating 행위를 탐지</strong>하는 것입니다.</p>
 <p>SVM, K-NN, 유사도 계산을 통한 로지스틱 분석, GMM (Gaussian Mixture Model)과 같은 기계학습 위주의 분석이 있는 반면 DAD (딥러닝 기반 이상 탐지)로 넘어가면 LSTM, AE, RNN, CNN이 등장하네요! 이는 다음 주제에서 더 다뤄보겠습니다.</p>
 <hr />
 <h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> <strong>References</strong></h2>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.03407">Raghavendra and Sanjay (2019)</a>{:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2018/sessions/NDC2018_0034.html#c=NDC2018&amp;k%5B%5D=%EC%9D%B4%EC%83%81">엄혜민님 발표자료</a>{:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2016/sessions/NDC2016_0052.html#k%5B%5D=%EC%96%B4%EB%B7%B0">김정주님 발표자료</a>){:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="https://www.kihasa.re.kr/common/filedown.do?seq=41721">KIHASA 기계학습 기반 이상 탐지 기법 연구</a>{:target=“_blank”}</li>
-<li><a target="_blank" rel="noopener" href="https://research.sualab.com/introduction/review/2020/01/30/anomaly-detection-overview-1.html">Sualab Anomaly Detection 개요 글</a>{:target=“_blank”}</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.03407">Raghavendra and Sanjay (2019)</a></li>
+<li><a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2018/sessions/NDC2018_0034.html#c=NDC2018&amp;k%5B%5D=%EC%9D%B4%EC%83%81">엄혜민님 발표자료</a></li>
+<li><a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2016/sessions/NDC2016_0052.html#k%5B%5D=%EC%96%B4%EB%B7%B0">김정주님 발표자료</a>)</li>
+<li><a target="_blank" rel="noopener" href="https://www.kihasa.re.kr/common/filedown.do?seq=41721">KIHASA 기계학습 기반 이상 탐지 기법 연구</a></li>
+<li><a target="_blank" rel="noopener" href="https://research.sualab.com/introduction/review/2020/01/30/anomaly-detection-overview-1.html">Sualab Anomaly Detection 개요 글</a></li>
 </ul>
 
     </div>

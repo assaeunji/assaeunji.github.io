@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback [link]{:target&#x3D;“_blank”}을 번역한 글입니다.    추천 시스템 소개 추천 시스템은 소셜 네트워크, 엔터테인먼트 산업 등 다양한 산업에서 매우 중요합니다. 당신이 선호할만한 곡을">
+    <meta name="description" content="이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback [link]을 번역한 글입니다.    추천 시스템 소개 추천 시스템은 소셜 네트워크, 엔터테인먼트 산업 등 다양한 산업에서 매우 중요합니다. 당신이 선호할만한 곡을 추천하는 것부터, 읽을만한 책을">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Implicit Feedback 추천 시스템에 대한 친절한 설명">
 <meta property="og:url" content="http://assaeunji.github.io/2020/11/29/2020-11-29-implicitfeedback/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback [link]{:target&#x3D;“_blank”}을 번역한 글입니다.    추천 시스템 소개 추천 시스템은 소셜 네트워크, 엔터테인먼트 산업 등 다양한 산업에서 매우 중요합니다. 당신이 선호할만한 곡을">
+<meta property="og:description" content="이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback [link]을 번역한 글입니다.    추천 시스템 소개 추천 시스템은 소셜 네트워크, 엔터테인먼트 산업 등 다양한 산업에서 매우 중요합니다. 당신이 선호할만한 곡을 추천하는 것부터, 읽을만한 책을">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/11/images/jesse-allow.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/11/images/als_matrix.png">
@@ -39,13 +39,13 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/11/images/implicit_purchased.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/11/images/implicit_recommend.png">
 <meta property="article:published_time" content="2020-11-28T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:51.934Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="python">
-<meta property="article:tag" content="ml">
 <meta property="article:tag" content="recommender-system">
 <meta property="article:tag" content="ALS">
 <meta property="article:tag" content="implicit-feedback">
+<meta property="article:tag" content="ml">
 <meta property="article:tag" content="pyspark">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://assaeunji.github.io/2020/11/images/jesse-allow.png">
@@ -105,7 +105,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -223,7 +223,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:18:51" itemprop="dateModified" datetime="2023-05-02T22:18:51+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -247,7 +247,7 @@
     <div class="post-body" itemprop="articleBody">
         <p><img src="../../images/jesse-allow.png" alt="Jesse님께 허락을 받고 쓴 글 인증" /></p>
 <ul>
-<li>이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback <a target="_blank" rel="noopener" href="https://jessesw.com/Rec-System/"><code>[link]</code></a>{:target=“_blank”}을 번역한 글입니다.</li>
+<li>이 글은 Jesse님의 허락을 받고 A Gentle Introduction to Recommender Systems with Implicit Feedback <a target="_blank" rel="noopener" href="https://jessesw.com/Rec-System/"><code>[link]</code></a>을 번역한 글입니다.</li>
 </ul>
 <hr />
 <h2 id="추천-시스템-소개"><a class="markdownIt-Anchor" href="#추천-시스템-소개"></a> 추천 시스템 소개</h2>
@@ -284,7 +284,7 @@
 </ul>
 <p>가장 쉬운 예시는 숫자로 매길 수 있는 영화 평점입니다. 우리는 평점을 통해 유저가 영화를 즐겼는지를 알 수 있습니다. 이런 평점 데이터는 명시적 상호작용이라 할 수 있습니다.</p>
 <p>그러나, 대부분 사람들은 평점을 전혀 남기지 않는다는 문제가 있습니다! 따라서, 사용가능한 데이터가 매우 희귀합니다. 그 대신 Netflix는 최소한 유저가 어떤 콘텐츠를 시청했는지의 정보를 얻을 수 있습니다. 이런 시청 정보에 대한 데이터는 암시적 상호작용입니다. 그러나, 이 유저가 특정 프로그램을 시청했다고 해서 그 프로그램을 좋아한다고 말하기 어렵습니다. 따라서, 명시적 상호작용에 비해 암시적 상호작용은 어떤 콘텐츠를 선호하는지 추천하는 일이 더 어려운 일입니다.</p>
-<p>이런 단점에도 불구하고, 암시적 피드백은 중요합니다. Hulu라는 회사에서는 <a target="_blank" rel="noopener" href="http://tech.hulu.com/blog/2011/09/19/recommendation-system/">추천 시스템에 대한 기사</a>{:target=“_blank”}에서 다음과 같이 언급합니다.</p>
+<p>이런 단점에도 불구하고, 암시적 피드백은 중요합니다. Hulu라는 회사에서는 <a target="_blank" rel="noopener" href="http://tech.hulu.com/blog/2011/09/19/recommendation-system/">추천 시스템에 대한 기사</a>에서 다음과 같이 언급합니다.</p>
 <blockquote>
 <p>Hulu에서의 암시적 데이터의 양은 명시적 피드백의 양을 압도하기 때문에, 우리의 추천 시스템은 암시적 피드백 데이터를 갖고 우선적으로 설계되어야 한다.</p>
 </blockquote>
@@ -309,10 +309,10 @@ ALS는 한 번에 한 특징 벡터 (feature vector)만 추출하기만 하면 �
 <li>다시 돌아가 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>의 해를 이용해 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>의 해를 구합니다.</li>
 <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi></mrow><annotation encoding="application/x-tex">R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span></span>을 최대한 근사시키는 수렴 값을 얻을 때까지 반복합니다.</li>
 </ul>
-<p>이 연산이 끝나면  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>와 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>를 곱해 특정한 유저/아이템 상호작용에 대한 평점을 예측할 수 있습니다. 이것이 Hu, Koren, and Volinsky의 <a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf">Collaborative Filtering for Implicit Feedback Datasets</a>{:target=“_blank”}에서 사용한 ALS 방법입니다. 이제 이 논문에서 사용된 방법을 실제 데이터에 적용해보고, 추천 시스템을 구축해보겠습니다.</p>
+<p>이 연산이 끝나면  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>와 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>를 곱해 특정한 유저/아이템 상호작용에 대한 평점을 예측할 수 있습니다. 이것이 Hu, Koren, and Volinsky의 <a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf">Collaborative Filtering for Implicit Feedback Datasets</a>에서 사용한 ALS 방법입니다. 이제 이 논문에서 사용된 방법을 실제 데이터에 적용해보고, 추천 시스템을 구축해보겠습니다.</p>
 <hr />
 <h2 id="데이터-설명"><a class="markdownIt-Anchor" href="#데이터-설명"></a> 데이터 설명</h2>
-<p>예시는 “Online Retail&quot;라 불리는 데이터 셋으로, UCI Machine Learning repository에서 가져왔습니다 (<a target="_blank" rel="noopener" href="https://archive.ics.uci.edu/ml/datasets/Online+Retail">여기</a>{:target=”_blank&quot;}에서 해당 데이터를 찾을 수 있습니다). 이 데이터는 영국에 있는 온라인 소매 기업의 8개월 간의 구매 기록을 담고 있습니다.</p>
+<p>예시는 &quot;Online Retail&quot;라 불리는 데이터 셋으로, UCI Machine Learning repository에서 가져왔습니다 (<a target="_blank" rel="noopener" href="https://archive.ics.uci.edu/ml/datasets/Online+Retail">여기</a>에서 해당 데이터를 찾을 수 있습니다). 이 데이터는 영국에 있는 온라인 소매 기업의 8개월 간의 구매 기록을 담고 있습니다.</p>
 <p>먼저 필요한 라이브러리를 불러오고 데이터를 로드하겠습니다.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> sparse</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.sparse.linalg <span class="keyword">import</span> spsolve</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> implicit</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"></span><br><span class="line">website_url = <span class="string">&#x27;http://archive.ics.uci.edu/ml/machine-learning-databases/00352/Online%20Retail.xlsx&#x27;</span></span><br><span class="line">retail_data = pd.read_excel(website_url)</span><br><span class="line">retail_data.head()</span><br></pre></td></tr></table></figure>
 <p><img src="../../images/implicit_retail.png" alt="" /></p>
@@ -348,7 +348,7 @@ ALS는 한 번에 한 특징 벡터 (feature vector)만 추출하기만 하면 �
 <p>이제 Hu, Koren, Volinsky의 논문에서 쓰인 ALS (Alternating Least Squares)를 구현해보겠습니다.</p>
 <hr />
 <h2 id="암시적-피드백을-위한-als-알고리즘-구현하기-손코딩"><a class="markdownIt-Anchor" href="#암시적-피드백을-위한-als-알고리즘-구현하기-손코딩"></a> 암시적 피드백을 위한 ALS 알고리즘 구현하기 (손코딩)</h2>
-<p><a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf">Collaborative Filtering for Implicit Feedback Datasets</a>{:target=“_blank”}에서 ALS 관련 수식은 다음과 같습니다.</p>
+<p><a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf">Collaborative Filtering for Implicit Feedback Datasets</a>에서 ALS 관련 수식은 다음과 같습니다.</p>
 <p>먼저, 희소 평점 행렬 (<code>product_train</code>)을 신뢰 행렬 (Confidence matrix)로 만듭니다.</p>
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>u</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>+</mo><mi>α</mi><msub><mi>r</mi><mrow><mi>u</mi><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{ui} = 1 + \alpha r_{ui}
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
@@ -421,13 +421,13 @@ ALS는 한 번에 한 특징 벡터 (feature vector)만 추출하기만 하면 �
 </li>
 </ul>
 <p>이 둘을 비교해보면 12361 id를 가진 유저는 식기 세트 (cutlery set)를 많이 구매했는데, 추천 목록에서는 아직 구매하지 않은 핑크색, 빨간색 식기 세트를 추천하고 있습니다. 또한 가족 앨범을 위한 사진틀이 1순위로 추천됐는데 아마도 해당 유저가 구매한 아이템들이 가족을 가진 아내들이 많이 사는 아이템이지 않을까 싶습니다. 이렇게 추천 시스템이 보기에도 알맞게 추천되고 있음을 확인할 수 있습니다.</p>
-<p>이 글에서는 어떻게 암시적 피드백 데이터에서 추천 시스템이 작동하는지를 배웠습니다. 전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/recommendation/blob/main/Implicit%20Feedback_OnlineRetail.ipynb">여기</a>{:target=“_blank”}에서 확인하실 수 있습니다.<br />
+<p>이 글에서는 어떻게 암시적 피드백 데이터에서 추천 시스템이 작동하는지를 배웠습니다. 전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/recommendation/blob/main/Implicit%20Feedback_OnlineRetail.ipynb">여기</a>에서 확인하실 수 있습니다.<br />
 다음 글에서는 LightFM이라 불리는 파이썬 라이브러리를 이용한 추천 시스템에 대해 파보려 합니다 :&gt;</p>
 <hr />
 <h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
 <ul>
-<li>Jesse Steinweg-Woods, “A Gentle Introduction to Recommender Systems with Implicit Feedback” <a target="_blank" rel="noopener" href="https://jessesw.com/Rec-System/"><code>[link]</code></a>{:target=“_blank”}</li>
-<li>Hu, Koren, and Volinsky, “Collaborative Filtering for Implicit Feedback Datasets” <a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf"><code>[link]</code></a>{:target=“_blank”}</li>
+<li>Jesse Steinweg-Woods, “A Gentle Introduction to Recommender Systems with Implicit Feedback” <a target="_blank" rel="noopener" href="https://jessesw.com/Rec-System/"><code>[link]</code></a></li>
+<li>Hu, Koren, and Volinsky, “Collaborative Filtering for Implicit Feedback Datasets” <a target="_blank" rel="noopener" href="http://yifanhu.net/PUB/cf.pdf"><code>[link]</code></a></li>
 </ul>
 
     </div>
@@ -456,10 +456,10 @@ ALS는 한 번에 한 특징 벡터 (feature vector)만 추출하기만 하면 �
 
           <div class="post-tags">
               <a href="/tags/python/" rel="tag"># python</a>
-              <a href="/tags/ml/" rel="tag"># ml</a>
               <a href="/tags/recommender-system/" rel="tag"># recommender-system</a>
               <a href="/tags/ALS/" rel="tag"># ALS</a>
               <a href="/tags/implicit-feedback/" rel="tag"># implicit-feedback</a>
+              <a href="/tags/ml/" rel="tag"># ml</a>
               <a href="/tags/pyspark/" rel="tag"># pyspark</a>
           </div>
 

@@ -22,16 +22,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이번 포스팅은 지난 LTV (Life Time Value) 지표 속 BG&#x2F;NBD 모델과 Gamma-Gamma 모델 파헤치기{:target&#x3D;‘_blank’}에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다. 참조한 데이터는 UCI Machine Learning Repository 의 Online Retail Dataset{:target&#x3D;‘_bla">
+    <meta name="description" content="이번 포스팅은 지난 LTV (Life Time Value) 지표 속 BG&#x2F;NBD 모델과 Gamma-Gamma 모델 파헤치기에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다. 참조한 데이터는 UCI Machine Learning Repository 의 Online Retail Dataset이며, databricks LTV 분석 자료를 주로 참조하">
 <meta property="og:type" content="article">
 <meta property="og:title" content="실전! 구매 기록 데이터로 LTV (Lifetime Value) 구해보기">
 <meta property="og:url" content="http://assaeunji.github.io/2022/06/06/2022-06-06-ltv-practice/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이번 포스팅은 지난 LTV (Life Time Value) 지표 속 BG&#x2F;NBD 모델과 Gamma-Gamma 모델 파헤치기{:target&#x3D;‘_blank’}에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다. 참조한 데이터는 UCI Machine Learning Repository 의 Online Retail Dataset{:target&#x3D;‘_bla">
+<meta property="og:description" content="이번 포스팅은 지난 LTV (Life Time Value) 지표 속 BG&#x2F;NBD 모델과 Gamma-Gamma 모델 파헤치기에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다. 참조한 데이터는 UCI Machine Learning Repository 의 Online Retail Dataset이며, databricks LTV 분석 자료를 주로 참조하">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2022/06/images/ltv-1.png">
 <meta property="article:published_time" content="2022-06-05T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:16:15.319Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="data-analysis">
 <meta property="article:tag" content="metrics">
@@ -97,7 +97,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -220,7 +220,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:16:15" itemprop="dateModified" datetime="2023-05-02T22:16:15+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,9 +243,9 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>이번 포스팅은 지난 <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">LTV (Life Time Value) 지표 속 BG/NBD 모델과 Gamma-Gamma 모델 파헤치기</a>{:target=‘_blank’}에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다.</li>
-<li>참조한 데이터는 UCI Machine Learning Repository 의 <a target="_blank" rel="noopener" href="http://archive.ics.uci.edu/ml/datasets/Online+Retail">Online Retail Dataset</a>{:target=‘_blank’}이며, <a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a>{:target=‘_blank’}를 주로 참조하였습니다.</li>
-<li>전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/ltv-onlineretail-analysis/blob/main/Lifetime_onlineretail.ipynb">이 곳</a>{:target=‘_blank’}에서 확인하실 수 있습니다.</li>
+<li>이번 포스팅은 지난 <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">LTV (Life Time Value) 지표 속 BG/NBD 모델과 Gamma-Gamma 모델 파헤치기</a>에 이어 실제 데이터를 통해 LTV를 계산해보는 포스팅입니다.</li>
+<li>참조한 데이터는 UCI Machine Learning Repository 의 <a target="_blank" rel="noopener" href="http://archive.ics.uci.edu/ml/datasets/Online+Retail">Online Retail Dataset</a>이며, <a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a>를 주로 참조하였습니다.</li>
+<li>전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/ltv-onlineretail-analysis/blob/main/Lifetime_onlineretail.ipynb">이 곳</a>에서 확인하실 수 있습니다.</li>
 </ul>
 <hr />
 <h2 id="세-줄-요약"><a class="markdownIt-Anchor" href="#세-줄-요약"></a> 세 줄 요약</h2>
@@ -256,7 +256,7 @@
 <li><strong>미래의 예상 평균 수익</strong>은 Gamma-Gamma 모형을 통해 산출되며, 이를 위해 F (Frequency), M (Monetary Value) 정보가 필요합니다.</li>
 </ol>
 <p>그래서 저희는 구매 기록 데이터의 R, F, M, T를 구해 BG/NBD 모형과 Gamma-Gamma 모형을 각각 적합해 LTV를 구할 것입니다.<br />
-구체적인 R, F, M, T는 <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">이전 포스팅</a>{:target=‘_blank’}을 참조해주셔도 되고, 이번 포스팅에서도 예시로 구해볼 예정이니 걱정 마세요~!</p>
+구체적인 R, F, M, T는 <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">이전 포스팅</a>을 참조해주셔도 되고, 이번 포스팅에서도 예시로 구해볼 예정이니 걱정 마세요~!</p>
 <hr />
 <h2 id="online-retail-데이터-살펴보기"><a class="markdownIt-Anchor" href="#online-retail-데이터-살펴보기"></a> Online Retail 데이터 살펴보기</h2>
 <p>먼저 저희가 LTV를 계산할 때 필요한 모듈은 다음과 같습니다.</p>
@@ -364,11 +364,11 @@
 <p>이제 고객 각각의 RFMT를 계산했으니 이 데이터를 BG/NBD 모형과 Gamma-Gamma 모형의 INPUT으로 넣어주면 됩니다.</p>
 <p>그런데 모형을 적합시킬 때 다음과 같이 <code>penalizer_coef</code> 인자에 <strong>L2 penalty</strong>를 넣어준다면 모형을 좀 더 강건하게 만들어줄 수 있습니다.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model = BetaGeoFitter(penalizer_coef=l2_reg)</span><br><span class="line">model = GammaGammaFitter(penalizer_coef=l2_reg)</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://lifetimes.readthedocs.io/en/latest/Quickstart.html">lifetimes 공식 홈페이지</a>{:target=‘_blank’}에서는 데이터 크기가 작으면 추정된 파라미터들이 과도하게 추정될 수 있어서 가능도에 L2 penalty를 부여할 수 있다고 말합니다.<br />
+<p><a target="_blank" rel="noopener" href="https://lifetimes.readthedocs.io/en/latest/Quickstart.html">lifetimes 공식 홈페이지</a>에서는 데이터 크기가 작으면 추정된 파라미터들이 과도하게 추정될 수 있어서 가능도에 L2 penalty를 부여할 수 있다고 말합니다.<br />
 이 L2 penalty는 0.001 ~ 0.1 사이로 넣어야 효과적이라 하네요!<br />
-L2 penalty에 대한 원론적인 설명은 <a href="https://assaeunji.github.io/machine%20learning/2020-02-12-ridge/">Ridge/Lasso Regression</a>{:target=‘_blank’} 포스팅을 참조해주세요!</p>
+L2 penalty에 대한 원론적인 설명은 <a href="https://assaeunji.github.io/machine%20learning/2020-02-12-ridge/">Ridge/Lasso Regression</a> 포스팅을 참조해주세요!</p>
 <p>어쨌든 다시 본론으로 돌아와서 L2 penalty의 계수를 어떻게 넣어줘야 최적인지 파라미터를 찾는 과정이 필요합니다.<br />
-이를 위해 <a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a>{:target=‘_blank’}에선 <code>hyperopt</code> 모듈을 이용해 <strong>베이지안 하이퍼파라미터 튜닝</strong>을 진행하였습니다.</p>
+이를 위해 <a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a>에선 <code>hyperopt</code> 모듈을 이용해 <strong>베이지안 하이퍼파라미터 튜닝</strong>을 진행하였습니다.</p>
 <h3 id="훈련-테스트-데이터-나누기"><a class="markdownIt-Anchor" href="#훈련-테스트-데이터-나누기"></a> 훈련 / 테스트 데이터 나누기</h3>
 <blockquote>
 <p>lifetimes.utils 모듈의 <code>calibration_and_holdout_data</code> 함수</p>
@@ -378,7 +378,7 @@ lifetimes 패키지에서는 훈련 데이터를 <strong>calibration data</stron
 <p>굳이 train / test 데이터라 부르지 않는 이유는 train/test 데이터는 랜덤하게 일정 비율로 나눈다면,<br />
 시계열 데이터는 랜덤하게 나누지 않고 특정 시점의 전과 후로 나누기 때문에 용어를 따로 쓰는 게 아닌가 생각이 들었습니다.</p>
 <p>그럼 어느 시점을 전후로 calibration과 holdout으로 나눌 것이냐? 에 대해선 정해진게 없네요.<br />
-<a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a>{:target=‘_blank’} 에서는 마지막 90일 동안을 holdout data로 두고 있고<br />
+<a target="_blank" rel="noopener" href="https://databricks.com/notebooks/clv_part2_estimating_future_spend.html">databricks LTV 분석 자료</a> 에서는 마지막 90일 동안을 holdout data로 두고 있고<br />
 어디선 2:1로 나눴다는 것도 봤습니다.</p>
 <p>우선 저희는 데이터 크기가 거의 1년이기 때문에 마지막 세 달 (90일)을 기준으로 데이터를 나눠보겠습니다.</p>
 <p><code>calibration_and_holdout_data</code> 인자는 아까 <code>summary_data_from_transaction_data</code>와 거의 비슷한데 <code>calibration_period_end</code>만 추가되었습니다.<br />
@@ -441,7 +441,7 @@ lifetimes 패키지에서는 훈련 데이터를 <strong>calibration data</stron
 <p>또한, 이 <code>lifetimes_model</code>을 통해 BG/NBD 모형에서 추정된 파라미터들을 확인할 수 있습니다.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lifetimes_model.summary</span><br></pre></td></tr></table></figure>
 <p><img src="../../images/ltvpractice-7.png" alt="" /></p>
-<p>r, alpha, a, b 모수가 나오는데요. <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">지난 포스팅</a>{:target=‘_blank’}에서 이 모수들은 고객별 구매율과 이탈률에 대한 모수라 설명한 바가 있습니다.</p>
+<p>r, alpha, a, b 모수가 나오는데요. <a href="https://assaeunji.github.io/statistics/2022-04-15-ltv/">지난 포스팅</a>에서 이 모수들은 고객별 구매율과 이탈률에 대한 모수라 설명한 바가 있습니다.</p>
 <p>다시 설명을 하면 BG/NBD 모형은 다음과 같은 가정을 하고 있습니다.</p>
 <ol>
 <li>고객이 남아있는 동안, 일정한 기간 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span> 동안의 구매 횟수는 Pois(<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\lambda T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span>)를 따릅니다. 위에서 말씀 드렸듯이 1일 간 Pois (1/12)를 따른다면 T= 1년일 경우 Pois (30)을 따르게 되겠죠! (포아송의 모수인 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>T</mi></mrow><annotation encoding="application/x-tex">\lambda T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">λ</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span>는 <strong>예상 구매 횟수</strong> 를 의미합니다)</li>

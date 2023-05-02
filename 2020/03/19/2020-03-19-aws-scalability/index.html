@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이 글은 AWS에서 EC2 가상 서버에서 Scalability에 대한 개념과 ELB의 필요성을 정리한 글입니다. 생활코딩 AWS 강의{:target&#x3D;“_blank”}를 보며 정리하였습니다.    Scalability Scalability는 서버에서 과부하가 일어났을 때 대처할 수 있는 방법으로 크게  Scale-up Scale-out  방법으로 나눌 수">
+    <meta name="description" content="이 글은 AWS에서 EC2 가상 서버에서 Scalability에 대한 개념과 ELB의 필요성을 정리한 글입니다. 생활코딩 AWS 강의를 보며 정리하였습니다.    Scalability Scalability는 서버에서 과부하가 일어났을 때 대처할 수 있는 방법으로 크게  Scale-up Scale-out  방법으로 나눌 수 있습니다. 이를 이해하기 위해서는">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS Scalability &amp; Elastic Load Balancer (ELB) 이해하기">
 <meta property="og:url" content="http://assaeunji.github.io/2020/03/19/2020-03-19-aws-scalability/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이 글은 AWS에서 EC2 가상 서버에서 Scalability에 대한 개념과 ELB의 필요성을 정리한 글입니다. 생활코딩 AWS 강의{:target&#x3D;“_blank”}를 보며 정리하였습니다.    Scalability Scalability는 서버에서 과부하가 일어났을 때 대처할 수 있는 방법으로 크게  Scale-up Scale-out  방법으로 나눌 수">
+<meta property="og:description" content="이 글은 AWS에서 EC2 가상 서버에서 Scalability에 대한 개념과 ELB의 필요성을 정리한 글입니다. 생활코딩 AWS 강의를 보며 정리하였습니다.    Scalability Scalability는 서버에서 과부하가 일어났을 때 대처할 수 있는 방법으로 크게  Scale-up Scale-out  방법으로 나눌 수 있습니다. 이를 이해하기 위해서는">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/aws-scale-1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/aws-scale-2.png">
@@ -37,7 +37,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/aws-scale-sol1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/03/images/aws-scale-sol2.png">
 <meta property="article:published_time" content="2020-03-18T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:34.562Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="aws">
 <meta property="article:tag" content="cloud">
@@ -101,7 +101,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -219,7 +219,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:18:34" itemprop="dateModified" datetime="2023-05-02T22:18:34+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,7 +243,7 @@
     <div class="post-body" itemprop="articleBody">
         <ul>
 <li>이 글은 AWS에서 EC2 가상 서버에서 Scalability에 대한 개념과 ELB의 필요성을 정리한 글입니다.</li>
-<li><a target="_blank" rel="noopener" href="https://opentutorials.org/course/2717/11294">생활코딩 AWS 강의</a>{:target=“_blank”}를 보며 정리하였습니다.</li>
+<li><a target="_blank" rel="noopener" href="https://opentutorials.org/course/2717/11294">생활코딩 AWS 강의</a>를 보며 정리하였습니다.</li>
 </ul>
 <hr />
 <h2 id="scalability"><a class="markdownIt-Anchor" href="#scalability"></a> <strong>Scalability</strong></h2>

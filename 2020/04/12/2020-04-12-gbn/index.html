@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅{:target&#x3D;“_blank”}에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳{:target&#x3D;“_blank”}에서 확인하실 수 있고, R 패키지 bnlearn">
+    <meta name="description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳에서 확인하실 수 있고, R 패키지 bnlearn tutorial를 주로 참조했음을 알립니다.    GBN (Ga">
 <meta property="og:type" content="article">
 <meta property="og:title" content="인과 관계 분석 시리즈 (2): 가우시안 베이지안 네트워크 (GBN, Gaussian Bayesian Network)">
 <meta property="og:url" content="http://assaeunji.github.io/2020/04/12/2020-04-12-gbn/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅{:target&#x3D;“_blank”}에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳{:target&#x3D;“_blank”}에서 확인하실 수 있고, R 패키지 bnlearn">
+<meta property="og:description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳에서 확인하실 수 있고, R 패키지 bnlearn tutorial를 주로 참조했음을 알립니다.    GBN (Ga">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/gbn-hillclimbing2.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/gbn-hillclimbing.png">
@@ -47,7 +47,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/dental-scatter1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/dental-danb2.png">
 <meta property="article:published_time" content="2020-04-11T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:39.302Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="bayesian">
 <meta property="article:tag" content="causal-inference">
@@ -114,7 +114,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -232,7 +232,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:18:39" itemprop="dateModified" datetime="2023-05-02T22:18:39+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -255,13 +255,13 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, <a href="../2020-04-10-causal">이전 포스팅</a>{:target=“_blank”}에서 설명했습니다.</li>
+<li>Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, <a href="../2020-04-10-causal">이전 포스팅</a>에서 설명했습니다.</li>
 <li>이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다.</li>
-<li>전체 코드와 데이터는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/causal-bayesian-network">이 곳</a>{:target=“_blank”}에서 확인하실 수 있고, <a target="_blank" rel="noopener" href="https://www.bnlearn.com/examples/useR19-tutorial/"><code>R</code> 패키지 <code>bnlearn</code> tutorial</a>{:target=“_blank”}를 주로 참조했음을 알립니다.</li>
+<li>전체 코드와 데이터는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/causal-bayesian-network">이 곳</a>에서 확인하실 수 있고, <a target="_blank" rel="noopener" href="https://www.bnlearn.com/examples/useR19-tutorial/"><code>R</code> 패키지 <code>bnlearn</code> tutorial</a>를 주로 참조했음을 알립니다.</li>
 </ul>
 <hr />
 <h2 id="gbn-gaussian-bayesian-network"><a class="markdownIt-Anchor" href="#gbn-gaussian-bayesian-network"></a> GBN (Gaussian Bayesian Network)</h2>
-<p><a href="../2020-04-10-causal">이전 포스팅</a>{:target=“_blank”}에서 말씀드렸듯이 Bayesian Network 중 GBN는 노드가 정규분포를 따를 때 쓸 수 있는 방법입니다.</p>
+<p><a href="../2020-04-10-causal">이전 포스팅</a>에서 말씀드렸듯이 Bayesian Network 중 GBN는 노드가 정규분포를 따를 때 쓸 수 있는 방법입니다.</p>
 <p>GBN은 데이터로부터 <strong>1. 인과 구조를 학습</strong>하고 그 구조를 바탕으로 <strong>2. 모수를 추정</strong>하는 두 단계로 이루어져 있습니다.</p>
 <hr />
 <h3 id="모수-추정-parameter-tuning"><a class="markdownIt-Anchor" href="#모수-추정-parameter-tuning"></a> 모수 추정 (Parameter Tuning)</h3>
@@ -390,7 +390,7 @@ GBN은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3
 <hr />
 <h2 id="data-analysis-malocclusion-data"><a class="markdownIt-Anchor" href="#data-analysis-malocclusion-data"></a> Data Analysis: Malocclusion Data</h2>
 <p>이제 이 GBN을 이용해서 실제 데이터를 분석한 예에 대해 알아봅시다.<br />
-데이터 출처는 무려 Nature의 Scientific Report 잡지에 실린 <a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>{:target=“_blank”}논문이네요! <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>143</mn><mo>×</mo><mn>9</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(143\times 9)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord">4</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">9</span><span class="mclose">)</span></span></span></span>의 작은 데이터입니다.</p>
+데이터 출처는 무려 Nature의 Scientific Report 잡지에 실린 <a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>논문이네요! <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>143</mn><mo>×</mo><mn>9</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(143\times 9)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord">4</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">9</span><span class="mclose">)</span></span></span></span>의 작은 데이터입니다.</p>
 <p>단어들이 좀 어려운데 핵심은 이겁니다.</p>
 <ol>
 <li>
@@ -441,7 +441,7 @@ GBN은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3
 <hr />
 <h3 id="step1-black-list-and-white-list"><a class="markdownIt-Anchor" href="#step1-black-list-and-white-list"></a> Step1: Black List and White List</h3>
 <p>인과 관계 구조를 학습하는 데에 앞서 이어지지 말아야 할 연결을 <strong>black list</strong>에, 꼭 이어져야 할 연결을 <strong>white list</strong>에 지정합니다.<br />
-<a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>{:target=“_blank”}에서는 다음과 같이 black list와 white list를 지정했습니다.</p>
+<a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>에서는 다음과 같이 black list와 white list를 지정했습니다.</p>
 <ul>
 <li>
 <p><strong>Black list</strong>: 총 22개의 연결을 제외합니다.</p>
@@ -574,7 +574,7 @@ GBN은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3
 </ul>
 <p>이기 때문입니다. 직접 관찰한 건 아니지만 인과 관계를 파악하고, 회귀모형을 적합했으니 &quot;만약 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span></span></span></span>가 이 값이면 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span>가 어떤 값을 가질까?&quot;가 더 정확히 추정되는 것이죠. 이전 포스팅에서 말씀드렸듯이 Bayesian network는 &quot;do-calculus&quot;의 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false">(</mo><mi>y</mi><mi mathvariant="normal">∣</mi><mi>d</mi><mi>o</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p(y\vert do(x))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span>를 확인할 수 있다는 장점이 있습니다.<br />
 직접 하나의 조건부 확률을 구하려면 <code>bnlearn::cpquery</code>함수를, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false">(</mo><mi>y</mi><mi mathvariant="normal">∣</mi><mi>d</mi><mi>o</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p(y\vert do(x))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span>의 <strong>난수</strong>를 생성하려면 <code>bnlearn::cpdist</code>라는 함수를 씁니다.</p>
-<p><a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>{:target=“_blank”}는 총 6개의 메인 결과를 리포트하고 <code>cpdist</code>함수를 씁니다.<br />
+<p><a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf">Scutari et al. (2017)</a>는 총 6개의 메인 결과를 리포트하고 <code>cpdist</code>함수를 씁니다.<br />
 이 중 2개만 추려 말씀드리겠습니다.</p>
 <blockquote>
 <p><strong>1. <code>Treatment</code>를 0으로 고정시켰을 때, <code>CoGo</code>가 급격히 증가하면 <code>PPPM</code>는 감소한다.</strong></p>
@@ -607,10 +607,10 @@ GBN은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3
 <hr />
 <h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
 <ul>
-<li><code>R</code> 패키지 <code>bnlearn</code> tutorial <a target="_blank" rel="noopener" href="https://www.bnlearn.com/examples/useR19-tutorial/"><code>[link]</code></a>{:target=“_blank”}</li>
-<li><code>R</code> 패키지 <code>visNetwork</code> tutorial<a target="_blank" rel="noopener" href="https://datastorm-open.github.io/visNetwork/"><code>[link]</code></a>{:target=“_blank”}</li>
-<li>D. Margaritis (2003), Learning Bayesian Network Model Structure from Data. PhD thesis, School of Computer Science, Carnegie-Mellon University, Pittsburgh, PA, Available as Technical Report CMU-CS-03-153. <a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~dmarg/Papers/PhD-Thesis-Margaritis.pdf"><code>[pdf]</code></a>{:target=“_blank”}</li>
-<li>Scutari, M., Auconi, P., Caldarelli, G., &amp; Franchi, L. (2017). Bayesian networks analysis of malocclusion data. <em>Scientific reports</em>, 7(1), 1-11. <a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf"><code>[pdf]</code></a>{:target=“_blank”}</li>
+<li><code>R</code> 패키지 <code>bnlearn</code> tutorial <a target="_blank" rel="noopener" href="https://www.bnlearn.com/examples/useR19-tutorial/"><code>[link]</code></a></li>
+<li><code>R</code> 패키지 <code>visNetwork</code> tutorial<a target="_blank" rel="noopener" href="https://datastorm-open.github.io/visNetwork/"><code>[link]</code></a></li>
+<li>D. Margaritis (2003), Learning Bayesian Network Model Structure from Data. PhD thesis, School of Computer Science, Carnegie-Mellon University, Pittsburgh, PA, Available as Technical Report CMU-CS-03-153. <a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~dmarg/Papers/PhD-Thesis-Margaritis.pdf"><code>[pdf]</code></a></li>
+<li>Scutari, M., Auconi, P., Caldarelli, G., &amp; Franchi, L. (2017). Bayesian networks analysis of malocclusion data. <em>Scientific reports</em>, 7(1), 1-11. <a target="_blank" rel="noopener" href="https://www.nature.com/articles/s41598-017-15293-w.pdf"><code>[pdf]</code></a></li>
 </ul>
 
     </div>

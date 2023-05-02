@@ -22,20 +22,20 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이번 포스팅은 정규 표현식의 네 가지 종류에 대해 알아보고 이를 PySpark에서 실습해보는 글을 작성하고자 합니다. 주요 내용은 정규 표현식 더 이상 미루지 말자{:target&#x3D;“_blank”} YouTube 강의를 참조하였습니다. 정규 표현식 실습 사이트는 링크{:target&#x3D;“_blank”}를 참조하세요!    글을 쓰게 된 계기 며칠 전 업무를 하">
+    <meta name="description" content="이번 포스팅은 정규 표현식의 네 가지 종류에 대해 알아보고 이를 PySpark에서 실습해보는 글을 작성하고자 합니다. 주요 내용은 정규 표현식 더 이상 미루지 말자 YouTube 강의를 참조하였습니다. 정규 표현식 실습 사이트는 링크를 참조하세요!    글을 쓰게 된 계기 며칠 전 업무를 하던 중 SQL 쿼리의 LIKE 연산자로 쓰면 여러 줄을 꼭 써줘야">
 <meta property="og:type" content="article">
 <meta property="og:title" content="정규 표현식에 대한 쉬운 설명 + PySpark 실습">
 <meta property="og:url" content="http://assaeunji.github.io/2021/04/16/2021-04-16-regularexpression/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이번 포스팅은 정규 표현식의 네 가지 종류에 대해 알아보고 이를 PySpark에서 실습해보는 글을 작성하고자 합니다. 주요 내용은 정규 표현식 더 이상 미루지 말자{:target&#x3D;“_blank”} YouTube 강의를 참조하였습니다. 정규 표현식 실습 사이트는 링크{:target&#x3D;“_blank”}를 참조하세요!    글을 쓰게 된 계기 며칠 전 업무를 하">
+<meta property="og:description" content="이번 포스팅은 정규 표현식의 네 가지 종류에 대해 알아보고 이를 PySpark에서 실습해보는 글을 작성하고자 합니다. 주요 내용은 정규 표현식 더 이상 미루지 말자 YouTube 강의를 참조하였습니다. 정규 표현식 실습 사이트는 링크를 참조하세요!    글을 쓰게 된 계기 며칠 전 업무를 하던 중 SQL 쿼리의 LIKE 연산자로 쓰면 여러 줄을 꼭 써줘야">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2021/04/images/regex-title.png">
 <meta property="article:published_time" content="2021-04-15T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:modified_time" content="2023-05-02T13:18:57.136Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="python">
-<meta property="article:tag" content="easy-guide">
 <meta property="article:tag" content="pyspark">
+<meta property="article:tag" content="easy-guide">
 <meta property="article:tag" content="regular-expression">
 <meta property="article:tag" content="regex">
 <meta name="twitter:card" content="summary">
@@ -96,7 +96,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -219,7 +219,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+      <time title="Modified: 2023-05-02 22:18:57" itemprop="dateModified" datetime="2023-05-02T22:18:57+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,8 +243,8 @@
     <div class="post-body" itemprop="articleBody">
         <ul>
 <li>이번 포스팅은 <strong>정규 표현식</strong>의 네 가지 종류에 대해 알아보고 이를 PySpark에서 실습해보는 글을 작성하고자 합니다.</li>
-<li>주요 내용은 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a>{:target=“_blank”} YouTube 강의를 참조하였습니다.</li>
-<li>정규 표현식 실습 사이트는 <a target="_blank" rel="noopener" href="https://regexr.com/5mhou">링크</a>{:target=“_blank”}를 참조하세요!</li>
+<li>주요 내용은 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a> YouTube 강의를 참조하였습니다.</li>
+<li>정규 표현식 실습 사이트는 <a target="_blank" rel="noopener" href="https://regexr.com/5mhou">링크</a>를 참조하세요!</li>
 </ul>
 <hr />
 <h2 id="글을-쓰게-된-계기"><a class="markdownIt-Anchor" href="#글을-쓰게-된-계기"></a> 글을 쓰게 된 계기</h2>
@@ -295,8 +295,8 @@
 <h2 id="정규-표현식의-네-가지-종류"><a class="markdownIt-Anchor" href="#정규-표현식의-네-가지-종류"></a> 정규 표현식의 네 가지 종류</h2>
 <p>정규 표현식이 어려운 이유는 정규 표현식이 어떻게 분류되는지 모르기 때문이라 생각합니다.<br />
 저도 이전부터 정규 표현식을 구글링한 경험이 많았지만, 항상 이해하지 못한 채 제가 원하는 정규 표현식만 찾아서 복붙하곤 했습니다.<br />
-<a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EC%A0%95%EA%B7%9C_%ED%91%9C%ED%98%84%EC%8B%9D">위키 피디아</a>{:target=“_blank”}에서 찾아봐도 이 네 가지 종류에 대한 언급이 없이 나열만 하고 있다 보니 어렵기만 합니다.</p>
-<p>그러나 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a>{:target=“_blank”} 강의에서는 <strong>정규 표현식의 네 가지 종류</strong>에 대해 명확히 설명하시고,<br />
+<a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EC%A0%95%EA%B7%9C_%ED%91%9C%ED%98%84%EC%8B%9D">위키 피디아</a>에서 찾아봐도 이 네 가지 종류에 대한 언급이 없이 나열만 하고 있다 보니 어렵기만 합니다.</p>
+<p>그러나 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a> 강의에서는 <strong>정규 표현식의 네 가지 종류</strong>에 대해 명확히 설명하시고,<br />
 각각에 대해 예제를 보여줘서 처음 접하는 저도 쉽게 이해할 수 있었습니다. (강추!)</p>
 <p>여기서 언급하고 있는 네 가지 종류는 다음과 같습니다.</p>
 <ul>
@@ -325,7 +325,7 @@
 <li>m (<strong>m</strong>ultiline): 다중행 모드 (multiline mode)를 활성화합니다.</li>
 <li>i (case <strong>i</strong>nsensitive): 대·소문자 구분 없이 검색합니다. 따라서 A와 a에 차이가 없습니다.</li>
 </ul>
-<p>자 이제 정규 표현식의 네 가지 종류에 대해 설명하고자 하는데요. <a target="_blank" rel="noopener" href="https://regexr.com/5mhou">이 사이트</a>{:target=“_blank”}에서 함께 실습하면 더욱 좋습니다.</p>
+<p>자 이제 정규 표현식의 네 가지 종류에 대해 설명하고자 하는데요. <a target="_blank" rel="noopener" href="https://regexr.com/5mhou">이 사이트</a>에서 함께 실습하면 더욱 좋습니다.</p>
 <p>실습할 텍스트는 다음과 같습니다.</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Hi there, Nice to meet you. And Hello there and hi.</span><br><span class="line">I love grey(gray) color not a gry, grdy, graay and graaay.</span><br><span class="line">Ya ya YaYaYa Ya</span><br><span class="line"></span><br><span class="line">abcdefghijklmnopqrstuvwxyz</span><br><span class="line">ABSCEFGHIJKLMNOPQRSTUVWZYZ</span><br><span class="line">1234567890</span><br><span class="line"></span><br><span class="line">.[]&#123;&#125;()\^$|?*+</span><br></pre></td></tr></table></figure>
 <hr />
@@ -723,11 +723,11 @@
 <p>이 있을 것 같습니다. 이 글을 또 정리하면 계속 참조하면서 정규 표현식이 더 익숙해질 것 같습니다.</p>
 <hr />
 <h2 id="이-글을-마치며"><a class="markdownIt-Anchor" href="#이-글을-마치며"></a> 이 글을 마치며</h2>
-<p>오늘 포스팅은 정규 표현식의 네 가지 분류에 대해 알아보고, PySpark에서의 실습을 해보았습니다. 며칠 전 <a target="_blank" rel="noopener" href="https://futureskill.io">퓨처 스킬</a>{:target=“_blank”}이라는 곳을 접하게 되었는데요. 해당 사이트는 강의 클립을 짧게 보여주고 몇 개의 문제를 내어 스스로 문제를 풀고 피어 리뷰, 토론 등을 자유롭게 할 수 있는 사이트입니다. 이 곳에도 <a target="_blank" rel="noopener" href="https://futureskill.io/content/3e0efc65-9243-43d4-94aa-91af268936ef">정규 표현식에 대한 문제들</a>{:target=“_blank”}이 있으니 복습해보시길 바랍니다!</p>
+<p>오늘 포스팅은 정규 표현식의 네 가지 분류에 대해 알아보고, PySpark에서의 실습을 해보았습니다. 며칠 전 <a target="_blank" rel="noopener" href="https://futureskill.io">퓨처 스킬</a>이라는 곳을 접하게 되었는데요. 해당 사이트는 강의 클립을 짧게 보여주고 몇 개의 문제를 내어 스스로 문제를 풀고 피어 리뷰, 토론 등을 자유롭게 할 수 있는 사이트입니다. 이 곳에도 <a target="_blank" rel="noopener" href="https://futureskill.io/content/3e0efc65-9243-43d4-94aa-91af268936ef">정규 표현식에 대한 문제들</a>이 있으니 복습해보시길 바랍니다!</p>
 <hr />
 <h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a>{:target=“_blank”}YouTube 강의</li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=t3M6toIflyQ">정규 표현식 더 이상 미루지 말자</a>YouTube 강의</li>
 </ul>
 
     </div>
@@ -756,8 +756,8 @@
 
           <div class="post-tags">
               <a href="/tags/python/" rel="tag"># python</a>
-              <a href="/tags/easy-guide/" rel="tag"># easy-guide</a>
               <a href="/tags/pyspark/" rel="tag"># pyspark</a>
+              <a href="/tags/easy-guide/" rel="tag"># easy-guide</a>
               <a href="/tags/regular-expression/" rel="tag"># regular-expression</a>
               <a href="/tags/regex/" rel="tag"># regex</a>
           </div>
