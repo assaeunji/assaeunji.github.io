@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="최근 Pyspark로 코딩을 하는 일이 많은데, 계속 문법이 헷갈려 오류가 나는 경우가 많았습니다. 이 하나의 포스트로 기본 Pyspark 함수들을 정리하는 것이 목표입니다. Spark By Examples{:target&#x3D;‘_blank’}에 pyspark 튜토리얼이 잘 나와있기에 이를 활용하였습니다. (이 페이지에 광고만 많지 않으면 정리할 필요도 없을텐">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PySpark 함수 정리">
+<meta property="og:url" content="http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="최근 Pyspark로 코딩을 하는 일이 많은데, 계속 문법이 헷갈려 오류가 나는 경우가 많았습니다. 이 하나의 포스트로 기본 Pyspark 함수들을 정리하는 것이 목표입니다. Spark By Examples{:target&#x3D;‘_blank’}에 pyspark 튜토리얼이 잘 나와있기에 이를 활용하였습니다. (이 페이지에 광고만 많지 않으면 정리할 필요도 없을텐">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/2022/03/images/pyspark-title.png">
+<meta property="article:published_time" content="2022-03-25T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="easy-guide">
+<meta property="article:tag" content="pyspark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/2022/03/images/pyspark-title.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/","path":"2022/03/26/2022-03-26-pyspark/","title":"PySpark 함수 정리"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PySpark 함수 정리 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro-pyspark%EC%97%90-%EC%B9%9C%ED%95%B4%EC%A7%80%EA%B8%B0-%EC%96%B4%EB%A0%A4%EC%9A%B4-%EC%9D%B4%EC%9C%A0"><span class="nav-number">1.</span> <span class="nav-text"> Intro: Pyspark에 친해지기 어려운 이유</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pyspark-%ED%95%A8%EC%88%98-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text"> Pyspark 함수 알아보기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#select%EC%99%80-drop"><span class="nav-number">2.1.</span> <span class="nav-text"> select와 drop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count%EC%99%80-countdistinct"><span class="nav-number">2.2.</span> <span class="nav-text"> count와 countDistinct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#withcolumn%EA%B3%BC-withcolumnrenamed"><span class="nav-number">2.3.</span> <span class="nav-text"> withColumn과 withColumnRenamed</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#withcolumn%EC%9C%BC%EB%A1%9C-%EC%BB%AC%EB%9F%BC-%ED%83%80%EC%9E%85-%EB%B0%94%EA%BE%B8%EA%B8%B0"><span class="nav-number">2.3.1.</span> <span class="nav-text"> withColumn으로 컬럼 타입 바꾸기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#withcolumn%EC%9C%BC%EB%A1%9C-%EC%BB%AC%EB%9F%BC-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0"><span class="nav-number">2.3.2.</span> <span class="nav-text"> withColumn으로 컬럼 추가하기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#withcolumn%EC%9C%BC%EB%A1%9C-case-when-%EA%B5%AC%EB%AC%B8-%EC%93%B0%EA%B8%B0"><span class="nav-number">2.3.3.</span> <span class="nav-text"> withColumn으로 CASE WHEN 구문 쓰기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#withcolumnrenamed"><span class="nav-number">2.3.4.</span> <span class="nav-text"> withColumnRenamed</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter"><span class="nav-number">2.4.</span> <span class="nav-text"> filter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EC%97%AC%EB%9F%AC-%EC%A1%B0%EA%B1%B4-%ED%95%84%ED%84%B0%EB%A7%81"><span class="nav-number">2.4.1.</span> <span class="nav-text"> 여러 조건 필터링</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#in-%EC%A1%B0%EA%B1%B4-%ED%95%84%ED%84%B0%EB%A7%81"><span class="nav-number">2.4.2.</span> <span class="nav-text"> IN() 조건 필터링</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#like-%EC%A1%B0%EA%B1%B4-%ED%95%84%ED%84%B0%EB%A7%81"><span class="nav-number">2.4.3.</span> <span class="nav-text"> LIKE 조건 필터링</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#structtype-arraytype-%ED%95%84%ED%84%B0%EB%A7%81"><span class="nav-number">2.4.4.</span> <span class="nav-text"> StructType, ArrayType 필터링</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupby"><span class="nav-number">2.5.</span> <span class="nav-text"> groupBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#orderby"><span class="nav-number">2.6.</span> <span class="nav-text"> orderBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#join"><span class="nav-number">2.7.</span> <span class="nav-text"> join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#union-unionbyname"><span class="nav-number">2.8.</span> <span class="nav-text"> union &#x2F; unionByName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pivot-unpivot"><span class="nav-number">2.9.</span> <span class="nav-text"> pivot &#x2F; unpivot</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pivot"><span class="nav-number">2.9.1.</span> <span class="nav-text"> pivot</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unpivot"><span class="nav-number">2.9.2.</span> <span class="nav-text"> unpivot</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#row_number"><span class="nav-number">2.10.</span> <span class="nav-text"> row_number</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">3.</span> <span class="nav-text"> 마치며</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/pyspark-title.png" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PySpark 함수 정리 | Be Geeky">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PySpark 함수 정리
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+09:00">2022-03-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>최근 Pyspark로 코딩을 하는 일이 많은데, 계속 문법이 헷갈려 오류가 나는 경우가 많았습니다. 이 하나의 포스트로 기본 Pyspark 함수들을 정리하는 것이 목표입니다.</li>
+<li><a target="_blank" rel="noopener" href="https://sparkbyexamples.com/pyspark-tutorial/">Spark By Examples</a>{:target=‘_blank’}에 pyspark 튜토리얼이 잘 나와있기에 이를 활용하였습니다. (<s>이 페이지에 광고만 많지 않으면 정리할 필요도 없을텐데</s>)</li>
+</ul>
+<hr />
+<h2 id="intro-pyspark에-친해지기-어려운-이유"><a class="markdownIt-Anchor" href="#intro-pyspark에-친해지기-어려운-이유"></a> Intro: Pyspark에 친해지기 어려운 이유</h2>
+<p>R 유저라 그런가? Pyspark는 항상 쓸 때마다 쉬운 함수도 오류가 나고 친해지기 어려웠습니다.</p>
+<p>우선 R에서는 라이브러리를 불러오고 나서 다시 찾을 일이 없는데, Pyspark나 Python 모두 라이브러리를 참조해서 함수를 불러오는 경우가 종종 있었습니다.</p>
+<p>예를 들어, 다음과 같이 두 방법으로 모듈을 불러왔을 때</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br></pre></td></tr></table></figure>
+<p>전자는 from으로 모든 걸 import 했기 때문에 그대로 sum(), avg(), max()와 같은 함수를 쓰면 되는 반면에,<br />
+후자는 F.sum(), F.avg(), F.max()와 같이 모듈명을 함수 앞에 붙여줘야 한다는 점이 어색했습니다. 그래서 이 포스트에서는 전자로 함수를 모두 불러와서 사용하였습니다.</p>
+<p>또 하나, Pyspark를 사용하면서 가장 헷갈렸던 점은 컬럼을 부르는 방법입니다.<br />
+참 기본적인 것인데 헷갈렸던 이유를 생각해보면 pyspark는 <strong>똑같은 질의이지만 여러 표현으로 가능한 관용적인 언어</strong>였기 때문입니다.</p>
+<p>지금까지 찾아낸 &quot;똑같은 질의를 하고 있지만 여러 표현으로 가능한 부분&quot;은 다음과 같습니다.</p>
+<ol>
+<li>컬럼을 참조할 때 다음의 네 가지 표현이 가능합니다.<br />
+마치 Python에서 컬럼을 불러올 때 <code>.</code>이나 <code>[]</code>을 통해 불러올 수 있듯이 pyspark도 표현이 가능합니다. 또한 마지막의 경우 <code>pyspark.sql.functions</code> 모듈을 불러왔을 때 <code>col()</code>함수를 사용하여 불러올 수 있습니다.
+<ul>
+<li><code>&quot;col&quot;</code></li>
+<li><code>df.col</code></li>
+<li><code>df[&quot;col&quot;]</code></li>
+<li><code>col(&quot;col&quot;)</code></li>
+</ul>
+</li>
+<li><code>orderBy</code> 와 <code>sort</code>는 같은 결과를 냅니다. 아마도 SQL 기반의 <code>ORDER BY</code>와 Python 기반의 <code>sort</code>을 모두 고려했기 때문이라 생각합니다.</li>
+<li><code>filter</code>와 <code>where</code>는 같은 결과를 냅니다. 이 또한 <code>where</code>는 SQL 기반의 함수를 고려하였기 때문입니다.</li>
+<li><code>union</code>과 <code>unionAll</code>은 같은 결과를 냅니다. 이건 좀 의외인데 SQL에서는 <code>UNION</code> 연산은 distinct한 데이터만 가져와 합쳐주는 것인 반면, Pyspark에서는 <code>union</code>, <code>unionAll</code> 모두 <code>UNION ALL</code>을 의미한다 합니다.</li>
+</ol>
+<p>이러한 점들을 새기고 나면 그래도 차후엔 유의해서 잘 사용할 수 있을 것이라 생각합니다.</p>
+<hr />
+<h2 id="pyspark-함수-알아보기"><a class="markdownIt-Anchor" href="#pyspark-함수-알아보기"></a> Pyspark 함수 알아보기</h2>
+<p>자, 그럼 본격적으로 Pyspark 함수들을 알아봅시다!<br />
+먼저 기본 함수입니다.</p>
+<blockquote>
+<p>기본 함수</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">함수명</th>
+<th style="text-align:left">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>printSchema()</code></td>
+<td style="text-align:left">테이블의 스키마를 보여주는 함수</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>collect()</code></td>
+<td style="text-align:left">테이블에서 행을 가져오는 함수</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show(truncate=False)</code></td>
+<td style="text-align:left">테이블 결과를 보여주는 함수, <code>truncate = False</code>를 사용하면 테이블 내용이 잘리지 않도록 보여줍니다.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>describe()</code></td>
+<td style="text-align:left">서머리 결과를 보여주는 함수</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>SQL 함수</p>
+</blockquote>
+<p>Pyspark의 함수는 대부분 SQL 언어와 비슷하게 구성되어 있습니다.<br />
+SQL 언어와 비교하며 다음의 함수들에 대해 설명하겠습니다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Pyspark 함수명</th>
+<th style="text-align:left">SQL clause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>select</code> / <code>drop</code></td>
+<td style="text-align:left"><code>SELECT</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>count</code> / <code>countDistinct</code></td>
+<td style="text-align:left"><code>COUNT(*)</code> / <code>COUNT(DISTINCT *)</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>withColumn</code> / <code>withColumnRenamed</code></td>
+<td style="text-align:left"><code>연산 as col</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>filter</code> (<code>where</code>)</td>
+<td style="text-align:left"><code>WHERE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>groupBy</code></td>
+<td style="text-align:left"><code>GROUP BY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>orderBy</code></td>
+<td style="text-align:left"><code>ORDER BY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>join (how = &#123;inner, full, left, right&#125;)</code></td>
+<td style="text-align:left"><code>&#123;INNER, FULL, LEFT, RIGHT&#125; JOIN</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>union</code> / <code>unionByName</code></td>
+<td style="text-align:left"><code>UNION ALL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>pivot</code></td>
+<td style="text-align:left"><code>PIVOT</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>row_number().over(Window.partitionBy().orderBy())</code></td>
+<td style="text-align:left"><code>ROW_NUMBER() OVER(PARTITION BY ORDER BY)</code></td>
+</tr>
+</tbody>
+</table>
+<p>먼저 위 함수를 설명할 테이블을 불러오겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> StructType,StructField, StringType, IntegerType, ArrayType</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> *</span><br><span class="line">data = [</span><br><span class="line">    ((<span class="string">&quot;James&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;Smith&quot;</span>),[<span class="string">&quot;Java&quot;</span>,<span class="string">&quot;Scala&quot;</span>,<span class="string">&quot;C++&quot;</span>],<span class="string">&quot;OH&quot;</span>,<span class="string">&quot;M&quot;</span>),</span><br><span class="line">    ((<span class="string">&quot;Anna&quot;</span>,<span class="string">&quot;Rose&quot;</span>,<span class="string">&quot;&quot;</span>),[<span class="string">&quot;Spark&quot;</span>,<span class="string">&quot;Java&quot;</span>,<span class="string">&quot;C++&quot;</span>],<span class="string">&quot;NY&quot;</span>,<span class="string">&quot;F&quot;</span>),</span><br><span class="line">    ((<span class="string">&quot;Julia&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;Williams&quot;</span>),[<span class="string">&quot;CSharp&quot;</span>,<span class="string">&quot;VB&quot;</span>],<span class="string">&quot;OH&quot;</span>,<span class="string">&quot;F&quot;</span>),</span><br><span class="line">    ((<span class="string">&quot;Maria&quot;</span>,<span class="string">&quot;Anne&quot;</span>,<span class="string">&quot;Jones&quot;</span>),[<span class="string">&quot;CSharp&quot;</span>,<span class="string">&quot;VB&quot;</span>],<span class="string">&quot;NY&quot;</span>,<span class="string">&quot;M&quot;</span>),</span><br><span class="line">    ((<span class="string">&quot;Jen&quot;</span>,<span class="string">&quot;Mary&quot;</span>,<span class="string">&quot;Brown&quot;</span>),[<span class="string">&quot;CSharp&quot;</span>,<span class="string">&quot;VB&quot;</span>],<span class="string">&quot;NY&quot;</span>,<span class="string">&quot;M&quot;</span>),</span><br><span class="line">    ((<span class="string">&quot;Mike&quot;</span>,<span class="string">&quot;Mary&quot;</span>,<span class="string">&quot;Williams&quot;</span>),[<span class="string">&quot;Python&quot;</span>,<span class="string">&quot;VB&quot;</span>],<span class="string">&quot;OH&quot;</span>,<span class="string">&quot;M&quot;</span>)</span><br><span class="line"> ]</span><br><span class="line">        </span><br><span class="line">schema = StructType([</span><br><span class="line">     StructField(<span class="string">&#x27;name&#x27;</span>, StructType([</span><br><span class="line">        StructField(<span class="string">&#x27;firstname&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;middlename&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">         StructField(<span class="string">&#x27;lastname&#x27;</span>, StringType(), <span class="literal">True</span>)</span><br><span class="line">     ])),</span><br><span class="line">     StructField(<span class="string">&#x27;languages&#x27;</span>, ArrayType(StringType()), <span class="literal">True</span>),</span><br><span class="line">     StructField(<span class="string">&#x27;state&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">     StructField(<span class="string">&#x27;gender&#x27;</span>, StringType(), <span class="literal">True</span>)</span><br><span class="line"> ])</span><br><span class="line"></span><br><span class="line">df = spark.createDataFrame(data = data, schema = schema)</span><br><span class="line">df.show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+----------------------+------------------+-----+------+</span><br><span class="line">|name                  |languages         |state|gender|</span><br><span class="line">+----------------------+------------------+-----+------+</span><br><span class="line">|&#123;James, , Smith&#125;      |[Java, Scala, C++]|OH   |M     |</span><br><span class="line">|&#123;Anna, Rose, &#125;        |[Spark, Java, C++]|NY   |F     |</span><br><span class="line">|&#123;Julia, , Williams&#125;   |[CSharp, VB]      |OH   |F     |</span><br><span class="line">|&#123;Maria, Anne, Jones&#125;  |[CSharp, VB]      |NY   |M     |</span><br><span class="line">|&#123;Jen, Mary, Brown&#125;    |[CSharp, VB]      |NY   |M     |</span><br><span class="line">|&#123;Mike, Mary, Williams&#125;|[Python, VB]      |OH   |M     |</span><br><span class="line">+----------------------+------------------+-----+------+</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="select와-drop"><a class="markdownIt-Anchor" href="#select와-drop"></a> select와 drop</h3>
+<p><code>select</code>는 다음과 같은 SQL 질의를 표현합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.select(<span class="string">&quot;name&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+<p><code>drop</code>은 특정 컬럼만 제외하고 불러올 때 사용합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.drop(<span class="string">&quot;name&quot;</span>).show() <span class="comment">## name을 제외한 컬럼을 불러오기</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="count와-countdistinct"><a class="markdownIt-Anchor" href="#count와-countdistinct"></a> count와 countDistinct</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.select(count(<span class="string">&quot;state&quot;</span>), countDistinct(<span class="string">&quot;state&quot;</span>)).show()</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="withcolumn과-withcolumnrenamed"><a class="markdownIt-Anchor" href="#withcolumn과-withcolumnrenamed"></a> withColumn과 withColumnRenamed</h3>
+<p><code>withColumn</code>은 컬럼의 정보를 바꾸고자 할 때 혹은 새로운 컬럼을 추가할 때 사용합니다.</p>
+<h4 id="withcolumn으로-컬럼-타입-바꾸기"><a class="markdownIt-Anchor" href="#withcolumn으로-컬럼-타입-바꾸기"></a> withColumn으로 컬럼 타입 바꾸기</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.withColumn(<span class="string">&quot;state&quot;</span>, df.state.cast(<span class="string">&quot;String&quot;</span>)).show()</span><br></pre></td></tr></table></figure>
+<h4 id="withcolumn으로-컬럼-추가하기"><a class="markdownIt-Anchor" href="#withcolumn으로-컬럼-추가하기"></a> withColumn으로 컬럼 추가하기</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.withColumn(<span class="string">&quot;Country&quot;</span>, lit(<span class="string">&quot;U.S.A&quot;</span>)).show() </span><br><span class="line"><span class="comment"># lit: 문자열(literal value)로 새로운 컬럼을 만들 때 사용하는 함수</span></span><br></pre></td></tr></table></figure>
+<h4 id="withcolumn으로-case-when-구문-쓰기"><a class="markdownIt-Anchor" href="#withcolumn으로-case-when-구문-쓰기"></a> withColumn으로 CASE WHEN 구문 쓰기</h4>
+<p><code>when</code>과 <code>otherwise</code> 함수를 사용합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df.withColumn(<span class="string">&quot;gender&quot;</span></span><br><span class="line">                    , when(df.gender == <span class="string">&quot;F&quot;</span>, <span class="string">&quot;Female&quot;</span>)</span><br><span class="line">                   .when(df.gender==<span class="string">&quot;M&quot;</span>, <span class="string">&quot;Male&quot;</span>)</span><br><span class="line">                   .when(df.gender.isNull(), <span class="string">&quot;&quot;</span>)</span><br><span class="line">                   .otherwise(df.gender)</span><br><span class="line">                   ).show()```</span><br></pre></td></tr></table></figure>
+<p>이를 SQL로 쓰면 다음과 같습니다.</p>
+<blockquote>
+<p>SQL</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line">    , <span class="keyword">CASE</span> <span class="keyword">WHEN</span> gender <span class="operator">=</span> <span class="string">&#x27;F&#x27;</span> <span class="keyword">THEN</span> <span class="string">&#x27;Female&#x27;</span></span><br><span class="line">        <span class="keyword">WHEN</span> gender <span class="operator">=</span> <span class="string">&#x27;M&#x27;</span>    <span class="keyword">THEN</span> <span class="string">&#x27;Male&#x27;</span></span><br><span class="line">        <span class="keyword">WHEN</span> gender <span class="keyword">IS</span> <span class="keyword">NULL</span>  <span class="keyword">THEN</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">ELSE</span> gender </span><br><span class="line">    <span class="keyword">END</span> <span class="keyword">as</span> gender2</span><br><span class="line"><span class="keyword">FROM</span> df</span><br></pre></td></tr></table></figure>
+<h4 id="withcolumnrenamed"><a class="markdownIt-Anchor" href="#withcolumnrenamed"></a> withColumnRenamed</h4>
+<p><code>withColumnRenamed</code>는 컬럼명을 바꾸고 싶을 때 사용합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># withColumnRenamed(&quot;변경 전&quot;, &quot;변경 후&quot;)</span></span><br><span class="line">df.withColumnRenamed(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Name&quot;</span>).show() </span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="filter"><a class="markdownIt-Anchor" href="#filter"></a> filter</h3>
+<p><code>filter</code>는 <code>where</code>함수와 같으나 이 포스트에서는 <code>filter</code>로만 사용하겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(df.gender == <span class="string">&quot;M&quot;</span>).show() <span class="comment"># Python처럼 쓰기</span></span><br><span class="line">df.<span class="built_in">filter</span>(<span class="string">&quot;gender = &#x27;M&#x27;&quot;</span>).show()   <span class="comment"># SQL처럼 쓰기</span></span><br><span class="line"><span class="comment">#df.where(df.gender == &quot;M&quot;).show() # where도 똑같은 결과를 낸다!</span></span><br></pre></td></tr></table></figure>
+<p>Pyspark가 Python스럽기도 하고 SQL스럽기도 해서 여러 표현을 허용하다보니 &quot;=&quot;의 개수, 따옴표의 위치 등이 헷갈릴 수 있는데요.<br />
+Python처럼 쓰거나 SQL처럼 쓴다 생각하고 하나로 스타일을 통일해줌이 좋을 것 같습니다.</p>
+<h4 id="여러-조건-필터링"><a class="markdownIt-Anchor" href="#여러-조건-필터링"></a> 여러 조건 필터링</h4>
+<p><code>filter</code> 함수 안에</p>
+<ul>
+<li><code>(조건1) &amp; (조건2)</code> 나 <code>(조건1) | (조건2)</code>를 사용하거나</li>
+<li><code>조건1 and 조건2</code> 의 형태로 필터링합니다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>((df.state == <span class="string">&quot;OH&quot;</span>) &amp; (df.gender == <span class="string">&quot;M&quot;</span>)).show() <span class="comment"># Python-like</span></span><br><span class="line">df.<span class="built_in">filter</span>(<span class="string">&quot;state = &#x27;OH&#x27; and gender = &#x27;M&#x27;&quot;</span>).show()         <span class="comment"># SQL-like</span></span><br></pre></td></tr></table></figure>
+<h4 id="in-조건-필터링"><a class="markdownIt-Anchor" href="#in-조건-필터링"></a> IN() 조건 필터링</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(df.state.isin([(<span class="string">&#x27;OH&#x27;</span>,<span class="string">&#x27;CA&#x27;</span>,<span class="string">&quot;DE&quot;</span>)])).show()</span><br></pre></td></tr></table></figure>
+<p><code>NOT IN ()</code>은 isin() 함수 앞에 <code>~</code> (NOT 연산자)를 사용합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(~ df.state.isin([(<span class="string">&#x27;OH&#x27;</span>,<span class="string">&#x27;CA&#x27;</span>,<span class="string">&quot;DE&quot;</span>)])).show()</span><br></pre></td></tr></table></figure>
+<h4 id="like-조건-필터링"><a class="markdownIt-Anchor" href="#like-조건-필터링"></a> LIKE 조건 필터링</h4>
+<p>아래와 같은 함수를 사용할 수 있습니다.</p>
+<ul>
+<li><code>startswith</code></li>
+<li><code>endswith</code></li>
+<li><code>contains</code></li>
+<li><code>like</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(df.state.startswith(<span class="string">&quot;N&quot;</span>)).show()</span><br><span class="line">df.<span class="built_in">filter</span>(df.state.like(<span class="string">&quot;N%&quot;</span>)).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(df.state.endswith(<span class="string">&quot;H&quot;</span>)).show()</span><br><span class="line">df.<span class="built_in">filter</span>(df.state.like(<span class="string">&quot;%H&quot;</span>)).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="built_in">filter</span>(df.state.contains(<span class="string">&quot;H&quot;</span>)).show()</span><br><span class="line">df.<span class="built_in">filter</span>(df.state.like(<span class="string">&quot;%H%&quot;</span>)).show()</span><br></pre></td></tr></table></figure>
+<h4 id="structtype-arraytype-필터링"><a class="markdownIt-Anchor" href="#structtype-arraytype-필터링"></a> StructType, ArrayType 필터링</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.printSchema()</span><br></pre></td></tr></table></figure>
+<p>df의 스키마를 살펴보면 <code>name</code> 컬럼은 <code>struct</code> 타입, <code>language</code>는 <code>array</code> 타입입니다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root</span><br><span class="line"> |-- name: struct (nullable = true)</span><br><span class="line"> |    |-- firstname: string (nullable = true)</span><br><span class="line"> |    |-- middlename: string (nullable = true)</span><br><span class="line"> |    |-- lastname: string (nullable = true)</span><br><span class="line"> |-- languages: array (nullable = true)</span><br><span class="line"> |    |-- element: string (containsNull = true)</span><br><span class="line"> |-- state: string (nullable = true)</span><br><span class="line"> |-- gender: string (nullable = true)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># struct 타입을 필터링 할 때는 컬럼.컬럼으로 </span></span><br><span class="line">df.<span class="built_in">filter</span>(df.name.lastname ==<span class="string">&quot;Williams&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># array 타입을 필터링할 때는 array_contains() 함수 사용</span></span><br><span class="line">df.<span class="built_in">filter</span>(array_contains(df.languages,<span class="string">&#x27;Java&#x27;</span>)).show()</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="groupby"><a class="markdownIt-Anchor" href="#groupby"></a> groupBy</h3>
+<p><code>groupBy</code>를 위해 다음의 데이터프레임을 생성합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">simpleData = [(<span class="string">&quot;James&quot;</span>,<span class="string">&quot;Sales&quot;</span>,<span class="string">&quot;NY&quot;</span>,<span class="number">90000</span>,<span class="number">34</span>,<span class="number">10000</span>),</span><br><span class="line">    (<span class="string">&quot;Michael&quot;</span>,<span class="string">&quot;Sales&quot;</span>,<span class="string">&quot;NY&quot;</span>,<span class="number">86000</span>,<span class="number">56</span>,<span class="number">20000</span>),</span><br><span class="line">    (<span class="string">&quot;Robert&quot;</span>,<span class="string">&quot;Sales&quot;</span>,<span class="string">&quot;CA&quot;</span>,<span class="number">81000</span>,<span class="number">30</span>,<span class="number">23000</span>),</span><br><span class="line">    (<span class="string">&quot;Maria&quot;</span>,<span class="string">&quot;Finance&quot;</span>,<span class="string">&quot;CA&quot;</span>,<span class="number">90000</span>,<span class="number">24</span>,<span class="number">23000</span>),</span><br><span class="line">    (<span class="string">&quot;Raman&quot;</span>,<span class="string">&quot;Finance&quot;</span>,<span class="string">&quot;CA&quot;</span>,<span class="number">99000</span>,<span class="number">40</span>,<span class="number">24000</span>),</span><br><span class="line">    (<span class="string">&quot;Scott&quot;</span>,<span class="string">&quot;Finance&quot;</span>,<span class="string">&quot;NY&quot;</span>,<span class="number">83000</span>,<span class="number">36</span>,<span class="number">19000</span>),</span><br><span class="line">    (<span class="string">&quot;Jen&quot;</span>,<span class="string">&quot;Finance&quot;</span>,<span class="string">&quot;NY&quot;</span>,<span class="number">79000</span>,<span class="number">53</span>,<span class="number">15000</span>),</span><br><span class="line">    (<span class="string">&quot;Jeff&quot;</span>,<span class="string">&quot;Marketing&quot;</span>,<span class="string">&quot;CA&quot;</span>,<span class="number">80000</span>,<span class="number">25</span>,<span class="number">18000</span>),</span><br><span class="line">    (<span class="string">&quot;Kumar&quot;</span>,<span class="string">&quot;Marketing&quot;</span>,<span class="string">&quot;NY&quot;</span>,<span class="number">91000</span>,<span class="number">50</span>,<span class="number">21000</span>)</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">schema = [<span class="string">&quot;employee_name&quot;</span>,<span class="string">&quot;department&quot;</span>,<span class="string">&quot;state&quot;</span>,<span class="string">&quot;salary&quot;</span>,<span class="string">&quot;age&quot;</span>,<span class="string">&quot;bonus&quot;</span>]</span><br><span class="line">df = spark.createDataFrame(data=simpleData, schema = schema)</span><br><span class="line">df.show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">+-------------+----------+-----+------+---+-----+</span><br><span class="line">|employee_name|department|state|salary|age|bonus|</span><br><span class="line">+-------------+----------+-----+------+---+-----+</span><br><span class="line">|James        |Sales     |NY   |90000 |34 |10000|</span><br><span class="line">|Michael      |Sales     |NY   |86000 |56 |20000|</span><br><span class="line">|Robert       |Sales     |CA   |81000 |30 |23000|</span><br><span class="line">|Maria        |Finance   |CA   |90000 |24 |23000|</span><br><span class="line">|Raman        |Finance   |CA   |99000 |40 |24000|</span><br><span class="line">|Scott        |Finance   |NY   |83000 |36 |19000|</span><br><span class="line">|Jen          |Finance   |NY   |79000 |53 |15000|</span><br><span class="line">|Jeff         |Marketing |CA   |80000 |25 |18000|</span><br><span class="line">|Kumar        |Marketing |NY   |91000 |50 |21000|</span><br><span class="line">+-------------+----------+-----+------+---+-----+</span><br></pre></td></tr></table></figure>
+<p>아래처럼 <code>groupBy</code>를 이용해 개수, 합계, 최소, 최대, 평균을 낼 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>).count().show()</span><br><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>).<span class="built_in">sum</span>(<span class="string">&quot;salary&quot;</span>).show()</span><br><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>).<span class="built_in">min</span>(<span class="string">&quot;salary&quot;</span>).show() </span><br><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>).<span class="built_in">max</span>(<span class="string">&quot;salary&quot;</span>).show() </span><br><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>).avg(<span class="string">&quot;salary&quot;</span>).show() </span><br></pre></td></tr></table></figure>
+<p>개수, 합계, 최소, 최대, 평균을 각 컬럼에 할당하여 저장하려면 <code>agg</code> 함수로 묶고 <code>alias</code>로 컬럼명을 설정하여 사용합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(df.groupBy(<span class="string">&quot;department&quot;</span>)</span><br><span class="line">.agg(<span class="built_in">sum</span>(<span class="string">&quot;salary&quot;</span>).alias(<span class="string">&quot;sum_salary&quot;</span>)</span><br><span class="line">    , avg(<span class="string">&quot;salary&quot;</span>).alias(<span class="string">&quot;avg_salary&quot;</span>)</span><br><span class="line">    , <span class="built_in">sum</span>(<span class="string">&quot;bonus&quot;</span>).alias(<span class="string">&quot;sum_bonus&quot;</span>)</span><br><span class="line">    , <span class="built_in">max</span>(<span class="string">&quot;bonus&quot;</span>).alias(<span class="string">&quot;max_bonus&quot;</span>))).show()</span><br></pre></td></tr></table></figure>
+<p>또한 여러 개의 컬럼을 이용하여 <code>groupBy</code>를 하고 여러 컬럼을 집계할 경우 다음과 같이 씁니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.groupBy(<span class="string">&quot;department&quot;</span>,<span class="string">&quot;state&quot;</span>).<span class="built_in">sum</span>(<span class="string">&quot;salary&quot;</span>,<span class="string">&quot;bonus&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="orderby"><a class="markdownIt-Anchor" href="#orderby"></a> orderBy</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.orderBy(asc(<span class="string">&quot;state&quot;</span>),desc(<span class="string">&quot;gender&quot;</span>)).show() <span class="comment">#asc: 오름차순, desc: 내림차순</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="join"><a class="markdownIt-Anchor" href="#join"></a> join</h3>
+<p>다음과 같이 <code>empDF</code>와 <code>deptDF</code>를 정의하였습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">emp = [(<span class="number">1</span>,<span class="string">&quot;Smith&quot;</span>,-<span class="number">1</span>,<span class="string">&quot;2018&quot;</span>,<span class="string">&quot;10&quot;</span>,<span class="string">&quot;M&quot;</span>,<span class="number">3000</span>), \</span><br><span class="line">    (<span class="number">2</span>,<span class="string">&quot;Rose&quot;</span>,<span class="number">1</span>,<span class="string">&quot;2010&quot;</span>,<span class="string">&quot;20&quot;</span>,<span class="string">&quot;M&quot;</span>,<span class="number">4000</span>), \</span><br><span class="line">    (<span class="number">3</span>,<span class="string">&quot;Williams&quot;</span>,<span class="number">1</span>,<span class="string">&quot;2010&quot;</span>,<span class="string">&quot;10&quot;</span>,<span class="string">&quot;M&quot;</span>,<span class="number">1000</span>), \</span><br><span class="line">    (<span class="number">4</span>,<span class="string">&quot;Jones&quot;</span>,<span class="number">2</span>,<span class="string">&quot;2005&quot;</span>,<span class="string">&quot;10&quot;</span>,<span class="string">&quot;F&quot;</span>,<span class="number">2000</span>), \</span><br><span class="line">    (<span class="number">5</span>,<span class="string">&quot;Brown&quot;</span>,<span class="number">2</span>,<span class="string">&quot;2010&quot;</span>,<span class="string">&quot;40&quot;</span>,<span class="string">&quot;&quot;</span>,-<span class="number">1</span>), \</span><br><span class="line">      (<span class="number">6</span>,<span class="string">&quot;Brown&quot;</span>,<span class="number">2</span>,<span class="string">&quot;2010&quot;</span>,<span class="string">&quot;50&quot;</span>,<span class="string">&quot;&quot;</span>,-<span class="number">1</span>) \</span><br><span class="line">  ]</span><br><span class="line">empColumns = [<span class="string">&quot;emp_id&quot;</span>,<span class="string">&quot;name&quot;</span>,<span class="string">&quot;superior_emp_id&quot;</span>,<span class="string">&quot;year_joined&quot;</span>, \</span><br><span class="line">       <span class="string">&quot;emp_dept_id&quot;</span>,<span class="string">&quot;gender&quot;</span>,<span class="string">&quot;salary&quot;</span>]</span><br><span class="line"></span><br><span class="line">empDF = spark.createDataFrame(data=emp, schema = empColumns)</span><br><span class="line">empDF.show(truncate=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">dept = [(<span class="string">&quot;Finance&quot;</span>,<span class="number">10</span>), \</span><br><span class="line">    (<span class="string">&quot;Marketing&quot;</span>,<span class="number">20</span>), \</span><br><span class="line">    (<span class="string">&quot;Sales&quot;</span>,<span class="number">30</span>), \</span><br><span class="line">    (<span class="string">&quot;IT&quot;</span>,<span class="number">40</span>) \</span><br><span class="line">  ]</span><br><span class="line">deptColumns = [<span class="string">&quot;dept_name&quot;</span>,<span class="string">&quot;dept_id&quot;</span>]</span><br><span class="line">deptDF = spark.createDataFrame(data=dept, schema = deptColumns)</span><br><span class="line">deptDF.show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">+------+--------+---------------+-----------+-----------+------+------+</span><br><span class="line">|emp_id|name    |superior_emp_id|year_joined|emp_dept_id|gender|salary|</span><br><span class="line">+------+--------+---------------+-----------+-----------+------+------+</span><br><span class="line">|1     |Smith   |-1             |2018       |10         |M     |3000  |</span><br><span class="line">|2     |Rose    |1              |2010       |20         |M     |4000  |</span><br><span class="line">|3     |Williams|1              |2010       |10         |M     |1000  |</span><br><span class="line">|4     |Jones   |2              |2005       |10         |F     |2000  |</span><br><span class="line">|5     |Brown   |2              |2010       |40         |      |-1    |</span><br><span class="line">|6     |Brown   |2              |2010       |50         |      |-1    |</span><br><span class="line">+------+--------+---------------+-----------+-----------+------+------+</span><br><span class="line">+---------+-------+</span><br><span class="line">|dept_name|dept_id|</span><br><span class="line">+---------+-------+</span><br><span class="line">|Finance  |10     |</span><br><span class="line">|Marketing|20     |</span><br><span class="line">|Sales    |30     |</span><br><span class="line">|IT       |40     |</span><br><span class="line">+---------+-------+</span><br></pre></td></tr></table></figure>
+<p><code>empDF</code>의 <code>emp_dept_id</code> <code>deptDF</code>의 <code>dept_id</code>가 조인 키가 되어 조인을 할 수 있는데요.<br />
+아래와 같이 inner, full, left join을 시행할 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># INNER JOIN</span></span><br><span class="line">empDF.join(deptDF, empDF.emp_dept_id == deptDF.dept_id).show()</span><br><span class="line"><span class="comment"># FULL JOIN</span></span><br><span class="line">empDF.join(deptDF, empDF.emp_dept_id == deptDF.dept_id, how = <span class="string">&quot;full&quot;</span>).show()</span><br><span class="line"><span class="comment"># LEFT JOIN</span></span><br><span class="line">empDF.join(deptDF, empDF.emp_dept_id == deptDF.dept_id, how = <span class="string">&quot;left&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+<p>만약 조인키 이름이 같다면 어떻게 할까요?<br />
+공통된 key인 <code>dept_id</code> 를 <code>on</code> 조건에 적어주면 됩니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(empDF</span><br><span class="line">    .withColumnRenamed(<span class="string">&quot;emp_dept_id&quot;</span>, <span class="string">&quot;dept_id&quot;</span>)</span><br><span class="line">    .join(deptDF, on = <span class="string">&#x27;dept_id&#x27;</span>) </span><br><span class="line">).show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>만약 조인 키가 여러 개라면 ?<br />
+아래처럼 key 이름이 같다면 리스트로 받아주거나<br />
+<code>&amp;</code> 조건을 이용해서 on 절을 적어줍니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df1.join(df2, on = [<span class="string">&#x27;key1&#x27;</span>,<span class="string">&#x27;key2&#x27;</span>], how=<span class="string">&quot;inner&quot;</span>)</span><br><span class="line">df1.join(df2, on = (df1.key11 == df2.key12) \</span><br><span class="line">&amp; (df1.key21 == df2.key22), how=<span class="string">&quot;inner&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>또한, SQL에 존재하지 않는 <code>left_anti</code> 조인도 존재합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">empDF.join(deptDF, empDF.emp_dept_id == deptDF.dept_id, how = <span class="string">&quot;left_anti&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+------+-----+---------------+-----------+-----------+------+------+</span><br><span class="line">|emp_id|name |superior_emp_id|year_joined|emp_dept_id|gender|salary|</span><br><span class="line">+------+-----+---------------+-----------+-----------+------+------+</span><br><span class="line">|6     |Brown|2              |2010       |50         |      |-1    |</span><br><span class="line">+------+-----+---------------+-----------+-----------+------+------+</span><br></pre></td></tr></table></figure>
+<p>이를 SQL로 표현하면 다음과 같습니다.</p>
+<blockquote>
+<p>SQL</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> empDF A </span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> deptDF B </span><br><span class="line">    <span class="keyword">ON</span> A.emp_dept_id <span class="operator">=</span> B.dept_id </span><br><span class="line"><span class="keyword">WHERE</span> B.dept_id <span class="keyword">IS</span> <span class="keyword">NULL</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="union-unionbyname"><a class="markdownIt-Anchor" href="#union-unionbyname"></a> union / unionByName</h3>
+<p>다음은 <code>union</code> 입니다. <code>union</code>은 SQL의 <code>UNION</code>과 달리 distinct 한 행만 union을 해주는 것이 아니라,<br />
+<strong>중복된 행을 허용</strong>하여 union을 해줍니다. (즉, <code>UNION ALL</code>과 같습니다)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">data = [(&quot;James&quot;,&quot;Sales&quot;,34), (&quot;Michael&quot;,&quot;Sales&quot;,56), \</span><br><span class="line">    (&quot;Robert&quot;,&quot;Sales&quot;,30), (&quot;Maria&quot;,&quot;Finance&quot;,24) ]</span><br><span class="line">columns= [&quot;name&quot;,&quot;dept&quot;,&quot;age&quot;]</span><br><span class="line">df1 = spark.createDataFrame(data = data, schema = columns)</span><br><span class="line">df1.show()</span><br><span class="line"></span><br><span class="line">#Create DataFrame df1 with columns name,dep,state &amp; salary</span><br><span class="line">data2=[(&quot;James&quot;,&quot;Sales&quot;,&quot;NY&quot;,9000),(&quot;Maria&quot;,&quot;Finance&quot;,&quot;CA&quot;,9000), \</span><br><span class="line">    (&quot;Jen&quot;,&quot;Finance&quot;,&quot;NY&quot;,7900),(&quot;Jeff&quot;,&quot;Marketing&quot;,&quot;CA&quot;,8000)]</span><br><span class="line">columns2= [&quot;name&quot;,&quot;dept&quot;,&quot;state&quot;,&quot;salary&quot;]</span><br><span class="line">df2 = spark.createDataFrame(data = data2, schema = columns2)</span><br><span class="line">df2.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">+-------+-------+---+</span><br><span class="line">|   name|   dept|age|</span><br><span class="line">+-------+-------+---+</span><br><span class="line">|  James|  Sales| 34|</span><br><span class="line">|Michael|  Sales| 56|</span><br><span class="line">| Robert|  Sales| 30|</span><br><span class="line">|  Maria|Finance| 24|</span><br><span class="line">+-------+-------+---+</span><br><span class="line"></span><br><span class="line">+-----+---------+-----+------+</span><br><span class="line">| name|     dept|state|salary|</span><br><span class="line">+-----+---------+-----+------+</span><br><span class="line">|James|    Sales|   NY|  9000|</span><br><span class="line">|Maria|  Finance|   CA|  9000|</span><br><span class="line">|  Jen|  Finance|   NY|  7900|</span><br><span class="line">| Jeff|Marketing|   CA|  8000|</span><br><span class="line">+-----+---------+-----+------+</span><br></pre></td></tr></table></figure>
+<p><code>union</code>은 기본적으로</p>
+<ul>
+<li>컬럼의 개수가 같아야 하며,</li>
+<li>컬럼 순서도 동일하게 두어야 제대로된 결과를 얻을 수 있습니다.</li>
+</ul>
+<p>위 테이블에서는 <code>df1</code>에서 <code>state</code>, <code>salary</code> 컬럼이 빠져있고, <code>df2</code>에서는 <code>age</code> 컬럼이 없어 <code>union</code>을 할 수가 없는데요.<br />
+이를 위해 각 테이블에서 없는 컬럼을 생성해주는 함수를 짰습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> column <span class="keyword">in</span> [column <span class="keyword">for</span> column <span class="keyword">in</span> df2.columns <span class="keyword">if</span> column <span class="keyword">not</span> <span class="keyword">in</span> df1.columns]:</span><br><span class="line">    df1 = df1.withColumn(column, lit(<span class="literal">None</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> column <span class="keyword">in</span> [column <span class="keyword">for</span> column <span class="keyword">in</span> df1.columns <span class="keyword">if</span> column <span class="keyword">not</span> <span class="keyword">in</span> df2.columns]:</span><br><span class="line">    df2 = df2.withColumn(column, lit(<span class="literal">None</span>))</span><br><span class="line">df1.show()</span><br><span class="line">df2.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">+-------+-------+---+-----+------+</span><br><span class="line">|   name|   dept|age|state|salary|</span><br><span class="line">+-------+-------+---+-----+------+</span><br><span class="line">|  James|  Sales| 34| null|  null|</span><br><span class="line">|Michael|  Sales| 56| null|  null|</span><br><span class="line">| Robert|  Sales| 30| null|  null|</span><br><span class="line">|  Maria|Finance| 24| null|  null|</span><br><span class="line">+-------+-------+---+-----+------+</span><br><span class="line"></span><br><span class="line">+-----+---------+-----+------+----+</span><br><span class="line">| name|     dept|state|salary| age|</span><br><span class="line">+-----+---------+-----+------+----+</span><br><span class="line">|James|    Sales|   NY|  9000|null|</span><br><span class="line">|Maria|  Finance|   CA|  9000|null|</span><br><span class="line">|  Jen|  Finance|   NY|  7900|null|</span><br><span class="line">| Jeff|Marketing|   CA|  8000|null|</span><br><span class="line">+-----+---------+-----+------+----+</span><br></pre></td></tr></table></figure>
+<p>자, 여기서 UNION을 그대로 하면 왼쪽 테이블의 컬럼 순서대로 UNION이 되어서 잘못된 결과를 냅니다.<br />
+age컬럼에 state값이 들어가 있죠.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1.union(df2).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+-------+---------+---+-----+------+</span><br><span class="line">|   name|     dept|age|state|salary|</span><br><span class="line">+-------+---------+---+-----+------+</span><br><span class="line">|  James|    Sales| 34| null|  null|</span><br><span class="line">|Michael|    Sales| 56| null|  null|</span><br><span class="line">| Robert|    Sales| 30| null|  null|</span><br><span class="line">|  Maria|  Finance| 24| null|  null|</span><br><span class="line">|  James|    Sales| NY| 9000|  null|</span><br><span class="line">|  Maria|  Finance| CA| 9000|  null|</span><br><span class="line">|    Jen|  Finance| NY| 7900|  null|</span><br><span class="line">|   Jeff|Marketing| CA| 8000|  null|</span><br><span class="line">+-------+---------+---+-----+------+</span><br></pre></td></tr></table></figure>
+<p>이를 제대로 UNION 해주려면 다음과 같이 컬럼 순서를 조정해주어야 합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1.select(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;dept&quot;</span>,<span class="string">&quot;state&quot;</span>,<span class="string">&quot;salary&quot;</span>,<span class="string">&quot;age&quot;</span>).union(df2).show()</span><br></pre></td></tr></table></figure>
+<p>그러나, <code>unionByName</code>을 이용하면 컬럼 순서를 조정할 필요 없이 컬럼 이름에 맞게 UNION을 해주기 때문에,<br />
+편리하게 UNION을 할 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1.unionByName(df2).show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+-------+---------+----+-----+------+</span><br><span class="line">|   name|     dept| age|state|salary|</span><br><span class="line">+-------+---------+----+-----+------+</span><br><span class="line">|  James|    Sales|  34| null|  null|</span><br><span class="line">|Michael|    Sales|  56| null|  null|</span><br><span class="line">| Robert|    Sales|  30| null|  null|</span><br><span class="line">|  Maria|  Finance|  24| null|  null|</span><br><span class="line">|  James|    Sales|null|   NY|  9000|</span><br><span class="line">|  Maria|  Finance|null|   CA|  9000|</span><br><span class="line">|    Jen|  Finance|null|   NY|  7900|</span><br><span class="line">|   Jeff|Marketing|null|   CA|  8000|</span><br><span class="line">+-------+---------+----+-----+------+</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="pivot-unpivot"><a class="markdownIt-Anchor" href="#pivot-unpivot"></a> pivot / unpivot</h3>
+<h4 id="pivot"><a class="markdownIt-Anchor" href="#pivot"></a> pivot</h4>
+<p>다음은 <code>pivot</code>입니다.<br />
+pivot은 long 테이블을 wide 하게 바꿔주고, unpivot은 wide 한 테이블을 long 하게 바꿔주는 것을 의미하는데요.</p>
+<p>예시로 보면 더 쉽습니다. 아래의 예시는 long 형태의 테이블입니다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import pyspark</span><br><span class="line">from pyspark.sql import SparkSession</span><br><span class="line">from pyspark.sql.functions import expr</span><br><span class="line">#Create spark session</span><br><span class="line">data = [(&quot;Banana&quot;,1000,&quot;USA&quot;), (&quot;Carrots&quot;,1500,&quot;USA&quot;), (&quot;Beans&quot;,1600,&quot;USA&quot;), \</span><br><span class="line">      (&quot;Orange&quot;,2000,&quot;USA&quot;),(&quot;Orange&quot;,2000,&quot;USA&quot;),(&quot;Banana&quot;,400,&quot;China&quot;), \</span><br><span class="line">      (&quot;Carrots&quot;,1200,&quot;China&quot;),(&quot;Beans&quot;,1500,&quot;China&quot;),(&quot;Orange&quot;,4000,&quot;China&quot;), \</span><br><span class="line">      (&quot;Banana&quot;,2000,&quot;Canada&quot;),(&quot;Carrots&quot;,2000,&quot;Canada&quot;),(&quot;Beans&quot;,2000,&quot;Mexico&quot;)]</span><br><span class="line"></span><br><span class="line">columns= [&quot;Product&quot;,&quot;Amount&quot;,&quot;Country&quot;]</span><br><span class="line">df = spark.createDataFrame(data = data, schema = columns)</span><br><span class="line">df.show(truncate=False)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">+-------+------+-------+</span><br><span class="line">|Product|Amount|Country|</span><br><span class="line">+-------+------+-------+</span><br><span class="line">|Banana |1000  |USA    |</span><br><span class="line">|Carrots|1500  |USA    |</span><br><span class="line">|Beans  |1600  |USA    |</span><br><span class="line">|Orange |2000  |USA    |</span><br><span class="line">|Orange |2000  |USA    |</span><br><span class="line">|Banana |400   |China  |</span><br><span class="line">|Carrots|1200  |China  |</span><br><span class="line">|Beans  |1500  |China  |</span><br><span class="line">|Orange |4000  |China  |</span><br><span class="line">|Banana |2000  |Canada |</span><br><span class="line">|Carrots|2000  |Canada |</span><br><span class="line">|Beans  |2000  |Mexico |</span><br><span class="line">+-------+------+-------+</span><br></pre></td></tr></table></figure>
+<p>이를 wide 하게 바꿔주려면 <code>Product</code>를 열, <code>Country</code>를 행으로 해서 <code>Amount</code>의 합계를 구해줄 수 있겠죠.<br />
+Summary용 테이블이라 보셔도 무방합니다.</p>
+<p>이를 위해 <code>Product</code>로 <code>groupBy</code>를 한 후 <code>Country</code>로 <code>pivot</code>을 하여 <code>Amount</code>의 합계를 구해줍니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pivotDF = df.groupBy(<span class="string">&quot;Product&quot;</span>).pivot(<span class="string">&quot;Country&quot;</span>).<span class="built_in">sum</span>(<span class="string">&quot;Amount&quot;</span>)</span><br><span class="line">pivotDF.show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+-------+------+-----+------+----+</span><br><span class="line">|Product|Canada|China|Mexico|USA |</span><br><span class="line">+-------+------+-----+------+----+</span><br><span class="line">|Orange |null  |4000 |null  |4000|</span><br><span class="line">|Beans  |null  |1500 |2000  |1600|</span><br><span class="line">|Banana |2000  |400  |null  |1000|</span><br><span class="line">|Carrots|2000  |1200 |null  |1500|</span><br><span class="line">+-------+------+-----+------+----+</span><br></pre></td></tr></table></figure>
+<p>혹은 이를 더 가벼운 연산으로 계산하려면 <code>pivot()</code>의 주체에 해당하는 컬럼명을 명시해주면 좋다고 합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">countries = [<span class="string">&quot;USA&quot;</span>,<span class="string">&quot;China&quot;</span>,<span class="string">&quot;Canada&quot;</span>,<span class="string">&quot;Mexico&quot;</span>]</span><br><span class="line">pivotDF = df.groupBy(<span class="string">&quot;Product&quot;</span>).pivot(<span class="string">&quot;Country&quot;</span>, countries).<span class="built_in">sum</span>(<span class="string">&quot;Amount&quot;</span>)</span><br><span class="line">pivotDF.show(truncate=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="unpivot"><a class="markdownIt-Anchor" href="#unpivot"></a> unpivot</h4>
+<p>Pyspark에서는 unpivot 함수를 지원하고 있지 않기 때문에 <code>expr</code>를 이용하여 다시 long 형태의 테이블로 변형할 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">unpivotExpr = <span class="string">&quot;stack(4,&#x27;USA&#x27;,USA,&#x27;Canada&#x27;,Canada,&#x27;China&#x27;,China,&#x27;Mexico&#x27;,Mexico) as (Country, Total)&quot;</span></span><br><span class="line">unPivotDF = (pivotDF</span><br><span class="line">             .select(<span class="string">&quot;Product&quot;</span>, expr(unpivotExpr))</span><br><span class="line">             .<span class="built_in">filter</span>(<span class="string">&quot;total is not null&quot;</span>)</span><br><span class="line">             .orderBy(<span class="string">&quot;Product&quot;</span>)</span><br><span class="line">            )</span><br><span class="line">unPivotDF.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+-------+-------+-----+</span><br><span class="line">|Product|Country|Total|</span><br><span class="line">+-------+-------+-----+</span><br><span class="line">| Banana|  China|  400|</span><br><span class="line">| Banana| Canada| 2000|</span><br><span class="line">| Banana|    USA| 1000|</span><br><span class="line">|  Beans|    USA| 1600|</span><br><span class="line">|  Beans| Mexico| 2000|</span><br><span class="line">|  Beans|  China| 1500|</span><br><span class="line">|Carrots|  China| 1200|</span><br><span class="line">|Carrots|    USA| 1500|</span><br><span class="line">|Carrots| Canada| 2000|</span><br><span class="line">| Orange|    USA| 4000|</span><br><span class="line">| Orange|  China| 4000|</span><br><span class="line">+-------+-------+-----+</span><br></pre></td></tr></table></figure>
+<h3 id="row_number"><a class="markdownIt-Anchor" href="#row_number"></a> row_number</h3>
+<p>사실 <code>row_number</code> 외에도 많은 Window 함수들이 있지만 오늘은 <code>row_number</code>만 소개하고자 합니다.<br />
+추가로 보실 분은 <a target="_blank" rel="noopener" href="https://sparkbyexamples.com/pyspark/pyspark-window-functions/"><code>이 곳</code></a>{:target=‘_blank’}을 참조해주세요.</p>
+<p>pivot을 배울 때 썼던 데이터프레임을 그대로 쓰겠습니다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.sql.window import Window </span><br><span class="line">(</span><br><span class="line">    df.withColumn(&#x27;row_num&#x27;</span><br><span class="line">    , row_number().over(Window.partitionBy(&#x27;Product&#x27;).orderBy(desc(&#x27;Amount&#x27;))))</span><br><span class="line">    .show()</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">+-------+------+-------+-------+</span><br><span class="line">|Product|Amount|Country|row_num|</span><br><span class="line">+-------+------+-------+-------+</span><br><span class="line">| Banana|  2000| Canada|      1|</span><br><span class="line">| Banana|  1000|    USA|      2|</span><br><span class="line">| Banana|   400|  China|      3|</span><br><span class="line">|  Beans|  2000| Mexico|      1|</span><br><span class="line">|  Beans|  1600|    USA|      2|</span><br><span class="line">|  Beans|  1500|  China|      3|</span><br><span class="line">|Carrots|  2000| Canada|      1|</span><br><span class="line">|Carrots|  1500|    USA|      2|</span><br><span class="line">|Carrots|  1200|  China|      3|</span><br><span class="line">| Orange|  4000|  China|      1|</span><br><span class="line">| Orange|  2000|    USA|      2|</span><br><span class="line">| Orange|  2000|    USA|      3|</span><br><span class="line">+-------+------+-------+-------+</span><br></pre></td></tr></table></figure>
+<h2 id="마치며"><a class="markdownIt-Anchor" href="#마치며"></a> 마치며</h2>
+<p>오늘은 최대한 기초적인 함수 위주로 다 소개하는 것을 목표로 하고 글을 썼는데요. 역시 깁니다.<br />
+이 글을 보면서 pyspark 를 능수능란하게 쓰는 그 날을 고대하며! 이 글을 마칩니다 ~!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/" title="PySpark 함수 정리">http://assaeunji.github.io/2022/03/26/2022-03-26-pyspark/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/easy-guide/" rel="tag"># easy-guide</a>
+              <a href="/tags/pyspark/" rel="tag"># pyspark</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/02/2022-01-02-geultto6fin/" rel="prev" title="글또 6기를 마치며">
+                  <i class="fa fa-chevron-left"></i> 글또 6기를 마치며
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/15/2022-04-15-ltv/" rel="next" title="LTV (Life Time Value) 지표 속 BG/NBD 모델과 Gamma-Gamma 모델 파헤치기">
+                  LTV (Life Time Value) 지표 속 BG/NBD 모델과 Gamma-Gamma 모델 파헤치기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ARIMA 예측이 일직선으로 되신다구요? 이 글을 보면 어느 정도 그 이유와 해결 방법을 찾을 수 있습니다. 이번 포스팅에서는 시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식{:target&#x3D;‘_blank’}에 이어 실제로 auto_arima로 삼성전자의 주가를 예측한 과정을 정리하였습니다… (응또삼; 응지 또 삼성전자 주가…)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기">
+<meta property="og:url" content="http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="ARIMA 예측이 일직선으로 되신다구요? 이 글을 보면 어느 정도 그 이유와 해결 방법을 찾을 수 있습니다. 이번 포스팅에서는 시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식{:target&#x3D;‘_blank’}에 이어 실제로 auto_arima로 삼성전자의 주가를 예측한 과정을 정리하였습니다… (응또삼; 응지 또 삼성전자 주가…)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/2021/09/images/arimastock-simpleforecast.png">
+<meta property="article:published_time" content="2021-09-24T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="data-analysis">
+<meta property="article:tag" content="easy-guide">
+<meta property="article:tag" content="time-series">
+<meta property="article:tag" content="stock-analysis">
+<meta property="article:tag" content="arima">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/2021/09/images/arimastock-simpleforecast.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/","path":"2021/09/25/2021-09-25-arimastock/","title":"시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#auto_arima%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-arima-%EC%A0%81%ED%95%A9-%EB%B0%8F-%EC%98%88%EC%B8%A1-%EA%B3%BC%EC%A0%95-%EC%9A%94%EC%95%BD"><span class="nav-number">1.</span> <span class="nav-text"> auto_arima를 활용한 ARIMA 적합 및 예측 과정 요약</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%A0%84-%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90-%EC%A3%BC%EA%B0%80%EB%A1%9C-arima-%EC%B5%9C%EC%A0%81-%EB%AA%A8%EB%8D%B8-%EC%B0%BE%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text"> 실전 ! 삼성전자 주가로 ARIMA 최적 모델 찾기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step-1-%EC%8B%9C%EA%B3%84%EC%97%B4-%EC%9E%90%EB%A3%8C-%EC%8B%9C%EA%B0%81%ED%99%94"><span class="nav-number">2.1.</span> <span class="nav-text"> Step 1. 시계열 자료 시각화</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-2-arima-%EB%AA%A8%ED%98%95-%EC%A0%81%ED%95%A9"><span class="nav-number">2.2.</span> <span class="nav-text"> Step 2. ARIMA 모형 적합</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-3-%EC%9E%94%EC%B0%A8-%EA%B2%80%EC%A0%95"><span class="nav-number">2.3.</span> <span class="nav-text"> Step 3. 잔차 검정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-4-%EB%AA%A8%ED%98%95-refresh-%EB%B0%8F-%EC%98%88%EC%B8%A1"><span class="nav-number">2.4.</span> <span class="nav-text"> Step 4. 모형 refresh 및 예측</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-5-%EB%AA%A8%ED%98%95-%ED%8F%89%EA%B0%80"><span class="nav-number">2.5.</span> <span class="nav-text"> Step 5. 모형 평가</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">3.</span> <span class="nav-text"> 결론</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/arimastock-simpleforecast.png" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기 | Be Geeky">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-25T00:00:00+09:00">2021-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Data-Analysis/" itemprop="url" rel="index"><span itemprop="name">Data Analysis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>ARIMA 예측이 일직선으로 되신다구요? 이 글을 보면 어느 정도 그 이유와 해결 방법을 찾을 수 있습니다.</li>
+<li>이번 포스팅에서는 <a href="https://assaeunji.github.io/statistics/2021-09-08-arimapdq/">시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식</a>{:target=‘_blank’}에 이어 실제로 auto_arima로 삼성전자의 주가를 예측한 과정을 정리하였습니다… (<s>응또삼; 응지 또 삼성전자 주가…</s>)</li>
+<li><a target="_blank" rel="noopener" href="https://alkaline-ml.com/pmdarima/index.html">pmdarima 공식페이지</a>{:target=‘_blank’}와, 여기에 있는 <a target="_blank" rel="noopener" href="https://alkaline-ml.com/pmdarima/usecases/stocks.html">10.1. Stock Market Prediction</a>{:target=‘_blank’} 예시를 주로 참조하였습니다.</li>
+</ul>
+<hr />
+<h2 id="auto_arima를-활용한-arima-적합-및-예측-과정-요약"><a class="markdownIt-Anchor" href="#auto_arima를-활용한-arima-적합-및-예측-과정-요약"></a> auto_arima를 활용한 ARIMA 적합 및 예측 과정 요약</h2>
+<p>auto_arima 함수는 R의 <code>auto.arima</code> 함수를 본따 만들어진 Python의 pmdarima 라이브러리에 있는 함수로,<br />
+ARIMA 모형의 차수 p,d,q와 계수를 자동으로 추정해주는 함수입니다.<br />
+그러나 이 &quot;자동&quot;이라는 단어 때문에 단순하게 데이터를 적합만 하면 된다라고 생각할 수 있지만,<br />
+흘러가는대로 적합하다보면 엉뚱한 예측 결과 (ex. 시간에 따라 예측값이 선형으로 증가하거나 일직선)를 얻곤 합니다.</p>
+<p>그렇기 때문에 auto_arima가 어떻게 작동하는지 살펴보기 위해<br />
+<a href="https://assaeunji.github.io/statistics/2021-09-08-arimapdq/">이전 포스팅</a>{:target=‘_blank’}에서 auto_arima를 쓰기 위한<br />
+배경지식을 알아보았습니다.</p>
+<p><strong>이를 통합했을 때, 전체적인 ARIMA 적합 및 예측 과정은 다음과 같습니다.</strong></p>
+<ol>
+<li><strong>시각화</strong>: 시계열 자료를 시각화해서 <strong>추세, 계절성, 주기</strong>가 있는지 파악합니다. 혹은 데이터를 변환해줄 필요가 있는지 파악합니다.
+<ol>
+<li><strong>추세</strong>가 있다면 정상성을 만족하지 않기 때문에 몇 차 차분이 적당할지 단위근 검정을 해야 합니다. 이는 pmdarima.arima의 <code>ndiffs</code> 함수로 쉽게 구할 수 있습니다.</li>
+<li><strong>계절성</strong>이 있다면 비계절성 ARIMA 대신 <a target="_blank" rel="noopener" href="https://otexts.com/fppkr/seasonal-arima.html">계절성 ARIMA (SARIMA)</a>{:target=‘_blank’}를 따르므로, auto_arima 함수의 <code>seasonal = True</code>로 지정해주어야 합니다.</li>
+<li><strong>주기</strong>가 있다면 auto_arima 함수의 <code>m</code>의 인자에 넣어주어야 합니다. 이는 계절적 주기에 얼마나 많은 관측치가 있는지를 명시하는 파라미터이고, 데이터 분석가가 개입해서 넣어줘야 하는 값 (apriori)입니다. 예를 들어 <code>m = 7</code>이면 일별 (daily), <code>m = 52</code>이면 주별 (weekly)<sup>1년에 52주가 있기 때문에 52의 주기를 가집니다!</sup>, <code>m = 12</code>이면 월별 (monthly) 데이터입니다. 기본값은 <code>m = 1</code>로, 비계절성 데이터를 의미합니다.</li>
+<li>데이터 변환은 과거와 현재, 미래 데이터를 봤을 때 분산의 차이가 크다면 로그 변환이나 Box-Cox 변환을 고려해볼 수 있습니다.</li>
+</ol>
+</li>
+<li><strong>모형 적합</strong>: auto_arima를 통해 적당한 p,d,q를 추정하고, 계수들을 추정합니다.</li>
+<li><strong>잔차 검정</strong>: 잔차가 백색잡음 과정인지 (=정상성을 만족하는지), 정규성 및 등분산성을 만족하는지 파악합니다.
+<ol>
+<li><code>summary</code> 결과에서  Ljung-Box (Q) / Heteroskedasticity (H) / Jarque-Bera (JB) 검정 만족 여부를 파악하실 수 있습니다.</li>
+<li><code>plot_diagnostics</code> 잔차 그래프로도 정상성과 정규성을 만족하는지 파악하실 수 있습니다.</li>
+</ol>
+</li>
+<li><strong>모형 refresh 및 예측</strong>: 모형이 잘 적합되었으면 <strong>모형을 refresh</strong>하면서 미래 관측치를 예측합니다. <sup>NEW!! 지난 번 설명에서 업데이트되는 부분!</sup> 주의할 점은<br />
+한번에 테스트 데이터를 예측하는 것이 아니라, 하나씩 예측하고 관측치를 <strong>업데이트</strong>해주는 과정이 필요하다는 점입니다. 이 부분이 바로 &quot;모형을 refresh&quot;하는 과정입니다.</li>
+<li><strong>모형 평가</strong>: MAPE로 잔차가 실제 값에서 얼마나 벗어나 있는지 파악합니다.</li>
+</ol>
+<p><strong>4번에서, 예측을 할 때 왜 모형을 refresh 해줘야 할까요?</strong> &quot;refresh&quot;는 말 그대로 &quot;새롭게 하다&quot;라는 의미를 갖고 있는데요.</p>
+<p>ARIMA 모형을 refresh하지 않으면, 시간이 지나도 계속 과거 데이터로 구축한 모형으로 먼 미래를 예측하는 꼴이기 때문에 정확하게 예측하기 어렵습니다.<br />
+예컨대 4년 전 데이터로 ARIMA 모형을 구축해놓고 모형의 업데이트 없이 오늘의 데이터를 예측한다면, 좋은 예측 결과를 내기 어렵겠죠?<br />
+그 대신 가장 최신의 데이터들로 모형을 적합해야 미래의 값들을 예측하기 가장 좋을 것입니다.</p>
+<p>그렇기 때문에 모형을 refresh하는 과정은 필수적인데, 그 방법은 두 가지입니다.</p>
+<ol>
+<li>주기적으로 새 관측치가 왔을 때 ARIMA의 <strong>모형의 모수들을 재추정</strong>합니다. ARIMA p,d,q 값을 바꿔주고, 계수들도 다시 추정합니다.</li>
+<li>아직 모든 모형의 모수들을 재추정할 때가 아니라면, 모수들을 재추정하기보단 <strong>가장 최신의 데이터를 모형에 추가</strong>해서 새로운 예측치가 최신의 데이터를 반영할 수 있도록 <code>update</code>해주는 과정이 필요합니다.</li>
+</ol>
+<p>개인적으로 1번의 경우 모형을 새로 바꾸는 것이기 때문에 너무 빈번하게 하기보단 연간, 월간으로 할텐데,<br />
+2번의 경우 1번을 하지 않을 때 매번 데이터가 쌓일 때마다 해주는 것이 좋을 것 같다 생각이 듭니다.<br />
+이 포스팅에서도 2번을 중심으로 모형을 refresh하는 과정에 대해 설명드리고자 합니다.</p>
+<p>자세한 논의는 <a target="_blank" rel="noopener" href="https://alkaline-ml.com/pmdarima/refreshing.html#">pmdarima 설명 페이지의 5. Refreshing your ARIMA models</a>{:target=‘_blank’}에서 확인하실 수 있습니다.</p>
+<hr />
+<h2 id="실전-삼성전자-주가로-arima-최적-모델-찾기"><a class="markdownIt-Anchor" href="#실전-삼성전자-주가로-arima-최적-모델-찾기"></a> 실전 ! 삼성전자 주가로 ARIMA 최적 모델 찾기</h2>
+<p>자, 이제 위 과정으로 삼성전자 주가를 auto_arima로 예측한 예시에 대해 보여드리겠습니다.<br />
+이를 위해 20년 1월부터 21년 8월 30일까지의 일별 삼성전자 주가 데이터를 불러왔습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> FinanceDataReader <span class="keyword">as</span> fdr</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> pmdarima.arima <span class="keyword">import</span> ndiffs</span><br><span class="line"><span class="keyword">import</span> pmdarima <span class="keyword">as</span> pm</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">df_krx = fdr.StockListing(<span class="string">&#x27;KRX&#x27;</span>) <span class="comment"># 한국거래소 상장종목 전체</span></span><br><span class="line">ticker = df_krx[df_krx.Name==<span class="string">&#x27;삼성전자&#x27;</span>][<span class="string">&#x27;Symbol&#x27;</span>] <span class="comment"># 티커</span></span><br><span class="line">ss = fdr.DataReader(<span class="string">&#x27;&#x27;</span>.join(ticker.values),<span class="string">&#x27;2020-01-01&#x27;</span>, <span class="string">&#x27;2021-08-30&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="step-1-시계열-자료-시각화"><a class="markdownIt-Anchor" href="#step-1-시계열-자료-시각화"></a> Step 1. 시계열 자료 시각화</h3>
+<p>삼성전자 종가를 시각화하면 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">y_train = ss[<span class="string">&#x27;Close&#x27;</span>][:<span class="built_in">int</span>(<span class="number">0.7</span>*<span class="built_in">len</span>(ss))]</span><br><span class="line">y_test = ss[<span class="string">&#x27;Close&#x27;</span>][<span class="built_in">int</span>(<span class="number">0.7</span>*<span class="built_in">len</span>(ss)):]</span><br><span class="line">y_train.plot()</span><br><span class="line">y_test.plot()</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/arimapdq-ssclose.png" alt="" /></p>
+<p>이런 추세형 그래프를 보고 들으면 좋은 생각은</p>
+<ul>
+<li>정상성은 확실히 만족하지 않겠다 -&gt; 차분이 꼭 필요하겠다 -&gt; ARIMA의 차수 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">d</span></span></span></span>가 1 이상이겠구나라 생각해볼 수 있고</li>
+<li>상승 추세가 있긴 하지만, 최근에 와서 주춤하는 모습을 보인다. -&gt; 상수항이 없는 임의 보행 모형은 아닐까?라 생각해볼 수 있고</li>
+<li>계절성이나 주기성은 크게 보이진 않기 때문에 관련 모수 <code>seasonal</code>이나 <code>m</code>은 auto_arima에 적용할 필요는 없겠다 예상해볼 수 있습니다.</li>
+</ul>
+<p>정말 차분이 필요한지, 필요하다면 몇 차 차분이 최선인지 파악하려면 아래와 같이 <code>ndiffs</code> 함수를 이용할 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kpss_diffs = ndiffs(y_train, alpha=<span class="number">0.05</span>, test=<span class="string">&#x27;kpss&#x27;</span>, max_d=<span class="number">6</span>)</span><br><span class="line">adf_diffs = ndiffs(y_train, alpha=<span class="number">0.05</span>, test=<span class="string">&#x27;adf&#x27;</span>, max_d=<span class="number">6</span>)</span><br><span class="line">n_diffs = <span class="built_in">max</span>(adf_diffs, kpss_diffs)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;추정된 차수 d = <span class="subst">&#123;n_diffs&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; 추정된 차수 d = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>분산 안정화가 필요한지의 여부는 모델이 너~무 적합이 안된다면 다시 시도해보도록 하겠습니다.</p>
+<hr />
+<h3 id="step-2-arima-모형-적합"><a class="markdownIt-Anchor" href="#step-2-arima-모형-적합"></a> Step 2. ARIMA 모형 적합</h3>
+<p>자, 이제 모델 auto_arima 함수로 최적의 모형을 탐색해보겠습니다. 위에서 7:3의 비율로 train과 test 데이터를 나누었습니다.<br />
+train 데이터로 학습을 하고, test 데이터로 예측을 해봅니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">model = pm.auto_arima(y = y_train        <span class="comment"># 데이터</span></span><br><span class="line">                      , d = <span class="number">1</span>            <span class="comment"># 차분 차수, ndiffs 결과!</span></span><br><span class="line">                      , start_p = <span class="number">0</span> </span><br><span class="line">                      , max_p = <span class="number">3</span>   </span><br><span class="line">                      , start_q = <span class="number">0</span> </span><br><span class="line">                      , max_q = <span class="number">3</span>   </span><br><span class="line">                      , m = <span class="number">1</span>       </span><br><span class="line">                      , seasonal = <span class="literal">False</span> <span class="comment"># 계절성 ARIMA가 아니라면 필수!</span></span><br><span class="line">                      , stepwise = <span class="literal">True</span></span><br><span class="line">                      , trace=<span class="literal">True</span></span><br><span class="line">                      )</span><br></pre></td></tr></table></figure>
+<p>auto_arima에 주요한 옵션들을 설명하면 다음과 같습니다.<br />
+더 자세한 설명은 <a target="_blank" rel="noopener" href="https://alkaline-ml.com/pmdarima/modules/generated/pmdarima.arima.auto_arima.html#pmdarima.arima.auto_arima">공식 가이드</a>{:target=‘_blank’}를 참조바랍니다.</p>
+<ul>
+<li><code>y</code>: array 형태의 시계열 자료</li>
+<li><code>d</code> (기본값 = none): 차분의 차수, 이를 지정하지 않으면 실행 기간이 매우 길어질 수 있음</li>
+<li><code>start_p</code> (기본값 = 2), <code>max_p</code> (기본값 = 5): AR(p)를 찾을 범위 (start_p에서 max_p까지 찾는다!)</li>
+<li><code>start_q</code> (기본값 = 2), <code>max_q</code> (기본값 = 5): AR(q)를 찾을 범위 (start_q에서 max_q까지 찾는다!)</li>
+<li><code>m</code> (기본값 = 1): 계절적 차분이 필요할 때 쓸 수 있는 모수로 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">m=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">4</span></span></span></span>이면 분기별, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">m=12</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">2</span></span></span></span>면 월별, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">m=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>이면 계절적 특징을 띠지 않는 데이터를 의미한다. <code>m=1</code>이면 자동적으로 seasonal 에 대한 옵션은 False로 지정된다.</li>
+<li><code>seasonal</code> (기본값 = True): 계절성 ARIMA 모형을 적합할지의 여부</li>
+<li><code>stepwise</code> (기본값 = True): 최적의 모수를 찾기 위해 쓰는 힌드만 - 칸다카르 알고리즘을 사용할지의 여부, False면 모든 모수 조합으로 모형을 적합한다.</li>
+<li><code>trace</code> (기본값 = False): stepwise로 모델을 적합할 때마다 결과를 프린트하고 싶을 때 사용한다.</li>
+</ul>
+<p>정말 간단하게 필수적인 옵션만 갖고 적합하면 아래와 같습니다.<br />
+참고로 d의 값을 1로 둔 이유는, 위에서 <code>ndiffs</code>함수로 추정된 d의 값이 1이였기 때문입니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model = pm.auto_arima (y_train, d = <span class="number">1</span>, seasonal = <span class="literal">False</span>, trace = <span class="literal">True</span>)</span><br><span class="line">model.fit(y_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Performing stepwise search to minimize aic</span><br><span class="line"> ARIMA(2,1,2)(0,0,0)[0] intercept   : AIC=4942.777, Time=0.13 sec</span><br><span class="line"> ARIMA(0,1,0)(0,0,0)[0] intercept   : AIC=4934.821, Time=0.01 sec</span><br><span class="line"> ARIMA(1,1,0)(0,0,0)[0] intercept   : AIC=4936.780, Time=0.02 sec</span><br><span class="line"> ARIMA(0,1,1)(0,0,0)[0] intercept   : AIC=4936.799, Time=0.02 sec</span><br><span class="line"> ARIMA(0,1,0)(0,0,0)[0]             : AIC=4934.428, Time=0.01 sec</span><br><span class="line"> ARIMA(1,1,1)(0,0,0)[0] intercept   : AIC=4938.798, Time=0.15 sec</span><br><span class="line"></span><br><span class="line">Best model:  ARIMA(0,1,0)(0,0,0)[0]          </span><br><span class="line">Total fit time: 0.349 seconds</span><br></pre></td></tr></table></figure>
+<p>auto_arima를 사용한 결과 최적의 모델은 ARIMA (0,1,0) 모형으로 나왔습니다.</p>
+<p>이 모형을 풀어 말하면 1차 차분을 했을 때 백색 잡음 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>t</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\epsilon_t \sim N(0,\sigma^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>)임을 의미하고,<br />
+결국 아래 식처럼 <strong>임의 보행 모형</strong> (Random Walk Model)을 따른다는 것을 알 수 있습니다.</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.24999999999999992em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><msub><mi>y</mi><mi>t</mi></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>ϵ</mi><mi>t</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>y</mi><mi>t</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>y</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mi>t</mi></msub></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+y_t - y_{t-1} &amp;= \epsilon_t\\
+y_t &amp;= y_{t-1} + \epsilon_t
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.0000000000000004em;vertical-align:-1.2500000000000002em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7500000000000002em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2500000000000002em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7500000000000002em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2500000000000002em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<hr />
+<h3 id="step-3-잔차-검정"><a class="markdownIt-Anchor" href="#step-3-잔차-검정"></a> Step 3. 잔차 검정</h3>
+<blockquote>
+<p>잔차가 백색잡음 과정인지 (=정상성을 만족하는지), 정규성 및 등분산성을 만족하는지 파악합니다.</p>
+</blockquote>
+<ol>
+<li><code>summary</code> 결과에서  Ljung-Box (Q) / Heteroskedasticity (H) / Jarque-Bera (JB) 검정 만족 여부를 파악하실 수 있습니다.</li>
+<li><code>plot_diagnostics</code> 잔차 그래프로도 정상성과 정규성을 만족하는지 파악하실 수 있습니다.</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(model.summary())</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">                              SARIMAX Results                                </span><br><span class="line">==============================================================================</span><br><span class="line">Dep. Variable:                      y   No. Observations:                  289</span><br><span class="line">Model:               SARIMAX(0, 1, 0)   Log Likelihood               -2466.214</span><br><span class="line">Date:                Tue, 07 Sep 2021   AIC                           4934.428</span><br><span class="line">Time:                        22:29:59   BIC                           4938.091</span><br><span class="line">Sample:                             0   HQIC                          4935.896</span><br><span class="line">                                - 289                                         </span><br><span class="line">Covariance Type:                  opg                                         </span><br><span class="line">==============================================================================</span><br><span class="line">                 coef    std err          z      P&gt;|z|      [0.025      0.975]</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">sigma2      1.599e+06   9.63e+04     16.608      0.000    1.41e+06    1.79e+06</span><br><span class="line">===================================================================================</span><br><span class="line">Ljung-Box (Q):                       36.13   Jarque-Bera (JB):                46.72</span><br><span class="line">Prob(Q):                              0.65   Prob(JB):                         0.00</span><br><span class="line">Heteroskedasticity (H):               1.47   Skew:                             0.53</span><br><span class="line">Prob(H) (two-sided):                  0.06   Kurtosis:                         4.67</span><br><span class="line">===================================================================================</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Ljung-Box (Q) / Heteroskedasticity (H) / Jarque-Bera (JB)에 대한 부분은 <strong>모두 잔차에 대한 검정 통계량</strong>들입니다.
+<ul>
+<li>
+<p>Ljung-Box (Q) <sup>융-박스 검정 통계량</sup>는 잔차가 백색잡음인지 검정한 통계량입니다.</p>
+<p>Prob (Q) 값을 보면 0.65이므로 유의수준 0.05에서 귀무가설을 기각하지 못합니다.<br />
+Ljung-Box (Q) 통계량의 귀무가설은 &quot;잔차(residual)가 백색잡음(white noise) 시계열을 따른다&quot;이므로, 위 결과를 통해 <strong>시계열 모형이 잘 적합되었고 남은 잔차는 더이상 자기상관을 가지지 않는 백색 잡음</strong>임을 확인할 수 있습니다.</p>
+</li>
+<li>
+<p>Jarque-Bera (JB) <sup>자크-베라 검정 통계량</sup>은 잔차가 정규성을 띠는지 검정한 통계량입니다.</p>
+<p>Prob(JB)값을 보면 0.00으로 유의 수준 0.05에서 귀무가설을 기각합니다.<br />
+Jarque-Bera (JB) 통계량의 귀무가설은 &quot;잔차가 정규성을 만족한다&quot;이므로, 위 결과를 통해 &quot;잔차가 정규성을 따르지 않음&quot;을 확인할 수 있습니다.</p>
+</li>
+<li>
+<p>Heteroskedasticity (H) <sup>이분산성 검정 통계량</sup>은 잔차가 이분산을 띠지 않는지 검정한 통계량입니다.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>또한, 잔차가 정규분포를 따른다면, 경험적으로</p>
+<ul>
+<li>비대칭도 (Skew)는 0에 가까워야 하고</li>
+<li>첨도 (Kurtosis)는 3에 가까워야 합니다.</li>
+</ul>
+<p>위 Summary 결과를 통해 비대칭도는 0.53으로 0에 가깝지만 첨도는 4.67로 3보다 더 높은 값을 가지고 있음을 알 수 있습니다.</p>
+<p>이를 아래와 같이 <code>plot_diagnostics()</code> 함수로도 확인하실 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model.plot_diagnostics(figsize=(<span class="number">16</span>, <span class="number">8</span>))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/arimapdq-residualplot.png" alt="" /></p>
+<p>잔차가 백색 잡음을 따르는지 보여주는 플랏은 Standardized residual과 Correlogram 그림입니다.</p>
+<ul>
+<li>Standardized residual은 잔차를 그냥 시계열로 그린 것입니다. 백색 잡음 답게 잔차의 시계열이 평균 0을 중심으로 무작위하게 움직이는 것을 볼 수 있습니다.</li>
+<li>Correlogram은 잔차에 대한 ACF입니다. ACF도 어느 정도 허용 범위 안에 위치하여 자기상관이 없음을 알 수 있습니다.</li>
+</ul>
+<p>잔차가 정규성을 만족하는지 보여주는 플랏은 Histogram plus estimated density와 Normal Q-Q 그림입니다.</p>
+<ul>
+<li>Histogram plus estimated density는 잔차의 히스토그램을 그려 정규 분포 N(0,1)과 밀도를 추정한 그래프를 같이 겹쳐서 보여줍니다. 위 비대칭도와 첨도에서 확인하셨던 것처럼 정규분포와 비슷하게 대칭적이지만, 첨도가 더 뾰족하게 솟아오른 것을 알 수 있습니다.</li>
+<li>Normal Q-Q그래프는 Q-Q 플랏으로 정규성을 만족한다면 빨간 일직선 위에 점들이 분포해야 합니다. 그러나, 양 끝 쪽에서 빨간 선을 약간 벗어나는 듯한 모습을 보입니다.</li>
+</ul>
+<p><strong>결과적으로 저희가 적합한 ARIMA (0,1,0)으로 남은 잔차는 백색 잡음이지만, 정규성은 따르지 않는다 볼 수 있습니다.</strong></p>
+<p>그래서 어떻게 하냐! 글쎄요… 여기에는 정답은 없습니다.<br />
+저 같으면 일단 넘어가고 예측에 실패하면 다시 모형 설정을 바꿔서 테스트할 것 같습니다. 그래프를 봐도 알 수 있듯이 그렇게 티나게 정규분포를 벗어나는 것 같지 않아서이죠! (주관입니다)<br />
+예측에 실패한다면 위 설명 드린 auto_arima 모수인 p,d,q의 max를 늘려볼 수도 있고, train데이터를 더 최근만 가져올 수도 있고, 아니면 분산 안정화를 시도해볼 수도 있습니다.</p>
+<hr />
+<h3 id="step-4-모형-refresh-및-예측"><a class="markdownIt-Anchor" href="#step-4-모형-refresh-및-예측"></a> Step 4. 모형 refresh 및 예측</h3>
+<p>이제 잔차 검정을 했으니 테스트 데이터 예측을 해보도록 하겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 테스트 데이터 개수만큼 예측</span></span><br><span class="line">y_predict = model.predict(n_periods=<span class="built_in">len</span>(y_test)) </span><br><span class="line">y_predict = pd.DataFrame(y_predict,index = y_test.index,columns=[<span class="string">&#x27;Prediction&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 그래프</span></span><br><span class="line">fig, axes = plt.subplots(<span class="number">1</span>, <span class="number">1</span>, figsize=(<span class="number">12</span>, <span class="number">4</span>))</span><br><span class="line">plt.plot(y_train, label=<span class="string">&#x27;Train&#x27;</span>)        <span class="comment"># 훈련 데이터</span></span><br><span class="line">plt.plot(y_test, label=<span class="string">&#x27;Test&#x27;</span>)          <span class="comment"># 테스트 데이터</span></span><br><span class="line">plt.plot(y_predict, label=<span class="string">&#x27;Prediction&#x27;</span>)  <span class="comment"># 예측 데이터</span></span><br><span class="line">plt.legend()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/arimastock-simpleforecast.png" alt="" /></p>
+<p>위 예측 결과를 보면 prediction에 해당하는 초록색 선이 <strong>일직선</strong>으로 예측됨을 알 수 있습니다.</p>
+<p><strong>이것이 저희가 원하는 예측 결과일까요? 왜 이렇게 예측되었을까요?</strong></p>
+<p>이에 대한 답은 <a target="_blank" rel="noopener" href="https://stats.stackexchange.com/questions/529827/python-auto-arima-predicts-constant-value">이 곳</a>{:target=‘_blank’} 에서 찾을 수 있었습니다.<br />
+auto_arima 모형으로 찾은 ARIMA 모형은 ARIMA (0,1,0) 모형으로, 1차 차분 시 백색 잡음인 모형입니다.<br />
+결국 아래 식처럼 <strong>상수항이 없는 임의 보행 모형</strong> (Random Walk Model)을 따른다는 것을 알 수 있습니다.</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.24999999999999992em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><msub><mi>y</mi><mi>t</mi></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>ϵ</mi><mi>t</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>y</mi><mi>t</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>y</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mi>t</mi></msub><mo separator="true">,</mo><mtext> </mtext><msub><mi>ϵ</mi><mi>t</mi></msub><mo>∼</mo><mi>N</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+y_t - y_{t-1} &amp;= \epsilon_t\\
+y_t &amp;= y_{t-1} + \epsilon_t, \ \epsilon_t \sim N(0,\sigma^2)
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.024108em;vertical-align:-1.262054em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.762054em;"><span style="top:-3.922054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.397946em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.262054em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.762054em;"><span style="top:-3.922054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.397946em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∼</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.262054em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>그런데, 예측을 할 때 innovation term인 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>의 기댓값이 0이기 때문에 이 부분을 0으로 대체하게 됩니다. 따라서, <strong>예측치들은 결국 가장 마지막 관측치</strong>가 되는 것이죠.<br />
+결국, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\epsilon_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 부분은 0으로 대체되고, 임의 보행 모형에서는 예측치들이 가장 마지막 관측치로 동일하기 때문에 일직선을 얻게 되는 것입니다.</p>
+<p>그렇다면, auto_arima가 왜 임의 보행 모형을 가장 적합한 모델로 선택했을까요?</p>
+<p>데이터에 특정한 주기나 추세가 없기 때문에, AIC로 모형을 최적화를 하는 과정에서 의미있는 자기 상관 (AR)이나 이동 평균 (MA)를 찾기 어려웠기 때문입니다. 따라서, 최선책으로 임의 보행 모형 <sup>어제의 값이 오늘의 값을 가장 잘 설명한다는 모형</sup>이 데이터를 가장 잘 설명한다는 결론을 내립니다.<br />
+결과적으로, 데이터에서 어떠한 구조를 보기 어렵기 때문에, 가장 마지막 관측치가 가장 좋은 예측치다라 말하고 있는 것입니다.</p>
+<p>그러나, 실제로 ARIMA로 양질의 예측을 하려면 위 방법으로는 탐탁치 않습니다.<br />
+따라서 한번에 테스트 데이터를 예측하는 것이 아니라, 한 스텝씩 예측하고, 테스트 데이터를 &quot;관측&quot;할 때마다 모형을 <strong>업데이트</strong>해주는 REFRESH 전략을 쓸 것입니다.</p>
+<p>이를 위해서 아래와 같이 <code>forecast_one_step()</code> 함수를 정의합니다.<br />
+자세히 보면 <code>predict()</code> 함수의 <code>n_periods</code> 인자에 위처럼 y_test 길이인 <code>len(y_test)</code> 대신에 <strong>1</strong>이 들어갔습니다.<br />
+즉, y_test 전체 길이만큼 예측하는 것이 아니라 1개만 예측하는 함수를 정의한 것입니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forecast_one_step</span>():</span><br><span class="line">    fc, conf_int = model.predict(n_periods=<span class="number">1</span> <span class="comment"># 한 스텝씩!</span></span><br><span class="line">        , return_conf_int=<span class="literal">True</span>)              <span class="comment"># 신뢰구간 출력</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        fc.tolist()[<span class="number">0</span>],</span><br><span class="line">        np.asarray(conf_int).tolist()[<span class="number">0</span>]</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<p>그 후,</p>
+<ol>
+<li>훈련 데이터로 1개 예측한 값<sup>1-step ahead forecast</sup>을 <code>fc</code>, <code>conf</code>에 넣었고, 이를 <code>y_pred</code>, <code>pred_upper</code>, <code>pred_lower</code> 에 저장하였습니다.</li>
+<li>테스트 데이터 <code>y_test</code>가 관측되었으면 모형 <code>model</code>에 <code>new_obs</code>를 넣어 관측치를 추가해줍니다. 이 <code>update</code>과정이 바로 모형을 refresh하는 방법이고,<br />
+관측치가 추가됨으로써 AIC, 로그 가능도가 다시 계산되고 가장 마지막 관측치가 업데이트 됩니다.<br />
+즉, <strong>가장 마지막 관측치가 업데이트가 되기 때문에 관측치가 추가됨으로써 임의 보행 모형에서의 예측치도 업데이트됩니다.</strong></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">forecasts = []</span><br><span class="line">y_pred = []</span><br><span class="line">pred_upper = []</span><br><span class="line">pred_lower = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> new_ob <span class="keyword">in</span> y_test:</span><br><span class="line">    fc, conf = forecast_one_step()</span><br><span class="line">    y_pred.append(fc)</span><br><span class="line">    pred_upper.append(conf[<span class="number">1</span>])</span><br><span class="line">    pred_lower.append(conf[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment">## 모형 업데이트 !!</span></span><br><span class="line">    model.update(new_ob)</span><br></pre></td></tr></table></figure>
+<p>테스트 데이터는 모형 성능 평가를 위한 것이고 실제 상황에서는 없을텐데요.<br />
+예를 들어 실제 상황에서 일별 데이터가 쌓이는 구조라 가정하면 다음과 같이 예측치가 계산됩니다.</p>
+<ol>
+<li>과거 N일 전 ~ 오늘까지의 데이터로 최적의 ARIMA 모형을 찾는다.</li>
+<li>이로 내일의 데이터를 예측한다. 만일 임의 보행 모형이라면, 내일의 예측값은 오늘의 관측치이다!</li>
+<li>내일 데이터가 쌓이면, ARIMA 모형에 업데이트해준다. 이로 인해 AIC, 로그 가능도가 다시 계산되고, 마지막 관측치도 내일의 데이터가 된다.</li>
+<li>따라서, 모레의 데이터 예측치는 내일 데이터가 된다!</li>
+<li>모레 데이터가 쌓이면, ARIMA 모형에 업데이트해준다. (무한 반복)</li>
+</ol>
+<p><strong>이렇게 전체 데이터를 예측하지 않고 1개씩 업데이트 해주면 가장 마지막 관측치가 업데이트되면서 예측치도 이에 따라 업데이트됩니다.</strong><br />
+아래와 같이 실제값과 예측값을 비교해보면 오늘의 실제값이 내일의 예측값임을 확인하실 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&quot;test&quot;</span>: y_test, <span class="string">&quot;pred&quot;</span>: y_pred&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/arimastock-testpred.png" alt="" /></p>
+<p>또한, 모형이 다 업데이트된 후 <code>summary</code>를 다시 출력해보면 다음과 같이 No. Observations이 289개에서 테스트 데이터 124개만큼 늘어 413개로 데이터가 업데이트됐음을 알 수 있습니다.<br />
+마찬가지로, 로그 가능도, AIC, 계수 출력값, 검정 통계량 값도 다시 계산되었음을 확인하실 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(model.summary())</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">                 SARIMAX Results                                </span><br><span class="line">==============================================================================</span><br><span class="line">Dep. Variable:                      y   No. Observations:                  413</span><br><span class="line">Model:               SARIMAX(0, 1, 0)   Log Likelihood               -3488.775</span><br><span class="line">Date:                Sat, 25 Sep 2021   AIC                           6979.550</span><br><span class="line">Time:                        10:52:08   BIC                           6983.571</span><br><span class="line">Sample:                             0   HQIC                          6981.140</span><br><span class="line">                                - 413                                         </span><br><span class="line">Covariance Type:                  opg                                         </span><br><span class="line">==============================================================================</span><br><span class="line">                 coef    std err          z      P&gt;|z|      [0.025      0.975]</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">sigma2      1.329e+06    6.4e+04     20.765      0.000     1.2e+06    1.45e+06</span><br><span class="line">===================================================================================</span><br><span class="line">Ljung-Box (Q):                       39.13   Jarque-Bera (JB):               100.09</span><br><span class="line">Prob(Q):                              0.51   Prob(JB):                         0.00</span><br><span class="line">Heteroskedasticity (H):               0.61   Skew:                             0.58</span><br><span class="line">Prob(H) (two-sided):                  0.00   Kurtosis:                         5.12</span><br><span class="line">===================================================================================</span><br></pre></td></tr></table></figure>
+<p>자, 그럼 잘 적합되었는지 그림을 그려보겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> plotly.subplots <span class="keyword">import</span> make_subplots</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span><br><span class="line"></span><br><span class="line">fig = go.Figure([</span><br><span class="line">    <span class="comment"># 훈련 데이터-------------------------------------------------------</span></span><br><span class="line">    go.Scatter(x = y_train.index, y = y_train, name = <span class="string">&quot;Train&quot;</span>, mode = <span class="string">&#x27;lines&#x27;</span></span><br><span class="line">              ,line=<span class="built_in">dict</span>(color = <span class="string">&#x27;royalblue&#x27;</span>))</span><br><span class="line">    <span class="comment"># 테스트 데이터------------------------------------------------------</span></span><br><span class="line">    , go.Scatter(x = y_test.index, y = y_test, name = <span class="string">&quot;Test&quot;</span>, mode = <span class="string">&#x27;lines&#x27;</span></span><br><span class="line">                ,line = <span class="built_in">dict</span>(color = <span class="string">&#x27;rgba(0,0,30,0.5)&#x27;</span>))</span><br><span class="line">    <span class="comment"># 예측값-----------------------------------------------------------</span></span><br><span class="line">    , go.Scatter(x = y_test.index, y = y_pred, name = <span class="string">&quot;Prediction&quot;</span>, mode = <span class="string">&#x27;lines&#x27;</span></span><br><span class="line">                     ,line = <span class="built_in">dict</span>(color = <span class="string">&#x27;red&#x27;</span>, dash = <span class="string">&#x27;dot&#x27;</span>, width=<span class="number">3</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 신뢰 구간---------------------------------------------------------</span></span><br><span class="line">    , go.Scatter(x = y_test.index.tolist() + y_test.index[::-<span class="number">1</span>].tolist() </span><br><span class="line">                ,y = pred_upper + pred_lower[::-<span class="number">1</span>] <span class="comment">## 상위 신뢰 구간 -&gt; 하위 신뢰 구간 역순으로</span></span><br><span class="line">                ,fill=<span class="string">&#x27;toself&#x27;</span></span><br><span class="line">                ,fillcolor=<span class="string">&#x27;rgba(0,0,30,0.1)&#x27;</span></span><br><span class="line">                ,line=<span class="built_in">dict</span>(color=<span class="string">&#x27;rgba(0,0,0,0)&#x27;</span>)</span><br><span class="line">                ,hoverinfo=<span class="string">&quot;skip&quot;</span></span><br><span class="line">                ,showlegend=<span class="literal">False</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">400</span>, width=<span class="number">1000</span>, title_text=<span class="string">&quot;ARIMA(0,1,0)모형&quot;</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/arimastock-result.png" alt="" /></p>
+<p>그림을 보면 테스트 데이터를 통째로 넣는 것과 달리 예측이 잘 되었음을 확인하실 수 있습니다.</p>
+<p><img src="../../images/arimastock-result2.png" alt="" /></p>
+<p>더 자세히 보면, 테스트 값을 하루 미루면 예측값이 되어야 하는데요. 그렇다고 보기엔 초록색 동그라미 부분이 평행 이동이 아닌 것 같은 느낌을 지울 수 없었습니다.<br />
+그 이유는 실상 주식 데이터는 주말에 없기 때문에 3일 뒤에 예측될 수도 있어 (금요일 데이터 -&gt; 월요일에 반영) 그런 것이었고, 주중에서는 딱 1일 뒤 데이터가 예측값으로 잘 들어가 있었습니다.</p>
+<hr />
+<h3 id="step-5-모형-평가"><a class="markdownIt-Anchor" href="#step-5-모형-평가"></a> Step 5. 모형 평가</h3>
+<p>이 모형에 대한 평가를 하기 위해 MAPE (Mean Absolute Percentage Error) 지표를 활용하겠습니다.</p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">F_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>를 예측값, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>를 실제 테스트 데이터 값이라 할 때<br />
+MAPE는 다음과 같이 &quot;잔차 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>t</mi></msub><mo>−</mo><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">F_{t}-A_{t}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)의 크기가 실제 값 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">A_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>의 크기에서 차지하는 백분율&quot;로,<br />
+작을수록 좋습니다.</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>M</mi><mi>A</mi><mi>P</mi><mi>E</mi><mo>=</mo><mfrac><mrow><mn>100</mn><mi mathvariant="normal">%</mi></mrow><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mrow><mi mathvariant="normal">∣</mi><msub><mi>F</mi><mi>t</mi></msub><mo>−</mo><msub><mi>A</mi><mi>t</mi></msub><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><msub><mi>A</mi><mi>t</mi></msub><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">MAPE = \frac{100\%}{n}\sum_{t=1}^{n}\frac{\vert F_{t}-A_{t}\vert}{\vert A_{t} \vert}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.9185100000000004em;vertical-align:-1.267113em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.6769999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mord">%</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.882887em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.267113em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">MAPE</span>(<span class="params">y_test, y_pred</span>):</span><br><span class="line">	<span class="keyword">return</span> np.mean(np.<span class="built_in">abs</span>((y_test - y_pred) / y_test)) * <span class="number">100</span> </span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;MAPE: <span class="subst">&#123;MAPE(y_test, y_pred):<span class="number">.3</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="comment"># MAPE: 0.792</span></span><br></pre></td></tr></table></figure>
+<p>위와 같이 잔차가 실제값의 0.792% 를 차지할 정도로 모형이 잘 적합되었음을 알 수 있습니다.</p>
+<hr />
+<h2 id="결론"><a class="markdownIt-Anchor" href="#결론"></a> 결론</h2>
+<p>결론이 되게 허무합니다. 삼성 주가를 예측한 결과는 <strong>결국 1일 전 데이터 값을 매번 업데이트해주면 된다</strong>는 결론입니다.<br />
+임의 보행 모형이 아니라면, 조금 더 재밌는 예측 결과가 나올텐데 아쉽습니다.</p>
+<p>ARIMA 모형은 정말 뚜렷한 주기성이 있거나 추세가 있을 때 좋은 예측 결과를 내지 않을까 생각해봅니다.<br />
+다음은 Facebook의 Prophet 모형에 대해 정리해보고, ARIMA와 비교해보는 글을 작성하고자 합니다!</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/" title="시계열 분석 시리즈 (4): Python auto_arima로 삼성 주가 제대로 예측하기">http://assaeunji.github.io/2021/09/25/2021-09-25-arimastock/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/data-analysis/" rel="tag"># data-analysis</a>
+              <a href="/tags/easy-guide/" rel="tag"># easy-guide</a>
+              <a href="/tags/time-series/" rel="tag"># time-series</a>
+              <a href="/tags/stock-analysis/" rel="tag"># stock-analysis</a>
+              <a href="/tags/arima/" rel="tag"># arima</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/08/2021-09-08-arimapdq/" rel="prev" title="시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식">
+                  <i class="fa fa-chevron-left"></i> 시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/10/24/2021-10-24-tipsforjobs/" rel="next" title="데이터 분석가로 취업을 하려면 다섯 가지를 준비하자.">
+                  데이터 분석가로 취업을 하려면 다섯 가지를 준비하자. <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

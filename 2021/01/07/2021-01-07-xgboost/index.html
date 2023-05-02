@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="오늘은 GBM에 대한 자세한 설명{:target&#x3D;“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드{:target&#x3D;“_blank”} 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳{:target&#x3D;“_blank”}에서 확인하">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까?">
+<meta property="og:url" content="http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="오늘은 GBM에 대한 자세한 설명{:target&#x3D;“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다. 파이썬 머신러닝 완벽 가이드{:target&#x3D;“_blank”} 책을 참고해 정리하였습니다. 실습에 대한 전체 코드는 이 곳{:target&#x3D;“_blank”}에서 확인하">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/2021/01/images/tree-titleimage.jpg">
+<meta property="article:published_time" content="2021-01-06T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="supervised-learning">
+<meta property="article:tag" content="boosting">
+<meta property="article:tag" content="tree algorithm">
+<meta property="article:tag" content="gbm">
+<meta property="article:tag" content="xgboost">
+<meta property="article:tag" content="lightgbm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/2021/01/images/tree-titleimage.jpg">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/","path":"2021/01/07/2021-01-07-xgboost/","title":"XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까? | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text"> Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%AC%EC%9D%B4%ED%82%B7%EB%9F%B0-scikit-liearn-api%EB%A5%BC-%ED%86%B5%ED%95%9C-xgboost"><span class="nav-number">2.</span> <span class="nav-text"> 사이킷런 (Scikit-liearn) API를 통한 XGBoost</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost-%EC%84%A4%EC%B9%98"><span class="nav-number">2.1.</span> <span class="nav-text"> XGBoost 설치</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost%EC%9D%98-%ED%95%98%EC%9D%B4%ED%8D%BC-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0"><span class="nav-number">2.2.</span> <span class="nav-text"> XGBoost의 하이퍼 파라미터</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost-%EC%A0%81%EC%9A%A9"><span class="nav-number">2.3.</span> <span class="nav-text"> XGBoost 적용</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%AC%EC%9D%B4%ED%82%B7%EB%9F%B0-scikit-liearn-api%EB%A5%BC-%ED%86%B5%ED%95%9C-lightgbm"><span class="nav-number">3.</span> <span class="nav-text"> 사이킷런 (Scikit-liearn) API를 통한 LightGBM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lightgbm-%EC%84%A4%EC%B9%98"><span class="nav-number">3.1.</span> <span class="nav-text"> LightGBM 설치</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lightgbm-%ED%95%98%EC%9D%B4%ED%8D%BC-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> LightGBM 하이퍼 파라미터</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lightgbm-%EC%A0%81%EC%9A%A9"><span class="nav-number">3.3.</span> <span class="nav-text"> LightGBM 적용</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EC%BA%90%EA%B8%80-%EC%82%B0%ED%83%84%EB%8D%B0%EB%A5%B4-%EA%B3%A0%EA%B0%9D-%EB%A7%8C%EC%A1%B1-%EC%98%88%EC%B8%A1"><span class="nav-number">4.</span> <span class="nav-text"> 실습: 캐글 산탄데르 고객 만족 예측</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%95%84%EC%9A%94%ED%95%9C-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC"><span class="nav-number">4.1.</span> <span class="nav-text"> 필요한 라이브러리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0"><span class="nav-number">4.2.</span> <span class="nav-text"> 데이터 살펴보기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0"><span class="nav-number">4.3.</span> <span class="nav-text"> 데이터 전처리하기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost-%EB%AA%A8%EB%8D%B8-%ED%95%99%EC%8A%B5-%ED%95%98%EC%9D%B4%ED%8D%BC-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%ED%8A%9C%EB%8B%9D"><span class="nav-number">4.4.</span> <span class="nav-text"> XGBoost 모델 학습 &amp; 하이퍼 파라미터 튜닝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lightgbm-%EB%AA%A8%EB%8D%B8-%ED%95%99%EC%8A%B5-%ED%95%98%EC%9D%B4%ED%8D%BC-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%ED%8A%9C%EB%8B%9D"><span class="nav-number">4.5.</span> <span class="nav-text"> LightGBM 모델 학습 &amp; 하이퍼 파라미터 튜닝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">5.</span> <span class="nav-text"> References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/tree-titleimage.jpg" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까? | Be Geeky">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-01-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-01-07T00:00:00+09:00">2021-01-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-04-23 11:13:52" itemprop="dateModified" datetime="2023-04-23T11:13:52+09:00">2023-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>오늘은 <a href="https://assaeunji.github.io/machine%20learning/2020-09-05-gbm/">GBM에 대한 자세한 설명</a>{:target=“_blank”}에 이어 GBM 기반의 XGBoost와 LightGBM 알고리즘에 대해 알아보고, 어떤 알고리즘이 더 좋은지 비교하고자 합니다.</li>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a>{:target=“_blank”} 책을 참고해 정리하였습니다.</li>
+<li>실습에 대한 전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/tree-based-analysis/blob/main/XGBoost-Santander.ipynb">이 곳</a>{:target=“_blank”}에서 확인하실 수 있습니다.</li>
+</ul>
+<hr />
+<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<p><strong>XGBoost</strong>는 eXtra Gradient Boost의 준말로 GBM에서 파생된 트리 기반의 앙상블 학습 방법입니다. 이 방법은 캐글 대회에서 상위를 차지한 많은 참가자들이 XGBoost를 사용하면서 널리 알려졌습니다. XGBoost는 병렬 학습이 가능해 GBM 대비 학습 시간이 적게 걸리고, 과적합 규제 (Regularization), 나무 가지치기 (Tree pruning), 조기 중단 (Early Stopping) <sup>특정 반복 횟수만큼 더 이상 비용함수가 감소하지 않으면 지정된 반속횟수를 다 완료하지 않고 수행을 종료하는 것</sup>과 같은 성능 향상에 필요한 기능들이 탑재되어 있습니다.</p>
+<p><strong>LightGBM</strong>도 마찬가지로 GBM 기반의 알고리즘이고, XGBoost와 GBM에 비해 훨씬 더 학습에 걸리는 시간이 적다는 점에서 장점을 가집니다. 또한 성능상 XGBoost와도 큰 차이가 없고, 기능상 다양성이 많다는 것도 장점입니다. LightGBM이 XGBoost보다 2년 후에 만들어지다 보니 XGBoost의 장점은 계승하고 단점은 보완하는 방식으로 개발됐다고 합니다.</p>
+<p>따라서 이 포스팅에서는 XGBoost와 LightGBM을 파이썬의 사이킷런 (Scikit-liearn) API로 구현하고 이를 산탄데르 고객 예측 데이터에 적용해 어떤 알고리즘이 더 우수한지 판별해보고자 합니다.</p>
+<hr />
+<h2 id="사이킷런-scikit-liearn-api를-통한-xgboost"><a class="markdownIt-Anchor" href="#사이킷런-scikit-liearn-api를-통한-xgboost"></a> 사이킷런 (Scikit-liearn) API를 통한 XGBoost</h2>
+<p>XGBoost의 핵심 라이브러리는 C/C++로 작성되어 있습니다. XGBoost 개발 그룹은 파이썬에서도 XGBoost를 구동할 수 있도록 파이썬 패키지를 제공했습니다. 초기엔 사이킷런과 호환되지 않는 독자적인 XGBoost 전용 패키지였지만, 워낙 파이썬 사용자들이 사이킷런을 기반으로 머신러닝을 많이 이용하고 있기 때문에 XGBoost 개발 그룹은 사이킷런과 연동할 수 있는 API를 제공하기로 했습니다. XGBoost 패키지의 사이킷런 API는 <code>XGBClassifier</code>와 <code>XGBRegressor</code>입니다. 이를 이용하면 사이킷런이 학습을 위해 사용하는 <code>fit()</code>과 <code>predict()</code>과 같은 표준 사이킷런 명령어를 사용할 수 있습니다.</p>
+<h3 id="xgboost-설치"><a class="markdownIt-Anchor" href="#xgboost-설치"></a> XGBoost 설치</h3>
+<p>이제 XGBoost를 <code>pip3</code>을 통해 설치해보겠습니다. mac에서 터미널 창을 열어 다음과 같이 명령어를 입력합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install xgboost</span><br></pre></td></tr></table></figure>
+<p>설치가 완료되면 xgboost 모듈이 정상적으로 설치됐는지 검증합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xgboost <span class="keyword">as</span> xgb <span class="comment"># 파이썬 래퍼</span></span><br><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> XGBClassifier <span class="comment"># 사이킷런 API</span></span><br></pre></td></tr></table></figure>
+<h3 id="xgboost의-하이퍼-파라미터"><a class="markdownIt-Anchor" href="#xgboost의-하이퍼-파라미터"></a> XGBoost의 하이퍼 파라미터</h3>
+<p>사이킷런 API 기준으로 하이퍼 파라미터를 설명드리겠습니다.</p>
+<p><img src="../../images/xgboost_params.png" alt="" /></p>
+<p>위 표에서 중요도 순으로 정렬하여 색을 다르게 표현했습니다. 즉, learning_rate, n_estimators, max_depth, min_child_weight, gamma의 중요도가 가장 높고, 이후에 early_stopping_rounds, subsample, colsample_bytree를 건드린다 합니다.</p>
+<p>자세한 설명은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}을 참조해주시길 바랍니다.</p>
+<p>과적합 문제가 심각하면 다음과 같이 하이퍼 파라미터를 조정할 수 있습니다.</p>
+<ul>
+<li>learning_rate을 낮추고 n_estimators를 높여줍니다. (이 둘은 같이 움직입니다)</li>
+<li>max_depth 값을 낮춥니다.</li>
+<li>min_child_weight 값을 높입니다.</li>
+<li>gamma 값을 높입니다.</li>
+<li>subsample, colsample_bytree 값을 조정합니다.</li>
+</ul>
+<h3 id="xgboost-적용"><a class="markdownIt-Anchor" href="#xgboost-적용"></a> XGBoost 적용</h3>
+<p><code>X_train, X_test, y_train, y_test</code>가 있다 할 때 사이킷런을 이용한 학습 및 예측을 하는 방법과 혼동 행렬 (confusion matrix)과 중요도 플랏 (importance plot)을 출력하는 방법은 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> XGBClassifier</span><br><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> plot_importance</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># train</span></span><br><span class="line">xgb = XGBClassifier(n_estimators = <span class="number">400</span>, learning_rate = <span class="number">0.3</span>, max_depth = <span class="number">3</span>)</span><br><span class="line">xgb.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># prediction</span></span><br><span class="line">w_pred = xgb.predict(X_test)</span><br><span class="line">w_pred_proba = xgb.predict_proba(X_test)[:,<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># confusion matrix</span></span><br><span class="line">get_clf_eval(y_test, w_pred, w_pred_proba)</span><br><span class="line"></span><br><span class="line"><span class="comment"># importance plot</span></span><br><span class="line">fig, ax = plt.subplots(figsize = (<span class="number">10</span>,<span class="number">12</span>))</span><br><span class="line">plot_importance(xgb, ax=ax)</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="사이킷런-scikit-liearn-api를-통한-lightgbm"><a class="markdownIt-Anchor" href="#사이킷런-scikit-liearn-api를-통한-lightgbm"></a> 사이킷런 (Scikit-liearn) API를 통한 LightGBM</h2>
+<p>LightGBM을 파이썬에서 적용하는 방법을 알아보기 전에 &quot;왜 LightGBM은 XGBoost나 GBM에 비해 더 빠른 시간 내에 학습할까&quot;에 대한 답을 말씀드리고자 합니다. 이에 대한 답은 <strong>노드를 분할하는 방법</strong>에 있습니다.</p>
+<p><img src="../../images/xgboost_levelwise.png" alt="" /></p>
+<p>기존의 XGBoost나 GBM은 트리의 깊이를 효과적으로 줄이기 위한 균형 트리 분할 (Level-Wise)을 사용합니다. <strong>최대한 균형 잡힌 트리</strong>를 유지하면서 분할하기 때문에 트리의 깊이가 최소화될 수 있습니다. 이러한 균형 잡힌 트리를 생성하는 이유는 <strong>과적합을 방지</strong>할 수 있다 알려져 있기 때문입니다. 그러나 균형을 맞추기 위한 시간이 오래 걸린다는 단점이 있습니다.</p>
+<p><img src="../../images/xgboost_leafwise.png" alt="" /></p>
+<p>이에 비해 LightGBM의 리프 중심 분할 (Leaf-wise)은 트리의 균형을 맞추지 않고 최대 손실 값을 가지는 리프 노드를 지속적으로 분할하면서 트리의 깊이가 깊어지고 <strong>비대칭적</strong>인 트리가 생성됩니다. 결과적으로 균형 트리 분할에 비해 손실값이 높은 노드에 대해 더 깊게 트리를 분할하며 손실값을 줄일 수 있기 때문에 다른 부스팅 계열 알고리즘보다 더 좋은 정확도나 비슷한 수준의 성능을 낼 수 있습니다.</p>
+<p><a target="_blank" rel="noopener" href="https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/">Which algorithm takes the crown: Light GBM vs XGBOOST?</a>{:target=“_blank”}에 따르면, 리프 중심 분할 방법은 복잡도가 증가하고 과적합 문제가 발생할 수 있다 합니다. 그러나, 이는 트리의 최대 깊이인 <code>max_depth</code>의 하이퍼 파라미터를 조정한다면 해결할 수 있는 문제라 합니다.</p>
+<h3 id="lightgbm-설치"><a class="markdownIt-Anchor" href="#lightgbm-설치"></a> LightGBM 설치</h3>
+<p>XGBoost와 마찬가지로 pip3을 이용해 lightgbm 설치합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install lightgbm</span><br></pre></td></tr></table></figure>
+<p>잘 설치되었는지 검증해봅니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> LGBMClassifier</span><br></pre></td></tr></table></figure>
+<h3 id="lightgbm-하이퍼-파라미터"><a class="markdownIt-Anchor" href="#lightgbm-하이퍼-파라미터"></a> LightGBM 하이퍼 파라미터</h3>
+<p>LightGBM에 사용되는 하이퍼 파라미터는 다음과 같습니다.</p>
+<p><img src="../../images/lightgbm_params.png" alt="" /></p>
+<p>마찬가지로, 중요도 순으로 정렬하였고 자세한 내용은 <a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}을 참조해주시길 바랍니다.</p>
+<p>과적합 방지를 위한 하이퍼 파라미터 튜닝 방안은 다음과 같습니다.</p>
+<ul>
+<li>learning_rate를 작게 하면서 n_estimators를 크게 해봅니다.</li>
+<li>min_child_sample는 과적합 개선을 위한 중요한 파라미터입니다. 보통 큰 값으로 설정하면 트리가 깊어지는 것을 방지할 수 있습니다.</li>
+<li>max_depth는 명시적으로 트리의 깊이를 제한합니다.</li>
+</ul>
+<h3 id="lightgbm-적용"><a class="markdownIt-Anchor" href="#lightgbm-적용"></a> LightGBM 적용</h3>
+<p><code>X_train, X_test, y_train, y_test</code>가 있다 할 때 사이킷런을 이용한 학습 및 예측을 하는 방법과 혼동 행렬 (confusion matrix)과 중요도 플랏 (importance plot)을 출력하는 방법은 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> LGBMClassifier</span><br><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> plot_importance</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># train</span></span><br><span class="line">lgbm = LGBMClassifier(n_estimators = <span class="number">400</span>, learning_rate = <span class="number">0.3</span>, max_depth = <span class="number">3</span>)</span><br><span class="line">lgbm.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># prediction</span></span><br><span class="line">w_pred = lgbm.predict(X_test)</span><br><span class="line">w_pred_proba = lgbm.predict_proba(X_test)[:,<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># confusion matrix</span></span><br><span class="line">get_clf_eval(y_test, w_pred, w_pred_proba)</span><br><span class="line"></span><br><span class="line"><span class="comment"># importance plot</span></span><br><span class="line">fig, ax = plt.subplots(figsize = (<span class="number">10</span>,<span class="number">12</span>))</span><br><span class="line">plot_importance(lgbm, ax=ax)</span><br></pre></td></tr></table></figure>
+<p>XGBoost와 마찬가지로 사이킷런 API를 이용하기 때문에 함수가 거의 비슷합니다 :&gt;</p>
+<hr />
+<h2 id="실습-캐글-산탄데르-고객-만족-예측"><a class="markdownIt-Anchor" href="#실습-캐글-산탄데르-고객-만족-예측"></a> 실습: 캐글 산탄데르 고객 만족 예측</h2>
+<p>이번에는 캐글의 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a>{:target=“_blank”}에 대해서 고객 만족 여부를 XGBoost와 LightGBM을 통해 예측해보겠습니다.</p>
+<p>분석의 목적은 370개의 피처로 주어진 데이터 세트 기반에서 고객 만족 여부를 예측하는 것입니다. 클래스 레이블 명은 TARGET이고, 1이면 불만을 가진 고객, 0이면 만족한 고객을 의미합니다.</p>
+<p>대부분 만족으로 응답한 고객이 많기 때문에 정확도 수치보단 ROC-AUC가 더 적합합니다. 따라서 평가 메트릭은 ROC-AUC로 하였습니다.</p>
+<h3 id="필요한-라이브러리"><a class="markdownIt-Anchor" href="#필요한-라이브러리"></a> 필요한 라이브러리</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment"># sklearn 관련</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_auc_score</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"><span class="comment"># xgboost 관련</span></span><br><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> XGBClassifier</span><br><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> plot_importance</span><br><span class="line"><span class="comment"># lightgbm 관련</span></span><br><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> LGBMClassifier</span><br><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> plot_importance</span><br></pre></td></tr></table></figure>
+<h3 id="데이터-살펴보기"><a class="markdownIt-Anchor" href="#데이터-살펴보기"></a> 데이터 살펴보기</h3>
+<p>캐글에서 데이터를 다운받아 훈련 데이터를 확인해봅니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cust_df = pd.read_csv(<span class="string">&#x27;./train.csv&#x27;</span>,encoding=<span class="string">&#x27;latin-1&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(cust_df.shape)</span><br><span class="line">cust_df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/xgboost_head.png" alt="" /></p>
+<p>다음과 같이 76,020개의 행과 371개의 열을 가진 데이터로, 우리가 예측할 변수는 <code>TARGET</code>에 저장되어 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cust_df[<span class="string">&#x27;TARGET&#x27;</span>].value_counts() <span class="comment"># 0: 만족, 1: 불만족</span></span><br></pre></td></tr></table></figure>
+<p>이 <code>TARGET</code> 변수는 이항형 (binary)이고, 만족하는 고객은 73,012명, 만족하지 않는 고객은 3,008명으로 불만족인 고객은 4% 정도에 불과합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>    <span class="number">73012</span></span><br><span class="line"><span class="number">1</span>     <span class="number">3008</span></span><br><span class="line">Name: TARGET, dtype: int64</span><br></pre></td></tr></table></figure>
+<h3 id="데이터-전처리하기"><a class="markdownIt-Anchor" href="#데이터-전처리하기"></a> 데이터 전처리하기</h3>
+<p><code>describe()</code> 메서드를 이용해 각 피처들의 분포를 살펴보면 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cust_df.describe()</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/xgboost_describe.png" alt="" /></p>
+<p>전처리할 변수는 두 가지입니다.</p>
+<ul>
+<li><code>var3</code>의 최소값이 -999999로 되어 있는데, 이를 가장 값이 많은 2로 변환하고자 합니다. 아마도 특정 예외 값 혹은 null값을 -999999로 변환했기 때문입니다.</li>
+<li>ID 피처는 단순 식별자이기 때문에 피처를 드롭하겠습니다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cust_df[<span class="string">&#x27;var3&#x27;</span>].replace(-<span class="number">999999</span>, <span class="number">2</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">cust_df.drop(<span class="string">&#x27;ID&#x27;</span>,axis=<span class="number">1</span>, inplace=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>이제 XGBoost와 LightGBM 모형 훈련을 위해 훈련 데이터와 테스트 데이터를 나누는 작업을 해야 합니다.<br />
+이를 위해 <code>sklearn</code>의 <code>train_test_split</code> 메서드를 이용했고, 테스트 데이터의 크기와 훈련 데이터 비율은 2:8로 하였습니다.</p>
+<p>그 결과 훈련 데이터의 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span> 크기는 (60,816, 369)가 됩니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># X랑 y 나누기</span></span><br><span class="line">X = cust_df.iloc[:,:-<span class="number">1</span>]</span><br><span class="line">y = cust_df.iloc[:,-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">X_train, X_eval, y_train, y_eval = train_test_split(X, y, test_size = <span class="number">0.2</span>, random_state = <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(y_train.value_counts()/y_train.count())</span><br><span class="line"><span class="built_in">print</span>(y_eval.value_counts()/y_eval.count())</span><br></pre></td></tr></table></figure>
+<p>또한 훈련 데이터와 테스트 데이터 모두 TARGET의 값의 분포가 원본 데이터와 유사하게 전체 데이터의 4% 정도로 불만족 값이 나오도록 만들어졌습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>    <span class="number">0.960964</span></span><br><span class="line"><span class="number">1</span>    <span class="number">0.039036</span></span><br><span class="line">Name: TARGET, dtype: float64</span><br><span class="line"><span class="number">0</span>    <span class="number">0.9583</span></span><br><span class="line"><span class="number">1</span>    <span class="number">0.0417</span></span><br><span class="line">Name: TARGET, dtype: float64</span><br></pre></td></tr></table></figure>
+<h3 id="xgboost-모델-학습-하이퍼-파라미터-튜닝"><a class="markdownIt-Anchor" href="#xgboost-모델-학습-하이퍼-파라미터-튜닝"></a> XGBoost 모델 학습 &amp; 하이퍼 파라미터 튜닝</h3>
+<p>이제 XGBoost의 학습 모델을 생성하고 예측 결과를 ROC AUC로 평가해보겠습니다 (<code>eval_metric = 'auc'</code>). 또한 시작과 끝 시간을 재어서 XGBoost와 LightGBM의 수행 속도를 비교헤보았습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time() <span class="comment">#시작 시간</span></span><br><span class="line"><span class="comment">#---------------------</span></span><br><span class="line"><span class="comment"># 학습</span></span><br><span class="line">xgb = XGBClassifier(n_estimators = <span class="number">500</span>, random_state = <span class="number">156</span>)</span><br><span class="line">xgb.fit(X_train, y_train, early_stopping_rounds = <span class="number">100</span>,</span><br><span class="line">       eval_metric = <span class="string">&quot;auc&quot;</span>, eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line">xgb_roc_score = roc_auc_score(y_eval, xgb.predict_proba(X_eval)[:,<span class="number">1</span>],average = <span class="string">&#x27;macro&#x27;</span>)</span><br><span class="line"><span class="comment">#---------------------</span></span><br><span class="line">toc = time.time() <span class="comment"># 끝 시간</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(xgb_roc_score)) <span class="comment">#0.8413</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment">#34초</span></span><br></pre></td></tr></table></figure>
+<p>Grid Search 없이 약한 학습기 개수 (<code>n_estimators</code>)를 500, 조기 종료 반복 횟수 (<code>early_stopping_rounds</code>)를 100으로 했을 때 걸린 시간은 34초, ROC AUC는 0.8413입니다.</p>
+<p>이제 이 성능을 높이기 위한 하이퍼 파라미터 튜닝을 시도해보았습니다. 칼럼 개수가 371개로 많은 편이기 때문에 과적합 방지를 위해 <code>max_depth, min_child_weight, colsample_bytree</code> 하이퍼 파라미터만 일차적으로 튜닝 대상으로 삼았습니다.</p>
+<p>다음 예제 코드는 8개 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msup><mn>2</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">=2^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span>)의 하이퍼 파라미터의 경우의 수를 가집니다. 수행 시간이 꽤 오래 걸리므로 weak learner의 개수를 100개, fold의 개수를 3개로, early_stopping_rounds를 30으로 줄여서 테스트한 뒤 나중에 하이퍼 파라미터 튜닝이 완료되면 다시 바꾸고자 합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time()</span><br><span class="line"></span><br><span class="line"><span class="comment">#-------------------</span></span><br><span class="line"><span class="comment"># Grid Search</span></span><br><span class="line">xgb = XGBClassifier(n_estimators = <span class="number">100</span>, random_state = <span class="number">156</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 하이퍼파라미터 후보</span></span><br><span class="line">params = &#123;<span class="string">&#x27;max_depth&#x27;</span>:[<span class="number">5</span>,<span class="number">7</span>]</span><br><span class="line">    , <span class="string">&#x27;min_child_weight&#x27;</span>:[<span class="number">1</span>,<span class="number">3</span>]</span><br><span class="line">    , <span class="string">&#x27;colsample_bytree&#x27;</span>:[<span class="number">0.5</span>,<span class="number">0.75</span>]&#125;</span><br><span class="line"><span class="comment"># folds = 3</span></span><br><span class="line">gridcv = GridSearchCV(xgb, param_grid = params, cv = <span class="number">3</span>)</span><br><span class="line">gridcv.fit(X_train, y_train, early_stopping_rounds = <span class="number">30</span>, eval_metric = <span class="string">&quot;auc&quot;</span>,</span><br><span class="line">          eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line">xgb_roc_score = roc_auc_score(y_eval, gridcv.predict_proba(X_eval)[:,<span class="number">1</span>],</span><br><span class="line">    average=<span class="string">&#x27;macro&#x27;</span>)</span><br><span class="line"><span class="comment">#-------------------</span></span><br><span class="line"></span><br><span class="line">toc = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Optimized hyperparameters&#x27;</span>, gridcv.best_params_) </span><br><span class="line"><span class="comment">#&#123;&#x27;colsample_bytree&#x27;: 0.75, &#x27;max_depth&#x27;: 5, &#x27;min_child_weight&#x27;: 3&#125;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(xgb_roc_score)) <span class="comment">#0.8433</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment"># 178초 = 3분</span></span><br></pre></td></tr></table></figure>
+<p>[Output]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Optimized hyperparameters &#123;<span class="string">&#x27;colsample_bytree&#x27;</span>: <span class="number">0.75</span>, <span class="string">&#x27;max_depth&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;min_child_weight&#x27;</span>: <span class="number">3</span>&#125;</span><br><span class="line">ROC AUC: <span class="number">0.8433</span></span><br><span class="line">time elapsed: <span class="number">178.41108393669128</span></span><br></pre></td></tr></table></figure>
+<p>이전에 하이퍼파라미터 튜닝 없이 얻은 ROC AUC 0.8413에 비해, 최적의 파라미터 {‘colsample_bytree’: 0.75, ‘max_depth’: 5, ‘min_child_weight’: 1}로 했을 때 0.002 정도 ROC AUC가 높아졌음을 볼 수 있습니다.</p>
+<p>이제 앞에서 구한 최적의 파라미터를 기반으로 다른 하이퍼 파라미터를 변경 또는 추가해 다시 최적화를 진행해보겠습니다. 위에서 구한 최적의 하이퍼 파라미터를 {‘colsample_bytree’: 0.75, ‘max_depth’: 5, ‘min_child_weight’: 1}로 설정한 뒤, n_estimators = 1000으로 증가시키고, learning_rate = 0.02로 감소시키겠습니다. 그리고 reg_alpha = 0.03을 추가하였습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time()</span><br><span class="line"></span><br><span class="line">xgb = XGBClassifier(</span><br><span class="line">    colsample_bytree = <span class="number">0.75</span>, max_depth = <span class="number">5</span>, min_child_weight = <span class="number">3</span></span><br><span class="line">    , n_estimators = <span class="number">1000</span>,random_state = <span class="number">156</span></span><br><span class="line">    , learning_rate = <span class="number">0.02</span>, reg_alpha = <span class="number">0.03</span></span><br><span class="line">) <span class="comment"># 위의 최적 파라미터 결과</span></span><br><span class="line"></span><br><span class="line">xgb.fit(X_train, y_train, early_stopping_rounds = <span class="number">200</span>, eval_metric = <span class="string">&quot;auc&quot;</span>,</span><br><span class="line">       eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line"></span><br><span class="line">xgb_roc_score = roc_auc_score(y_eval, xgb.predict_proba(X_eval)[:,<span class="number">1</span>]</span><br><span class="line">    ,average=<span class="string">&#x27;macro&#x27;</span>)</span><br><span class="line"></span><br><span class="line">toc = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(xgb_roc_score)) <span class="comment"># 0.8450</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment"># 77초</span></span><br></pre></td></tr></table></figure>
+<p>결과적으로 ROC AUC가 0.8450으로 이전 테스트 (0.8413, 0.8433)보다 약간 향상된 결과를 나타내고 있습니다.</p>
+<p>그러나, <strong>앙상블 계열 알고리즘은 기본적으로 과적합이나 노이즈에 뛰어난 알고리즘이기 때문에, 하이퍼 파라미터 튜닝으로 성능 수치 개선이 급격히 되는 경우는 많지 않다 합니다</strong>. 결과적으로 하이퍼 파라미터 튜닝에 그렇게 의존할 필요는 없어 보입니다!</p>
+<p>피처 중요도를 그래프로 나타내면 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> plot_importance</span><br><span class="line"></span><br><span class="line">fig,ax = plt.subplots(figsize=(<span class="number">10</span>,<span class="number">8</span>))</span><br><span class="line">plot_importance(xgb, ax=ax, max_num_features = <span class="number">20</span>, height=<span class="number">.4</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/xgboost_featureimportance.png" alt="" /></p>
+<h3 id="lightgbm-모델-학습-하이퍼-파라미터-튜닝"><a class="markdownIt-Anchor" href="#lightgbm-모델-학습-하이퍼-파라미터-튜닝"></a> LightGBM 모델 학습 &amp; 하이퍼 파라미터 튜닝</h3>
+<p>마찬가지로 XGBoost에서 만들어진 데이터 세트를 기반으로 LightGBM 학습을 수행하고 ROC-AUC를 측정해보겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time()</span><br><span class="line">lgbm = LGBMClassifier (n_estimators = <span class="number">500</span>, random_state = <span class="number">156</span>)</span><br><span class="line"></span><br><span class="line">lgbm.fit(X_train, y_train, early_stopping_rounds = <span class="number">100</span>, eval_metric = <span class="string">&quot;auc&quot;</span>, </span><br><span class="line">         eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line"></span><br><span class="line">lgbm_roc_score = roc_auc_score (y_eval, lgbm.predict_proba(X_eval)[:,<span class="number">1</span>], average=<span class="string">&quot;macro&quot;</span>)</span><br><span class="line">toc = time.time()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(lgbm_roc_score)) <span class="comment"># 0.8409</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment"># 1.9초!</span></span><br></pre></td></tr></table></figure>
+<p>결과는 ROC-AUC는 0.8409, 걸린 시간은 1.9초이네요. 튜닝을 하지 않은 XGBoost의 결과와 비교했을 때 ROC-AUC는 0.0004 더 낮고, 시간은 약 32초 더 빠르게 나왔습니다.</p>
+<p>마찬가지로 GridSearchCV로 하이퍼 파라미터 튜닝을 수행해 보겠습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time()</span><br><span class="line"></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>:[<span class="number">128</span>,<span class="number">160</span>],</span><br><span class="line">    <span class="string">&#x27;min_child_samples&#x27;</span>:[<span class="number">60</span>,<span class="number">100</span>],</span><br><span class="line">    <span class="string">&#x27;subsample&#x27;</span>:[<span class="number">0.8</span>,<span class="number">1</span>]</span><br><span class="line">&#125;</span><br><span class="line">lgbm = LGBMClassifier(n_estimator = <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">gridcv = GridSearchCV(lgbm, param_grid = params, cv = <span class="number">3</span>)</span><br><span class="line">gridcv.fit(X_train, y_train, early_stopping_rounds = <span class="number">30</span>, eval_metric = <span class="string">&#x27;auc&#x27;</span>,</span><br><span class="line">          eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line"></span><br><span class="line">lgbm_roc_score = roc_auc_score(y_eval, gridcv.predict_proba(X_eval)[:,<span class="number">1</span>],average=<span class="string">&#x27;macro&#x27;</span>)</span><br><span class="line"></span><br><span class="line">toc = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Optimized hyperparameters&#x27;</span>, gridcv.best_params_) <span class="comment"># &#123;&#x27;max_depth&#x27;: 128, &#x27;min_child_samples&#x27;: 60, &#x27;subsample&#x27;: 0.8&#125;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(lgbm_roc_score)) <span class="comment"># 0.8406</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment"># 46초</span></span><br></pre></td></tr></table></figure>
+<p>크… 엄청납니다. 기존에 3분이 걸렸던 XGBoost의 GridSearchCV에 비해 LightGBM의 GridSearchCV는 46초면 완성이네요! 이의 ROC AUC는 0.8406, 최적의 하이퍼 파라미터는 {‘max_depth’: 128, ‘min_child_samples’: 60, ‘subsample’: 0.8}입니다.</p>
+<p>마지막으로 해당 하이퍼 파라미터를 LightGBM에 적용해 다시 학습한 결과입니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tic = time.time()</span><br><span class="line"></span><br><span class="line">lgbm = LGBMClassifier(n_estimators = <span class="number">1000</span>, max_depth = <span class="number">128</span>, min_child_samples = <span class="number">60</span>, subsample = <span class="number">0.8</span>, random_state = <span class="number">156</span>)</span><br><span class="line">lgbm.fit(X_train, y_train, early_stopping_rounds = <span class="number">100</span>, eval_metric = <span class="string">&quot;auc&quot;</span>, eval_set = [(X_train, y_train), (X_eval, y_eval)])</span><br><span class="line">lgbm_roc_score = roc_auc_score(y_eval, lgbm.predict_proba(X_eval)[:,<span class="number">1</span>],average=<span class="string">&#x27;macro&#x27;</span>)</span><br><span class="line"></span><br><span class="line">toc = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ROC AUC: &#123;0:.4f&#125;&#x27;</span>.<span class="built_in">format</span>(lgbm_roc_score)) <span class="comment"># 0.8406 </span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;time elapsed:&#x27;</span>, toc - tic) <span class="comment"># 1.87</span></span><br></pre></td></tr></table></figure>
+<p>여전히 ROC-AUC는 0.8406이 도출되었고, 소요 시간은 1.87초입니다.</p>
+<p>결과적으로 XGBoost와 LightGBM의 성능과 소요 시간을 비교하면 다음과 같습니다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">구분</th>
+<th style="text-align:center">XGBoost ROC-AUC (소요 시간)</th>
+<th style="text-align:center">LightGBM ROC-AUC (소요 시간)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">튜닝 X</td>
+<td style="text-align:center">0.8413 (31초)</td>
+<td style="text-align:center">0.8409 (1.8초)</td>
+</tr>
+<tr>
+<td style="text-align:center">튜닝 O</td>
+<td style="text-align:center">0.8450 (77초)</td>
+<td style="text-align:center">0.8406 (1.9초)</td>
+</tr>
+</tbody>
+</table>
+<p>소수점 둘째 자리까지 ROC-AUC 값이 같을 정도로 XGBoost만큼 우수한 성능을 낸다는 점, 시간이 훨씬 절약되는 점을 고려했을 때 LightGBM이 완승이라 생각합니다.<br />
+실상은 agile하게 하이퍼 파라미터 튜닝 없이 LightGBM을 바로 적용할 것 같다는 생각이 드네요:&gt; 실무에서도 쓰는 날까지!! 기대가 됩니다 후후</p>
+<hr />
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://machinelearningkorea.com/2019/09/29/lightgbm-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">lightGBM / XGBoost 파라미터 설명</a>{:target=“_blank”}</li>
+<li><a target="_blank" rel="noopener" href="https://www.kaggle.com/c/santander-customer-satisfaction">산탄데르 고객 만족 데이터 세트</a>{:target=“_blank”}</li>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/69752484">파이썬 머신러닝 완벽 가이드</a>{:target=“_blank”}</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/" title="XGBoost vs. LightGBM, 어떤 알고리즘이 더 좋을까?">http://assaeunji.github.io/2021/01/07/2021-01-07-xgboost/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/supervised-learning/" rel="tag"># supervised-learning</a>
+              <a href="/tags/boosting/" rel="tag"># boosting</a>
+              <a href="/tags/tree-algorithm/" rel="tag"># tree algorithm</a>
+              <a href="/tags/gbm/" rel="tag"># gbm</a>
+              <a href="/tags/xgboost/" rel="tag"># xgboost</a>
+              <a href="/tags/lightgbm/" rel="tag"># lightgbm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/11/2020-12-11-bigquery_kmeans/" rel="prev" title="10분 만에 구현하는 BigQuery K-평균 클러스터링 모델">
+                  <i class="fa fa-chevron-left"></i> 10분 만에 구현하는 BigQuery K-평균 클러스터링 모델
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/30/2021-02-07-mab/" rel="next" title="A/B 테스트의 확장판, MAB (Multi-Armed Bandits) 알고리즘">
+                  A/B 테스트의 확장판, MAB (Multi-Armed Bandits) 알고리즘 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>
