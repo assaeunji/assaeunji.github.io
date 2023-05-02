@@ -22,12 +22,10 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳에서 확인하실 수 있고, R 패키지 bnlearn tutorial를 주로 참조했음을 알립니다.    GBN (Ga">
-<meta property="og:type" content="article">
+    <meta property="og:type" content="article">
 <meta property="og:title" content="인과 관계 분석 시리즈 (2): 가우시안 베이지안 네트워크 (GBN, Gaussian Bayesian Network)">
 <meta property="og:url" content="http://assaeunji.github.io/2020/04/12/2020-04-12-gbn/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다. 이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다. 전체 코드와 데이터는 이 곳에서 확인하실 수 있고, R 패키지 bnlearn tutorial를 주로 참조했음을 알립니다.    GBN (Ga">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/gbn-hillclimbing2.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/gbn-hillclimbing.png">
@@ -47,7 +45,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/dental-scatter1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/dental-danb2.png">
 <meta property="article:published_time" content="2020-04-11T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T13:18:39.302Z">
+<meta property="article:modified_time" content="2023-05-02T14:40:54.404Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="bayesian">
 <meta property="article:tag" content="causal-inference">
@@ -114,7 +112,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">117</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">56</span></a></li>
   </ul>
 </nav>
 
@@ -152,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -163,7 +161,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-count">117</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -212,7 +210,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="인과 관계 분석 시리즈 (2): 가우시안 베이지안 네트워크 (GBN, Gaussian Bayesian Network) | Be Geeky">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다.,이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다.">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -234,7 +232,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 22:18:39" itemprop="dateModified" datetime="2023-05-02T22:18:39+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-02 23:40:54" itemprop="dateModified" datetime="2023-05-02T23:40:54+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -249,6 +247,7 @@
   
 </div>
 
+            <div class="post-description">Gaussian Bayesian Network는 인과 관계를 추론하는 방법 중 하나로, 이전 포스팅에서 설명했습니다.,이번 포스팅에서는 GBN의 구조 학습 및 모형 추정의 원리와 그 예제에 대해 설명드리고자 합니다.</div>
         </div>
       </header>
 

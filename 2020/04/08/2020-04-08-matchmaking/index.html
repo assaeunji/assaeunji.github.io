@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이 글은 NDC (Nexon Developers Conference) 홈페이지에서 YouTube 영상을 보고 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다. 다음 방침에 따라 권리자명과 홈페이지를 출처로 밝힘을 알립니다.   NDC 저작권 방침: 저작물을 개인 블로그, 페이스북 등 SNS에 게재하길 원하시는 경우에는">
+    <meta name="description" content="이 글은 NDC (Nexon Developers Conference) 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NDC 후기: 매칭시스템">
 <meta property="og:url" content="http://assaeunji.github.io/2020/04/08/2020-04-08-matchmaking/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이 글은 NDC (Nexon Developers Conference) 홈페이지에서 YouTube 영상을 보고 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다. 다음 방침에 따라 권리자명과 홈페이지를 출처로 밝힘을 알립니다.   NDC 저작권 방침: 저작물을 개인 블로그, 페이스북 등 SNS에 게재하길 원하시는 경우에는">
+<meta property="og:description" content="이 글은 NDC (Nexon Developers Conference) 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/matchmaking-1.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/matchmaking-troll.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/matchmaking-sol.png">
 <meta property="og:image" content="http://assaeunji.github.io/2020/04/images/cookie-conclusion.png">
 <meta property="article:published_time" content="2020-04-07T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T13:18:38.046Z">
+<meta property="article:modified_time" content="2023-05-02T14:40:13.361Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="ndc">
 <meta property="article:tag" content="games">
@@ -101,7 +101,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">117</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">56</span></a></li>
   </ul>
 </nav>
 
@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-count">117</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -199,7 +199,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="NDC 후기: 매칭시스템 | Be Geeky">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="이 글은 NDC (Nexon Developers Conference) 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -221,7 +221,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 22:18:38" itemprop="dateModified" datetime="2023-05-02T22:18:38+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-02 23:40:13" itemprop="dateModified" datetime="2023-05-02T23:40:13+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,6 +236,7 @@
   
 </div>
 
+            <div class="post-description">이 글은 NDC (Nexon Developers Conference) 관심 있던 주제인 매치 메이킹을 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.</div>
         </div>
       </header>
 

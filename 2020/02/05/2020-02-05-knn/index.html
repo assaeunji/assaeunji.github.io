@@ -22,16 +22,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="이 글은 [파이썬 라이브러리를 활용한 머신러닝](http:&#x2F;&#x2F;book.interpark.com&#x2F;product&#x2F;BookDisplay.do?_method&#x3D;detail&amp;sc.prdNo&#x3D;303260973&amp;gclid&#x3D;CjwKCAiAyeTxBRBvEiwAuM8dnUQHS6gpLMB6tn0m3cKl_rO7hHyhwCzPtk23EvcW40nL99b1kC2ejBoCJKcQ">
+    <meta name="description" content="이 글은 파이썬 라이브러리를 활용한 머신러닝의 내용을 요약한 글입니다.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k-Nearest Neighbors Algorithm">
 <meta property="og:url" content="http://assaeunji.github.io/2020/02/05/2020-02-05-knn/index.html">
 <meta property="og:site_name" content="Be Geeky">
-<meta property="og:description" content="이 글은 [파이썬 라이브러리를 활용한 머신러닝](http:&#x2F;&#x2F;book.interpark.com&#x2F;product&#x2F;BookDisplay.do?_method&#x3D;detail&amp;sc.prdNo&#x3D;303260973&amp;gclid&#x3D;CjwKCAiAyeTxBRBvEiwAuM8dnUQHS6gpLMB6tn0m3cKl_rO7hHyhwCzPtk23EvcW40nL99b1kC2ejBoCJKcQ">
+<meta property="og:description" content="이 글은 파이썬 라이브러리를 활용한 머신러닝의 내용을 요약한 글입니다.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/2020/02/05/images/knn-reg.png">
 <meta property="article:published_time" content="2020-02-04T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T14:11:32.309Z">
+<meta property="article:modified_time" content="2023-05-02T14:45:10.571Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="supervised-learning">
 <meta property="article:tag" content="knn">
@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">117</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">56</span></a></li>
   </ul>
 </nav>
 
@@ -131,7 +131,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -142,7 +142,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-count">117</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -191,7 +191,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="k-Nearest Neighbors Algorithm | Be Geeky">
-      <meta itemprop="description" content="이 글은 [파이썬 라이브러리를 활용한 머신러닝](http://book.interpark.com/product/BookDisplay.do?_method=detail&sc.prdNo=303260973&gclid=CjwKCAiAyeTxBRBvEiwAuM8dnUQHS6gpLMB6tn0m3cKl_rO7hHyhwCzPtk23EvcW40nL99b1kC2ejBoCJKcQAvD_BwE)의 내용을 요약한 글입니다.">
+      <meta itemprop="description" content="이 글은 파이썬 라이브러리를 활용한 머신러닝의 내용을 요약한 글입니다.">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -213,7 +213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 23:11:32" itemprop="dateModified" datetime="2023-05-02T23:11:32+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-02 23:45:10" itemprop="dateModified" datetime="2023-05-02T23:45:10+09:00">2023-05-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -228,7 +228,7 @@
   
 </div>
 
-            <div class="post-description">이 글은 [파이썬 라이브러리를 활용한 머신러닝](http://book.interpark.com/product/BookDisplay.do?_method=detail&sc.prdNo=303260973&gclid=CjwKCAiAyeTxBRBvEiwAuM8dnUQHS6gpLMB6tn0m3cKl_rO7hHyhwCzPtk23EvcW40nL99b1kC2ejBoCJKcQAvD_BwE)의 내용을 요약한 글입니다.</div>
+            <div class="post-description">이 글은 파이썬 라이브러리를 활용한 머신러닝의 내용을 요약한 글입니다.</div>
         </div>
       </header>
 
@@ -302,6 +302,7 @@ k-NN은 이해하기 쉽고 모수 조정이 별로 없기 때문에 preliminary
 <h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> <strong>Reference</strong></h2>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">scikit learn 매뉴얼</a></li>
+<li><a target="_blank" rel="noopener" href="http://book.interpark.com/product/BookDisplay.do?_method=detail&amp;sc.prdNo=303260973&amp;gclid=CjwKCAiAyeTxBRBvEiwAuM8dnUQHS6gpLMB6tn0m3cKl_rO7hHyhwCzPtk23EvcW40nL99b1kC2ejBoCJKcQAvD_BwE">파이썬 라이브러리를 활용한 머신러닝</a></li>
 </ul>
 
     </div>
@@ -342,8 +343,8 @@ k-NN은 이해하기 쉽고 모수 조정이 별로 없기 때문에 preliminary
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/02/07/2020-02-07-lm/" rel="next" title="Linear Regression, Cholesky Decomposition">
-                  Linear Regression, Cholesky Decomposition <i class="fa fa-chevron-right"></i>
+                <a href="/2020/02/12/2020-02-12-ridge/" rel="next" title="Ridge/ Lasso Regression">
+                  Ridge/ Lasso Regression <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
