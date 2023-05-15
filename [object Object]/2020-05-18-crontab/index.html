@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이번 포스팅에서는 AWS의 가상환경 EC2에서 crontab을 사용해 파이썬 코드를 자동화시키는 방법에 대해 알아보고자 합니다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기">
+<meta property="og:url" content="http://assaeunji.github.io/[object%20Object]/2020-05-18-crontab/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="이번 포스팅에서는 AWS의 가상환경 EC2에서 crontab을 사용해 파이썬 코드를 자동화시키는 방법에 대해 알아보고자 합니다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/crontab-1.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/crontab-3.png">
+<meta property="article:published_time" content="2020-05-17T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-02T14:41:12.568Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="aws">
+<meta property="article:tag" content="ec2">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="crontab">
+<meta property="article:tag" content="auto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/crontab-1.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/[object%20Object]/2020-05-18-crontab/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/[object%20Object]/2020-05-18-crontab/","path":"/[object Object]/2020-05-18-crontab/","title":"AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#crontab"><span class="nav-number">1.</span> <span class="nav-text"> Crontab?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab-in-ec2-linux-ubuntu"><span class="nav-number">1.1.</span> <span class="nav-text"> Crontab in EC2 Linux Ubuntu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab-format"><span class="nav-number">1.2.</span> <span class="nav-text"> Crontab Format</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python-argparse-module"><span class="nav-number">2.</span> <span class="nav-text"> Python Argparse Module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B0%B1%EB%AC%B8%EC%9D%B4-%EB%B6%88%EC%97%AC%EC%9D%BC%EA%B2%AC-%EB%B8%8C%EB%A1%A4%EC%8A%A4%ED%83%80%EC%A6%88-%EA%B2%8C%EC%9E%84-%EB%A1%9C%EA%B7%B8-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text"> 백문이 불여일견: 브롤스타즈 게임 로그 저장하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">4.</span> <span class="nav-text"> References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/[object%20Object]/2020-05-18-crontab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기 | Be Geeky">
+      <meta itemprop="description" content="이번 포스팅에서는 AWS의 가상환경 EC2에서 crontab을 사용해 파이썬 코드를 자동화시키는 방법에 대해 알아보고자 합니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-18 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-18T00:00:00+09:00">2020-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-02 23:41:12" itemprop="dateModified" datetime="2023-05-02T23:41:12+09:00">2023-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AWS/" itemprop="url" rel="index"><span itemprop="name">AWS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">이번 포스팅에서는 AWS의 가상환경 EC2에서 crontab을 사용해 파이썬 코드를 자동화시키는 방법에 대해 알아보고자 합니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>이번 포스팅에서는 AWS의 가상환경 EC2에서 crontab을 사용해 파이썬 코드를 자동화시키는 방법에 대해 알아보고자 합니다.</li>
+</ul>
+<hr />
+<h2 id="crontab"><a class="markdownIt-Anchor" href="#crontab"></a> Crontab?</h2>
+<p>크론탭이란 <strong>리눅스용 작업 스케줄러</strong>로, 특정 시각에 명령어를 반복 수행할 수 있도록 하는 프로그램입니다.<br />
+저는 크론탭을 이용해 파이썬 코드를 원하는 시간에 주기적으로 실행하기 위해 사용하였습니다.</p>
+<h3 id="crontab-in-ec2-linux-ubuntu"><a class="markdownIt-Anchor" href="#crontab-in-ec2-linux-ubuntu"></a> Crontab in EC2 Linux Ubuntu</h3>
+<p>크론탭을 이용하는 방법은 간단합니다.</p>
+<ol>
+<li>
+<p>AWS EC2에 접속하면 터미널 창에 <code>crontab -e</code>를 칩니다.</p>
+</li>
+<li>
+<p>크론탭을 설정할 에디터를 <code>vim</code>으로 사용하기 위해 <code>2</code>를 치고 <code>Enter</code>를 누릅니다.</p>
+<p><img src="../../images/crontab-1.png" alt="" /></p>
+</li>
+<li>
+<p><code>Shift+G</code>로 마지막 줄로 이동하고 <code>i</code>를 눌러 Insert mode로 진입해 명령어를 입력합니다. 입력 형식은 다음과 같습니다.</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">* * * * *  수행할 명령어</span><br><span class="line">┬ ┬ ┬ ┬ ┬</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ └───────── 요일 (0 - 6) (0:일요일, 1:월요일, 2:화요일, …, 6:토요일)</span><br><span class="line">│ │ │ └───────── 월 (1 - 12)</span><br><span class="line">│ │ └───────── 일 (1 - 31)</span><br><span class="line">│ └───────── 시 (0 - 23)</span><br><span class="line">└───────── 분 (0 - 59)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>Esc</code>를 눌러 Insert mode를 빠져나와서 <code>:wq + Enter</code>로 저장하고 <code>vim</code>을 종료합니다.</p>
+</li>
+</ol>
+<h3 id="crontab-format"><a class="markdownIt-Anchor" href="#crontab-format"></a> Crontab Format</h3>
+<p>그럼 크론탭 입력 형식에 대해 더 자세히 알아봅시다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">* * * * *  수행할 명령어</span><br><span class="line">┬ ┬ ┬ ┬ ┬</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ └───────── 요일 (0 - 6) (0:일요일, 1:월요일, 2:화요일, …, 6:토요일)</span><br><span class="line">│ │ │ └───────── 월 (1 - 12)</span><br><span class="line">│ │ └───────── 일 (1 - 31)</span><br><span class="line">│ └───────── 시 (0 - 23)</span><br><span class="line">└───────── 분 (0 - 59)</span><br></pre></td></tr></table></figure>
+<p>저 <code>*</code>의 자리에 원하는 분, 시, 일, 월, 요일을 입력해주면 됩니다.</p>
+<p>예를 들어, Python 버전 <code>3.xx</code>로 <code>main.py</code>를 주기적으로 시행한다 할 때 다음과 같이 <code>vim</code>에디터에 입력합니다.</p>
+<ul>
+<li>
+<p>매 1분마다 <code>main.py</code>를 수행</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* * * * * python3 main.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>매 15분, 45분마다 <code>main.py</code>를 수행</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">15,45 * * * * python3 main.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>매 10분마다 <code>main.py</code> 수행</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/10 * * * * python3 main.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>매일 새벽 2시에 <code>main.py</code> 수행</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 2 * * * python3 main.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>평일 (월~금) 오후 8시에 <code>main.py</code> 수행</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 20 * * 1-5 python3 main.py</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>주의할 점은 분, 시, 일, 월, 요일마다 띄어쓰기를 해줘야 한다는 점입니다.</p>
+<hr />
+<h2 id="python-argparse-module"><a class="markdownIt-Anchor" href="#python-argparse-module"></a> Python Argparse Module</h2>
+<p>주기적으로 실행할 <code>main.py</code>에는 어떻게 쓰면 될까요? 파이썬의 <code>argparse</code> 모듈을 이용하면 이 명령창 (command line)에서 인자를 입력받아 프로그램이 동작할 수 있게 할 수 있습니다.</p>
+<p>예를 들어 사칙연산을 하는 파이썬 프로그램을 <code>argparse</code>모듈을 이용해 다음과 같이 작성했습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parser</span>():</span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line">    parser.add_argument(<span class="string">&#x27;--x&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">1.0</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&#x27;What is the first number?&#x27;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&#x27;--y&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">float</span>, default=<span class="number">1.0</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&#x27;What is the second number?&#x27;</span>)</span><br><span class="line">    parser.add_argument(<span class="string">&#x27;--operation&#x27;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, default=<span class="string">&#x27;add&#x27;</span>,</span><br><span class="line">                        <span class="built_in">help</span>=<span class="string">&#x27;What operation? Can choose add, sub, mul, or div&#x27;</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">str</span>(calc(args)))</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc</span>(<span class="params">args</span>):</span><br><span class="line">    <span class="keyword">if</span> args.operation == <span class="string">&#x27;add&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> args.x + args.y</span><br><span class="line">    <span class="keyword">elif</span> args.operation == <span class="string">&#x27;sub&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> args.x - args.y</span><br><span class="line">    <span class="keyword">elif</span> args.operation == <span class="string">&#x27;mul&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> args.x * args.y</span><br><span class="line">    <span class="keyword">elif</span> args.operation == <span class="string">&#x27;div&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> args.x / args.y</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    parser()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p><code>add_argument</code>를 통해 필요한 인자들에 대한 정보를 적어줍니다.</p>
+<ul>
+<li>세 번째 줄에서 <code>--x</code>라는 플래그를 통해서 x의 인자를 받고, <code>type</code>은 <code>float</code>형으로 지정합니다.</li>
+<li>다섯 번째 줄에서도 마찬가지로 <code>--y</code>라는 플래그를 통해 <code>y</code>인자를 받고, <code>type</code>을 <code>float</code>형으로 지정합니다.</li>
+</ul>
+<p>이렇게 <code>type</code>을 지정해주는 이유는 지정해주지 않으면 <code>x</code>와 <code>y</code>를 기본으로 <code>str</code> 문자형으로 받기 때문입니다.</p>
+<ul>
+<li><code>--operation</code>에는 <code>x</code>와 <code>y</code>로 할 연산자를 지정해줍니다.</li>
+</ul>
+</li>
+<li>
+<p><code>parse_args</code>를 통해 지정된 옵션으로부터 온 데이터를 <code>args</code>에 저장해줍니다. 즉, <code>args</code>에 <code>x, y, operation</code>라는 인자가 저장되도록 합니다.</p>
+</li>
+<li>
+<p>이제 <code>calc</code>함수를 통해 사칙연산을 계산해주고, 이를 출력해줍니다.</p>
+</li>
+<li>
+<p><code>if __name__ == &quot;__main__&quot;</code>부분은 <code>main.py</code>가 명령창을 통해 <strong>직접 실행</strong>할 때만 <code>parser()</code>함수가 실행되도록 만들기 위함입니다.</p>
+</li>
+</ul>
+<hr />
+<h2 id="백문이-불여일견-브롤스타즈-게임-로그-저장하기"><a class="markdownIt-Anchor" href="#백문이-불여일견-브롤스타즈-게임-로그-저장하기"></a> 백문이 불여일견: 브롤스타즈 게임 로그 저장하기</h2>
+<p>최근 <a target="_blank" rel="noopener" href="https://brawlstats.readthedocs.io/en/latest/api.html">BrawlStats Python API</a>를 이용해 제 게임 데이터를 분석해보고자 crontab을 이용해 게임 로그를 저장하기 시작했습니다.<br />
+<a target="_blank" rel="noopener" href="https://github.com/novdov/brawlstars-analysis">novdov님의 GitHub</a>에서 소스 코드를 참고했습니다 (BrawlStats API에서 약간 달라진 함수들이 있어 수정했습니다).</p>
+<p>브롤스타즈 게임 기록은 최근 25건까지만 저장되기 때문에 주기적으로 저장해주는 자동화 프로그램이 필요했습니다.<br />
+따라서 <code>__main__.py</code>를 매일 3시와 자정에 실행하도록 crontab에서 설정해 로그를 저장했습니다.<br />
+<code>vim</code>에디터에 다음과 같이 토큰이 있는 경로, output을 저장할 경로, 브롤스타즈 태그를 적어줍니다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0 3 * * * python3 __main__.py --token_path token --output_dir /home/ubuntu --tag URC00YYV</span><br><span class="line">0 0 * * * python3 __main__.py --token_path token --output_dir /home/ubuntu --tag QPU8UYG9</span><br></pre></td></tr></table></figure>
+<p>5월 15일부터 모은 게임 데이터는 이렇게 저장되었습니다. 중간에 다른 유저의 데이터도 저장하다보니 이렇게 저장되었습니다.</p>
+<p><img src="../../images/crontab-3.png" alt="" /></p>
+<p>이어 제 게임 데이터를 분석해보는 포스팅을 할 예정입니다 😃</p>
+<hr />
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
+<li>novdov님의 GitHub <a target="_blank" rel="noopener" href="https://github.com/novdov/brawlstars-analysis"><code>[link]</code></a></li>
+<li>제타위키 리눅스 반복 예약작업 cron, crond, crontab <a target="_blank" rel="noopener" href="https://zetawiki.com/wiki/%EB%A6%AC%EB%88%85%EC%8A%A4_%EB%B0%98%EB%B3%B5_%EC%98%88%EC%95%BD%EC%9E%91%EC%97%85_cron,_crond,_crontab"><code>[link]</code></a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/[object%20Object]/2020-05-18-crontab/" title="AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기">http://assaeunji.github.io/[object Object]/2020-05-18-crontab/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/aws/" rel="tag"><i class="fa fa-tag"></i> aws</a>
+              <a href="/tags/ec2/" rel="tag"><i class="fa fa-tag"></i> ec2</a>
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+              <a href="/tags/crontab/" rel="tag"><i class="fa fa-tag"></i> crontab</a>
+              <a href="/tags/auto/" rel="tag"><i class="fa fa-tag"></i> auto</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2020-04-12-gbn/" rel="prev" title="인과 관계 분석 시리즈 (2): 가우시안 베이지안 네트워크 (GBN, Gaussian Bayesian Network)">
+                  <i class="fa fa-chevron-left"></i> 인과 관계 분석 시리즈 (2): 가우시안 베이지안 네트워크 (GBN, Gaussian Bayesian Network)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2020-05-20-brawlstats/" rel="next" title="Python brawlstats으로 브롤 스타즈 전투 기록 수집하기">
+                  Python brawlstats으로 브롤 스타즈 전투 기록 수집하기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

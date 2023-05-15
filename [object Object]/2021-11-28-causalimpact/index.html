@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta property="og:type" content="article">
+<meta property="og:title" content="CausalImpact로 COVID-19 데이터를 분석해보자">
+<meta property="og:url" content="http://assaeunji.github.io/[object%20Object]/2021-11-28-causalimpact/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/causalimpact-title.jpeg">
+<meta property="article:published_time" content="2021-11-27T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-02T14:53:09.663Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="causal-inference">
+<meta property="article:tag" content="data-analysis">
+<meta property="article:tag" content="time-series">
+<meta property="article:tag" content="R">
+<meta property="article:tag" content="covid19-data">
+<meta property="article:tag" content="causalimpact">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/causalimpact-title.jpeg">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/[object%20Object]/2021-11-28-causalimpact/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/[object%20Object]/2021-11-28-causalimpact/","path":"/[object Object]/2021-11-28-causalimpact/","title":"CausalImpact로 COVID-19 데이터를 분석해보자"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CausalImpact로 COVID-19 데이터를 분석해보자 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#causalimpact-%EA%B0%84%EB%8B%A8-%EC%84%A4%EB%AA%85"><span class="nav-number">1.</span> <span class="nav-text"> CausalImpact 간단 설명</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causalimpact%EB%A1%9C-covid-19-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text"> CausalImpact로 COVID-19 데이터 분석하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#coronavirus-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A1%9C-%ED%99%95%EC%A7%84%EC%9E%90%EC%88%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><span class="nav-number">2.1.</span> <span class="nav-text"> coronavirus 라이브러리로 확진자수 데이터 불러오기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%95%9C%EA%B5%AD%EC%9D%98-%EC%BD%94%EB%A1%9C%EB%82%98-%EC%83%81%ED%99%A9-%EC%8B%9C%EA%B0%81%ED%99%94"><span class="nav-number">2.2.</span> <span class="nav-text"> 한국의 코로나 상황 시각화</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9E%98%EB%B4%90-%EC%9D%B4%EA%B2%83%EC%9D%B4-%EC%82%AC%ED%9A%8C%EC%A0%81-%EA%B1%B0%EB%A6%AC%EB%91%90%EA%B8%B0-%ED%9A%A8%EA%B3%BC%EC%9D%B4%EB%8B%A4"><span class="nav-number">2.3.</span> <span class="nav-text"> 잘봐 이것이 사회적 거리두기 효과이다!</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">3.</span> <span class="nav-text"> 마치며</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/causalimpact-title.jpeg" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/[object%20Object]/2021-11-28-causalimpact/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CausalImpact로 COVID-19 데이터를 분석해보자 | Be Geeky">
+      <meta itemprop="description" content="이번 포스팅은 Google이 2015년에 발표한 CausalImpact 방법론을 바탕으로 한국의 코로나 확진자수 데이터를 적용시켜본 글입니다.,구체적으로는 한국 사회에서의 코로나를 생각해보면 사회적 거리두기 정책이나 N차 유행인 시기가 있었는데요. "사회적 거리두기가 강화된 시기에 효과가 있었을까?" 혹은 "N차 유행 때 특정 사건으로 인해서 코로나가 얼마나 확산되었을까?"에 대한 답을 가볍게 파악해보았습니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CausalImpact로 COVID-19 데이터를 분석해보자
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-11-28 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-28T00:00:00+09:00">2021-11-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-02 23:53:09" itemprop="dateModified" datetime="2023-05-02T23:53:09+09:00">2023-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Data-Analysis/" itemprop="url" rel="index"><span itemprop="name">Data Analysis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">이번 포스팅은 Google이 2015년에 발표한 CausalImpact 방법론을 바탕으로 한국의 코로나 확진자수 데이터를 적용시켜본 글입니다.,구체적으로는 한국 사회에서의 코로나를 생각해보면 사회적 거리두기 정책이나 N차 유행인 시기가 있었는데요. "사회적 거리두기가 강화된 시기에 효과가 있었을까?" 혹은 "N차 유행 때 특정 사건으로 인해서 코로나가 얼마나 확산되었을까?"에 대한 답을 가볍게 파악해보았습니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>이번 포스팅은 Google이 2015년에 발표한 <a target="_blank" rel="noopener" href="https://github.com/google/CausalImpact">CausalImpact</a> 방법론을 바탕으로 한국의 코로나 확진자수 데이터를 적용시켜본 글입니다.</li>
+<li>구체적으로는 한국 사회에서의 코로나를 생각해보면 사회적 거리두기 정책이나 N차 유행인 시기가 있었는데요. “사회적 거리두기가 강화된 시기에 효과가 있었을까?” 혹은 &quot;N차 유행 때 특정 사건으로 인해서 코로나가 얼마나 확산되었을까?&quot;에 대한 답을 가볍게 파악해보았습니다.</li>
+</ul>
+<hr />
+<h2 id="causalimpact-간단-설명"><a class="markdownIt-Anchor" href="#causalimpact-간단-설명"></a> CausalImpact 간단 설명</h2>
+<p>CausalImpact는 시계열 자료에서 어떤 개입 (Intervention)으로 인한 효과를 파악하기 위한 방법론입니다. 개입이라는 말이 좀 낯설지만, 코로나로 예를 들면 한국에서 사회적 거리두기 정책, 특정한 사건 (Ex. 광복절 집회로 인한 코로나 확산 등)이 개입이 될 수 있습니다.</p>
+<p>이 개입 효과를 파악하기 위해 CausalImpact 방법론은 관측된 결과 (Observed outcome)와 개입이 없었다면 생길 가상의 결과 (Expected outcome, Counterfactual) 간의 차이를 계산합니다. 즉, 현재는 사회적 거리두기 완화 정책으로 코로나 확진자수가 몇 명인데, 만약 이 완화 정책이 없었다면 몇 명이 되었을지 가상의 결과를 예측하고, 그 차이를 개입 효과라 보는 것입니다.</p>
+<p>이를 위해 CausalImpact에서는 개입 효과를 확인하고자 하는 시계열(Ex. 한국의 사회적 거리두기 정책에 따른 코로나 확진자수)과 개입에 영향받지 않는 대조 대상 (Control)이 되는 시계열 (Ex. 미국의 코로나 확진자수)가 주어졌을 때, 베이지안 구조적 시계열 모형(Bayesian Structural time-series model)을 구축합니다. 이 모형은 트렌드, 계절성을 잡아주는 상태-공간 모형의 일종인데요. 자세한 내용은 역시 논문을 읽어봄이 좋을 것 같습니다 :&gt;</p>
+<hr />
+<h2 id="causalimpact로-covid-19-데이터-분석하기"><a class="markdownIt-Anchor" href="#causalimpact로-covid-19-데이터-분석하기"></a> CausalImpact로 COVID-19 데이터 분석하기</h2>
+<p>이번 글의 핵심은 CausalImpact 패키지로 코로나 확진자수 데이터를 적용해보는 것입니다.<br />
+이번엔 오랜만에 제 마더 랭귀지 R을 사용하였습니다.</p>
+<p>이를 위해 다음의 라이브러리를 설치하고 불러옵니다.</p>
+<hr />
+<h3 id="coronavirus-라이브러리로-확진자수-데이터-불러오기"><a class="markdownIt-Anchor" href="#coronavirus-라이브러리로-확진자수-데이터-불러오기"></a> <code>coronavirus</code> 라이브러리로 확진자수 데이터 불러오기</h3>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">library<span class="punctuation">(</span>coronavirus<span class="punctuation">)</span> <span class="comment">#데이터를 불러오는 패키지</span></span><br><span class="line">library<span class="punctuation">(</span>CausalImpact<span class="punctuation">)</span></span><br><span class="line">library<span class="punctuation">(</span>tidyverse<span class="punctuation">)</span> </span><br><span class="line">library<span class="punctuation">(</span>lubridate<span class="punctuation">)</span> <span class="comment">#날짜 관련 라이브러리</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 데이터 불러오기</span></span><br><span class="line">data<span class="punctuation">(</span>coronavirus<span class="punctuation">)</span></span><br><span class="line">df <span class="operator">=</span> coronavirus</span><br></pre></td></tr></table></figure>
+<p><code>coronavirus</code> 패키지는 전세계 코로나 정보 데이터를 담고 있습니다.<br />
+이 중 한국의 코로나 확진자수 데이터를 가져왔습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df_kr <span class="operator">=</span>  df <span class="operator">%&gt;%</span> </span><br><span class="line">  filter<span class="punctuation">(</span>str_detect<span class="punctuation">(</span>country<span class="punctuation">,</span> <span class="string">&#x27;Korea&#x27;</span><span class="punctuation">)</span><span class="punctuation">,</span> type <span class="operator">==</span><span class="string">&#x27;confirmed&#x27;</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p>위 데이터는 다음과 같은 컬럼을 갖고 있습니다.</p>
+<ul>
+<li>date: YYYY-MM-DD 포맷의 날짜</li>
+<li>province: 주의 이름</li>
+<li>country: 나라 이름</li>
+<li>lat: 위도</li>
+<li>long: 경도</li>
+<li>type: confirmed (확진) / death (사망) / recovered (회복) 중 하나</li>
+<li>cases: 해당 날짜의 type에 따른 사람 수</li>
+<li>uid: 국가 코드</li>
+<li>iso2: 두 글자로 이뤄진 국가 코드</li>
+<li>iso3: 세 글자로 이뤄진 국가 코드</li>
+<li>code3: UN 국가 코드</li>
+<li>combined_key: 국가와 주 명</li>
+<li>population: 국가의 인구</li>
+<li>continent_name: 대륙 명</li>
+<li>continent_code: 대륙 코드</li>
+</ul>
+<p>데이터를 보면 다음과 같습니다.</p>
+<p><img src="../../images/causalimpact-dfkr.png" alt="" /></p>
+<hr />
+<h3 id="한국의-코로나-상황-시각화"><a class="markdownIt-Anchor" href="#한국의-코로나-상황-시각화"></a> 한국의 코로나 상황 시각화</h3>
+<p>이 글을 쓰면서 얼마나 많이 코로나와 관련한 거리두기 정책이 있었고, 어떤 유행이 있었는지 곱씹어볼 수 있는 기회가 있었는데요. <a target="_blank" rel="noopener" href="https://namu.wiki/w/%EC%82%AC%ED%9A%8C%EC%A0%81%20%EA%B1%B0%EB%A6%AC%EB%91%90%EA%B8%B0/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD#s-4.1.1">킹무위키</a>를 통해 알아낸 수도권 사회적 거리 두기 정책 변화 시점을 시각화해보았습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 한국 데이터만 뽑아보자</span></span><br><span class="line">df_kr <span class="operator">=</span>  df <span class="operator">%&gt;%</span> </span><br><span class="line">  group_by<span class="punctuation">(</span>date<span class="punctuation">,</span>country<span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  filter<span class="punctuation">(</span>str_detect<span class="punctuation">(</span>country<span class="punctuation">,</span> <span class="string">&#x27;Korea&#x27;</span><span class="punctuation">)</span></span><br><span class="line">         <span class="punctuation">,</span>type <span class="operator">==</span><span class="string">&#x27;confirmed&#x27;</span><span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  summarise<span class="punctuation">(</span>cases<span class="operator">=</span><span class="built_in">sum</span><span class="punctuation">(</span>cases<span class="punctuation">)</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 기본 확진자수 </span></span><br><span class="line">covid_plot <span class="operator">=</span> ggplot<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> aes<span class="punctuation">(</span>x<span class="operator">=</span>date<span class="punctuation">,</span> y<span class="operator">=</span>cases<span class="punctuation">)</span><span class="punctuation">)</span> <span class="operator">+</span></span><br><span class="line">  geom_line<span class="punctuation">(</span><span class="punctuation">)</span><span class="operator">+</span></span><br><span class="line">  <span class="comment"># scale_x_continuous(n.breaks=10)+</span></span><br><span class="line">  scale_x_date<span class="punctuation">(</span>date_labels<span class="operator">=</span><span class="string">&quot;%Y-%m&quot;</span><span class="punctuation">,</span>date_breaks <span class="operator">=</span> <span class="string">&quot;1 month&quot;</span><span class="punctuation">)</span><span class="operator">+</span></span><br><span class="line">  theme<span class="punctuation">(</span>axis.text.x <span class="operator">=</span> element_text<span class="punctuation">(</span>angle<span class="operator">=</span><span class="number">90</span><span class="punctuation">)</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 거리두기 정책 날짜</span></span><br><span class="line"> covid_policy_plot <span class="operator">=</span> </span><br><span class="line">  covid_plot<span class="operator">+</span></span><br><span class="line">  <span class="comment">#---------------------------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment"># 3단계 화: 20.06.28 ~ 20.11.06</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-02-29&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-05-05&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">            aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;red&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.2</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 3단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-05-06&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-08-15&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellowgreen&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.2</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 1단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-08-16&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-08-29&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.3</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-08-30&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-09-13&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.6</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2.5단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-09-14&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-10-11&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.2</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-10-12&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-11-18&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellowgreen&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.2</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 1단계 (전국)</span></span><br><span class="line">  <span class="comment">#---------------------------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment"># 5단계 화: 20.11.07 ~ 21.07.11</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-11-19&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-11-23&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellowgreen&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.8</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 1.5단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-11-24&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-12-07&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.3</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-12-08&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2021-02-14&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.6</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2.5단계</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2021-02-15&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2021-07-11&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;yellow&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.3</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 2단계</span></span><br><span class="line">  <span class="comment">#---------------------------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment"># 4단계 화: 20.07.11 ~ 21.10.31</span></span><br><span class="line">  geom_ribbon<span class="punctuation">(</span>data<span class="operator">=</span>subset<span class="punctuation">(</span>df_kr<span class="punctuation">,</span> as_date<span class="punctuation">(</span><span class="string">&quot;2021-07-12&quot;</span><span class="punctuation">)</span> <span class="operator">&lt;=</span> date <span class="operator">&amp;</span> date <span class="operator">&lt;=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2021-10-31&quot;</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span> </span><br><span class="line">              aes<span class="punctuation">(</span>ymin<span class="operator">=</span><span class="number">0</span><span class="punctuation">,</span>ymax<span class="operator">=</span><span class="literal">Inf</span><span class="punctuation">)</span><span class="punctuation">,</span> fill<span class="operator">=</span><span class="string">&quot;red&quot;</span><span class="punctuation">,</span> alpha<span class="operator">=</span><span class="number">0.3</span><span class="punctuation">)</span> <span class="operator">+</span> <span class="comment"># 4단계</span></span><br><span class="line">  <span class="comment">#---------------------------------------------------------------------------------------------</span></span><br><span class="line">  geom_vline<span class="punctuation">(</span>xintercept<span class="operator">=</span>sapply<span class="punctuation">(</span><span class="built_in">c</span><span class="punctuation">(</span><span class="string">&quot;2020-02-29&quot;</span><span class="punctuation">,</span><span class="string">&quot;2020-05-06&quot;</span><span class="punctuation">,</span><span class="string">&quot;2020-08-16&quot;</span><span class="punctuation">,</span><span class="string">&quot;2020-08-30&quot;</span><span class="punctuation">,</span><span class="string">&quot;2020-09-14&quot;</span></span><br><span class="line">    <span class="punctuation">,</span><span class="string">&quot;2020-10-12&quot;</span><span class="punctuation">,</span> <span class="string">&quot;2020-11-19&quot;</span><span class="punctuation">,</span> <span class="string">&quot;2020-11-24&quot;</span><span class="punctuation">,</span> <span class="string">&quot;2020-12-08&quot;</span><span class="punctuation">,</span> <span class="string">&quot;2021-02-15&quot;</span><span class="punctuation">,</span><span class="string">&quot;2021-07-12&quot;</span><span class="punctuation">)</span><span class="punctuation">,</span></span><br><span class="line">                               as_date<span class="punctuation">)</span><span class="punctuation">,</span> color <span class="operator">=</span> <span class="string">&quot;gray&quot;</span><span class="punctuation">,</span>size<span class="operator">=</span><span class="number">.5</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p><img src="../../images/causalimpact-policy.png" alt="" /></p>
+<p>위 그림에서 볼 수 있듯이 색상 (빨강 - 노랑 - 초록)에 따라서 사회적 거리두기 정책의 강도를 표시하고자 하였으며, 색상 내에서도 투명도에 따라서 색이 진하면 같은 단계이지만 정책이 강화되었음을 표기하였습니다. 즉,</p>
+<ul>
+<li>초록색 계열의 부분은 사회적 거리두기 정책이 1단계 ~ 1.5단계임을,</li>
+<li>노랑색 계열은 2단계 ~ 2.5단계,</li>
+<li>빨강색 계열은 3단계 내지는 4단계일 때를 의미합니다.</li>
+</ul>
+<p>참고로 지금 시점까지는 없고 2021-10-31 까지의 정책만 나와있어서 이때까지만 그림을 그렸습니다.</p>
+<p>또한, 사회적 거리두기 정책은 코로나 확진자수가 많아질 시기에 맞춰서 적용됨을 볼 수 있었는데요. 리서치를 했을 때 한국에서의 코로나 유행은 4차까지 있었습니다.</p>
+<ul>
+<li>1차 유행: 신천지, 2020년 2월 ~ 3월</li>
+<li>2차 유행: 광복절, 2020년 8월</li>
+<li>3차 유행: 2020년 11월 ~ 2021년 1월</li>
+<li>4차 유행: 첫 2,000명대 돌파, 2021년 7월 ~</li>
+</ul>
+<p>아쉬운 점은 3차 유행 때 정책이 빨리 적용되었어야 할 것 같은데 이에 맞는 정책이 없었다는 점이 보이네요.</p>
+<p>이 데이터를 시각화를 통해서 가장 사회적 거리두기 정책이 효과가 있었던 시점은 <strong>1차 유행 (2020년 2월 ~ 3월)에 따른 거리두기</strong>로 보입니다.<br />
+2020년 3월에 851명까지 갔다가 4월 19일에 확진자수가 다시 한 자리수로 돌아왔는데요 ㅜㅜ 이 때가 계속 유지되었으면 어땠을까… 생각이 듭니다…</p>
+<hr />
+<h3 id="잘봐-이것이-사회적-거리두기-효과이다"><a class="markdownIt-Anchor" href="#잘봐-이것이-사회적-거리두기-효과이다"></a> 잘봐 이것이 사회적 거리두기 효과이다!</h3>
+<p><img src="../../images/causalimpact-meme.jpeg" alt="" /></p>
+<p>제가 CausalImpact를 통해 보고 싶었던 것은 코로나 확진자수를 줄이는데 사회적 거리두기 효과가 있었는지 확인하는 것입니다.<br />
+이를 위해 CausalImpact 함수에 사용되는 파라미터부터 살펴보았습니다.</p>
+<ul>
+<li><code>data</code>: **반응 변수 (response variables)**와 **공변량 (covariates)**으로 이루어진 시계열 자료로, <code>zoo</code> 객체나 벡터, 행렬, 혹은 데이터프레임 형태일 수 있습니다. 여기서 반응 변수란, 우리가 개입 효과를 측정하고자하는 시계열 자료를 의미하고, 공변량들은 개입 효과를 받지 않은 비슷한 성격을 가진 시계열 자료를 의미합니다. CausalImpact에서는 처리를 받은 시계열 자료와 공변량 간의 관계가 개입 전의 기간 (pre-period)에서도 성립되고 개입 후의 기간 (post-period)에도 지속되는 것을 가정하고 있습니다. 이 때 반응 변수는 무조건 첫 번째 컬럼에 와야하고, 공변량은 그 이후 컬럼으로 만들어져야 합니다.</li>
+<li><code>pre.period</code>: 개입 전의 기간을 의미합니다. 이 기간은 반응 변수와 공변량 간의 관계를 추정하는 훈련 기간이라고도 볼 수 있습니다.</li>
+<li><code>post.perod</code>: 개입 후의 기간을 의미합니다. 이 기간은 반응 변수에 개입이 없었다면 어떤 값을 가졌을지 예측하기 위한 기간이라고도 볼 수 있습니다.</li>
+</ul>
+<p>먼저, <strong>첫 거리 두기 정책 기간이었던 2020-02-29 ~ 2020-05-05 (3단계) 간의 인과 효과를 확인해보고자 하였습니다.</strong><br />
+따라서 다음과 같이 인자를 두고자 하였습니다.</p>
+<ul>
+<li><code>data</code>
+<ul>
+<li><strong>반응 변수</strong> (첫 번째 컬럼): 한국의 코로나 확진자수</li>
+<li><strong>공변량</strong> (두 번째 ~ 다섯 번째 컬럼): 캐나다, 그리스, 미국, 일본의 코로나 확진자수, 캐나다나 그리스는 한국과 인구가 비슷해서 픽하였고, 이웃나라 일본과 뺄래야 뺄 수 없는 미국도 포함해보았습니다.</li>
+<li>이후, zoo 형태로 데이터를 만들어주어야 하는데요. <code>zoo(행렬, 날짜)</code> 형태로 만들어주었습니다.</li>
+</ul>
+</li>
+<li><code>pre.period</code>: 2020년 2월 29일이 개입이 시작한 기간이므로, 2020-01-22 ~ 2020-02-28로 두었습니다.</li>
+<li><code>post.period</code>: 개입이 시작한 기간부터 적당히 4월까지 기간을 두어서 2020-02-29 ~ 2020-04-30로 두었습니다.</li>
+</ul>
+<p>이를 코드로 짜면 다음과 같습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">start_date <span class="operator">=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-01-22&quot;</span><span class="punctuation">)</span></span><br><span class="line">treat_date <span class="operator">=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-02-28&quot;</span><span class="punctuation">)</span></span><br><span class="line">treat_date_p1 <span class="operator">=</span> as_date<span class="punctuation">(</span>treat_date<span class="punctuation">)</span> <span class="operator">+</span> <span class="number">1</span> <span class="comment"># 그 다음날</span></span><br><span class="line">end_date   <span class="operator">=</span> as_date<span class="punctuation">(</span><span class="string">&quot;2020-05-01&quot;</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 날짜별, 국가별로 group_by하여 확진자수를 더해주고 컬럼별로 국가 정보를 담고 있도록 만들어주기</span></span><br><span class="line">df_total <span class="operator">=</span> df <span class="operator">%&gt;%</span> </span><br><span class="line">  filter<span class="punctuation">(</span>country <span class="operator">%in%</span> <span class="built_in">c</span><span class="punctuation">(</span><span class="string">&#x27;Korea, South&#x27;</span><span class="punctuation">,</span><span class="string">&#x27;Canada&#x27;</span><span class="punctuation">,</span><span class="string">&#x27;Greece&#x27;</span><span class="punctuation">,</span><span class="string">&#x27;US&#x27;</span><span class="punctuation">,</span><span class="string">&#x27;Japan&#x27;</span><span class="punctuation">)</span><span class="punctuation">,</span> type <span class="operator">==</span> <span class="string">&#x27;confirmed&#x27;</span><span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  filter<span class="punctuation">(</span>date <span class="operator">&gt;=</span> start_date<span class="punctuation">,</span> date <span class="operator">&lt;=</span> end_date<span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  group_by<span class="punctuation">(</span>date<span class="punctuation">,</span> country<span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  summarise<span class="punctuation">(</span>cases<span class="operator">=</span><span class="built_in">sum</span><span class="punctuation">(</span>cases<span class="punctuation">)</span><span class="punctuation">)</span> <span class="operator">%&gt;%</span> </span><br><span class="line">  spread<span class="punctuation">(</span>country<span class="punctuation">,</span> cases<span class="punctuation">)</span> <span class="operator">%&gt;%</span>     <span class="comment"># long to wide</span></span><br><span class="line">  select<span class="punctuation">(</span><span class="number">1</span><span class="punctuation">,</span><span class="number">5</span><span class="punctuation">,</span><span class="number">2</span><span class="punctuation">,</span><span class="number">3</span><span class="punctuation">,</span><span class="number">4</span><span class="punctuation">,</span><span class="number">6</span><span class="punctuation">)</span> <span class="operator">%&gt;%</span>        <span class="comment"># 순서 바꿔주기</span></span><br><span class="line">  rename<span class="punctuation">(</span>Korea <span class="operator">=</span> `Korea, South`<span class="punctuation">)</span> <span class="comment"># 컬럼명을 Korea, South -&gt; Korea로 바꿔주기</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># zoo 형태로 만들어주기</span></span><br><span class="line">df_causal <span class="operator">=</span> zoo<span class="punctuation">(</span>as.data.frame<span class="punctuation">(</span>df_total<span class="punctuation">[</span><span class="punctuation">,</span><span class="built_in">c</span><span class="punctuation">(</span><span class="number">2</span><span class="operator">:</span><span class="number">6</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="punctuation">,</span> df_total<span class="operator">$</span>date<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p><code>df_total</code>과 <code>df_causal</code>부분을 좀더 자세히 설명드리면,</p>
+<ul>
+<li>
+<p>우선 한국을 포함한 다섯 국가의 확진자수 (type == confirmed)를 가져와서 보고싶은 기간 start_date ~ end_date까지 잘라주었습니다.</p>
+</li>
+<li>
+<p>다만, 캐나다나 미국의 경우 주(<code>province</code>)별로도 데이터가 나뉘어져 있어서 <code>group_by</code>와 <code>summarise</code>로 국가별로 확진자수 합산 값을 구하였습니다.</p>
+</li>
+<li>
+<p>이후 <code>spread()</code>함수를 통해서 길게 늘어진 데이터를 옆으로 펼치는 작업을 하였는데요. 이렇게 국가별로 컬럼을 갖도록 하는 함수입니다.</p>
+<p><img src="../../images/causalimpact-wide.png" alt="" /></p>
+</li>
+<li>
+<p>이후 <code>select</code> 함수를 통해 한국 컬럼이 가장 먼저 오도록 하고, <code>rename</code>함수를 통해 국가명을 Korea로 바꿨습니다.</p>
+</li>
+<li>
+<p>마지막으로 <code>zoo</code> 객체로 만들어주기 위해서 데이터에 해당하는 2번째 ~ 6번째 컬럼을 데이터프레임으로 만들고, date 컬럼을 두번째 인자로 넣어주었습니다.</p>
+</li>
+</ul>
+<p>결과적으로 df_causal 데이터는 이렇게 생겼습니다.</p>
+<p><img src="../../images/causalimpact-head.png" alt="" /></p>
+<p>이제 CausalImpact 함수를 적용해서 결과를 해석해보겠습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CausalImpact 적용하기</span></span><br><span class="line">causal_impact <span class="operator">=</span> CausalImpact<span class="punctuation">(</span>data <span class="operator">=</span> df_causal</span><br><span class="line">                             <span class="punctuation">,</span> pre.period <span class="operator">=</span> as_date<span class="punctuation">(</span><span class="built_in">c</span><span class="punctuation">(</span>start_date<span class="punctuation">,</span> treat_date<span class="punctuation">)</span><span class="punctuation">)</span></span><br><span class="line">                             <span class="punctuation">,</span> post.period <span class="operator">=</span> as_date<span class="punctuation">(</span><span class="built_in">c</span><span class="punctuation">(</span>treat_date_p1<span class="punctuation">,</span> end_date<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">)</span></span><br><span class="line"></span><br><span class="line">plot<span class="punctuation">(</span>causal_impact<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p><img src="../../images/causalimpact-plot.png" alt="" /></p>
+<p>위 그림을 보면 original, pointwise, cumulative로 세 개의 패널이 있습니다. 세로로 된 회색 점선은 개입이 시작한 2020-02-29 일자입니다.</p>
+<ul>
+<li>orginal에서의 검은 실선은 실제 한국의 코로나 확진자수를, 파란색 점선은 만약 사회적 거리두기 정책이 없었다면 나왔을 확진자 수입니다. 즉, 사회적 거리두기 정책으로 인해서 코로나 확진자가 많이 나오지 않았음을 확인하실 수 있습니다.</li>
+<li>pointwise에서의 파란 점선은 각 시점에서의 개입 효과를 의미합니다. 사회적 거리두기 정책으로 인해서 코로나 확진자수를 감소시키는 효과가 있음을 알 수 있습니다.</li>
+<li>cumulative에서의 파란 점선은 누적 개입 효과를 의미합니다. 즉, 3월 중순까지는 거의 효과가 0이었지만, 그 이후로 갈수록 개입 효과가 더 커짐을 확인하실 수 있습니다.</li>
+</ul>
+<p>이제 <code>summary</code>함수를 통해서 실제 인과 효과를 살펴보겠습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">summary<span class="punctuation">(</span>causal_impact<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Posterior inference &#123;CausalImpact&#125;</span><br><span class="line"></span><br><span class="line">                         Average        Cumulative      </span><br><span class="line">Actual                   136            8437            </span><br><span class="line">Prediction (s.d.)        1858 (978)     115201 (60628)  </span><br><span class="line">95% CI                   [-72, 3771]    [-4444, 233796] </span><br><span class="line">                                                        </span><br><span class="line">Absolute effect (s.d.)   -1722 (978)    -106764 (60628) </span><br><span class="line">95% CI                   [-3635, 208]   [-225359, 12881]</span><br><span class="line">                                                        </span><br><span class="line">Relative effect (s.d.)   -93% (53%)     -93% (53%)      </span><br><span class="line">95% CI                   [-196%, 11%]   [-196%, 11%]    </span><br><span class="line"></span><br><span class="line">Posterior tail-area probability p:   0.04104</span><br><span class="line">Posterior prob. of a causal effect:  95.896%</span><br><span class="line"></span><br><span class="line">For more details, type: summary(impact, &quot;report&quot;)</span><br></pre></td></tr></table></figure>
+<p>위 표에 대한 줄글로 된 설명을 보고자 한다면 아래와 같이 쓸 수 있습니다.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">summary<span class="punctuation">(</span>causal_impact<span class="punctuation">,</span><span class="string">&quot;report&quot;</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+<p>그러면 아래처럼 <strong>행운의 편지</strong> 마냥 긴 글을 보게 됩니다. 정신차리고 위 summary 결과에 맞춰 해석해보면 다음과 같습니다.</p>
+<ul>
+<li>개입 기간 이후에 한국의 코로나 확진자수 (Actual)는 평균 136명입니다. 만약 사회적 거리두기 정책이 없었다면 1,858명의 확진자수를 가질 뻔 했죠. 이 가상의 예측 (counterfactual prediction)의 신뢰구간은 [-72, 3771]입니다.</li>
+<li>개입 기간 이후에 평균적인 인과 효과는 (Abosolute effect) 1,722명입니다. 즉, 사회적 거리두기 정책으로 1,722명을 감소시키는 효과가 있었다 할 수 있습니다.</li>
+<li>상대적인 평균 인과 효과 (Relative effect)는 -93%입니다.</li>
+<li>또한 누적 효과 (Cumulative) 를 봤을 땐 106,764명을 감소시키는 효과가 있었습니다.</li>
+</ul>
+<p>그러나 이 개입 효과가 정말 유의미할까요? 95% CI 부분을 보면 모두 0을 포함하는 것을 알 수 있습니다. <strong>즉, 유의미하게 개입 효과를 추정하고 있다고 말하기 어렵습니다.</strong><br />
+이렇게 나온 이유는 아래의 줄 글에서 봤을 때 두 가지로 요약됩니다.</p>
+<ul>
+<li>개입 기간이 너무 길거나 짧아서 효과를 제대로 추정하기 어려운 경우도 있고,</li>
+<li>혹은 통제가 되는 공변량 (미국, 일본, 그리스, 캐나다)과 한국 확진자수 간의 상관관계가 낮아서 학습하기 어려웠을 수도 있기 때문이라 말하고 있습니다.</li>
+</ul>
+<p>결과적으로, 사회적 거리두기 정책의 효과가 잘 나오지 않은 이유는 다음의 두 이유가 가장 클 것 같습니다.</p>
+<ul>
+<li>공변량 (네 개의 국가의 코로나 확진자수)들이 반응 변수 (한국의 코로나 확진자수)와 정말 비슷한 흐름을 보이는지 체크를 하지 않았습니다. 실제로 상관관계를 구해보면 -0.2 ~ 0.2 정도의 낮은 상관관계를 가져서 공변량으로 적합하지 않았던 것 같습니다.</li>
+<li>다른 국가에서도 분명 비슷한 날짜에 비슷한 사회적 거리두기 정책을 시행했을 수도 있습니다. 그렇기 때문에 &quot;개입을 받지 않았다&quot;고 확실하게 말하기 어려운 것 같습니다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">During the post-intervention period, the response variable had an average value of approx. 136.08. In the absence of an intervention, we would have expected an average response of 1858.08. The 95% interval of this counterfactual prediction is [-71.68, 3770.90]. Subtracting this prediction from the observed response yields an estimate of the causal effect the intervention had on the response variable. This effect is -1722.00 with a 95% interval of [-3634.82, 207.76]. For a discussion of the significance of this effect, see below.</span><br><span class="line"></span><br><span class="line">Summing up the individual data points during the post-intervention period (which can only sometimes be meaningfully interpreted), the response variable had an overall value of 8.44K. Had the intervention not taken place, we would have expected a sum of 115.20K. The 95% interval of this prediction is [-4.44K, 233.80K].</span><br><span class="line"></span><br><span class="line">The above results are given in terms of absolute numbers. In relative terms, the response variable showed a decrease of -93%. The 95% interval of this percentage is [-196%, +11%].</span><br><span class="line"></span><br><span class="line">This means that, although it may look as though the intervention has exerted a negative effect on the response variable when considering the intervention period as a whole, this effect is not statistically significant, and so cannot be meaningfully interpreted. The apparent effect could be the result of random fluctuations that are unrelated to the intervention. This is often the case when the intervention period is very long and includes much of the time when the effect has already worn off. It can also be the case when the intervention period is too short to distinguish the signal from the noise. Finally, failing to find a significant effect can happen when there are not enough control variables or when these variables do not correlate well with the response variable during the learning period.</span><br><span class="line"></span><br><span class="line">The probability of obtaining this effect by chance is very small (Bayesian one-sided tail-area probability p = 0.041). This means the causal effect can be considered statistically significant. </span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="마치며"><a class="markdownIt-Anchor" href="#마치며"></a> 마치며</h2>
+<p>이번 분석은 CausalImpact을 실 데이터에 사용해본 것에 의의를 두며 글을 마무리하려고 합니다.<br />
+그 외 많은 사회적 거리두기 정책들이 있었고, 혹은 어떤 트리거로 인해서 1차 유행 ~ 4차 유행이 있었는데 이 트리거의 효과를 보는 것도 의미가 있을 것 같습니다.<br />
+(실제로 광복절 집회의 효과를 확인해봤을 때 의미가 있는 결과가 나왔습니다.)</p>
+<p>요즘에도 확진자수가 4,000명대를 돌파하며 심상치 않던데… 모두들 건강 잘챙기시고 돌파 감염도 조심하시길 바랍니다.<br />
+마스크와 코로나가 없어도 재택이 있는 세상을 꿈꾸며…★</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/[object%20Object]/2021-11-28-causalimpact/" title="CausalImpact로 COVID-19 데이터를 분석해보자">http://assaeunji.github.io/[object Object]/2021-11-28-causalimpact/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/causal-inference/" rel="tag"><i class="fa fa-tag"></i> causal-inference</a>
+              <a href="/tags/data-analysis/" rel="tag"><i class="fa fa-tag"></i> data-analysis</a>
+              <a href="/tags/time-series/" rel="tag"><i class="fa fa-tag"></i> time-series</a>
+              <a href="/tags/R/" rel="tag"><i class="fa fa-tag"></i> R</a>
+              <a href="/tags/covid19-data/" rel="tag"><i class="fa fa-tag"></i> covid19-data</a>
+              <a href="/tags/causalimpact/" rel="tag"><i class="fa fa-tag"></i> causalimpact</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2021-11-03-metaverse/" rel="prev" title="'메타버스, 새로운 기회', 메타버스의 틀을 깨는 책">
+                  <i class="fa fa-chevron-left"></i> '메타버스, 새로운 기회', 메타버스의 틀을 깨는 책
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2021-12-16-offline_abtest/" rel="next" title="NDC 후기: 추천알고리즘 Offline A/B 테스트 (feat. PAIGE 프로야구 서비스)">
+                  NDC 후기: 추천알고리즘 Offline A/B 테스트 (feat. PAIGE 프로야구 서비스) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

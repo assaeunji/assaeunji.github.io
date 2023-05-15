@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SQL Server를 사용하면서 &quot;이건 어떻게 구현하지&quot;라 생각하거나 자꾸 까먹는 쿼리 구문들이 있는데, 이를 정리해보았습니다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="유용하게 쓰이는 SQL 상황별 쿼리 꿀팁">
+<meta property="og:url" content="http://assaeunji.github.io/[object%20Object]/2021-03-07-sqltips/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="SQL Server를 사용하면서 &quot;이건 어떻게 구현하지&quot;라 생각하거나 자꾸 까먹는 쿼리 구문들이 있는데, 이를 정리해보았습니다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/honeytip-title.png">
+<meta property="article:published_time" content="2021-03-06T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-02T14:59:04.108Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="parsing">
+<meta property="article:tag" content="sql">
+<meta property="article:tag" content="db">
+<meta property="article:tag" content="easy-guide">
+<meta property="article:tag" content="query-optimization">
+<meta property="article:tag" content="pivot">
+<meta property="article:tag" content="honeytip">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/honeytip-title.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/[object%20Object]/2021-03-07-sqltips/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/[object%20Object]/2021-03-07-sqltips/","path":"/[object Object]/2021-03-07-sqltips/","title":"유용하게 쓰이는 SQL 상황별 쿼리 꿀팁"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>유용하게 쓰이는 SQL 상황별 쿼리 꿀팁 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#parsename-cast-sql-ip-%EC%A3%BC%EC%86%8C-%EC%B6%94%EC%B6%9C-%EC%A0%95%EB%A0%AC"><span class="nav-number">1.</span> <span class="nav-text"> PARSENAME &amp; CAST: SQL IP 주소 추출 &amp; 정렬</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%A8%EC%A7%91%ED%95%A9-%EC%BF%BC%EB%A6%AC-not-in-outer-join-except-%EB%B9%84%EA%B5%90"><span class="nav-number">2.</span> <span class="nav-text"> 차집합 쿼리 NOT IN, OUTER JOIN, EXCEPT 비교</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#not-in"><span class="nav-number">2.1.</span> <span class="nav-text"> NOT IN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-in-%EC%83%81%EA%B4%80-%EC%84%9C%EB%B8%8C-%EC%BF%BC%EB%A6%AC"><span class="nav-number">2.2.</span> <span class="nav-text"> NOT IN + 상관 서브 쿼리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-in-%EC%83%81%EA%B4%80-%EC%84%9C%EB%B8%8C-%EC%BF%BC%EB%A6%AC-top-1"><span class="nav-number">2.3.</span> <span class="nav-text"> NOT IN + 상관 서브 쿼리 + TOP 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%83%81%EA%B4%80-%EC%84%9C%EB%B8%8C-%EC%BF%BC%EB%A6%AC-top-1-is-null"><span class="nav-number">2.4.</span> <span class="nav-text"> 상관 서브 쿼리 + TOP 1 + IS NULL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#outer-join-is-null"><span class="nav-number">2.5.</span> <span class="nav-text"> OUTER JOIN + IS NULL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#except-%EC%83%81%EA%B4%80-%EC%84%9C%EB%B8%8C-%EC%BF%BC%EB%A6%AC"><span class="nav-number">2.6.</span> <span class="nav-text"> EXCEPT + 상관 서브 쿼리</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%85%8C%EC%9D%B4%EB%B8%94-%ED%98%95%ED%83%9C-%EB%B0%94%EA%BE%B8%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text"> 테이블 형태 바꾸기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#long-to-wide-pivot-%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%A7%8C%EB%93%A4%EA%B8%B0"><span class="nav-number">3.1.</span> <span class="nav-text"> Long to Wide (Pivot) 테이블 만들기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wide-to-long-unpivot-%ED%85%8C%EC%9D%B4%EB%B8%94-%EB%A7%8C%EB%93%A4%EA%B8%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> Wide to Long (Unpivot) 테이블 만들기</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">4.</span> <span class="nav-text"> References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/honeytip-title.png" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/[object%20Object]/2021-03-07-sqltips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="유용하게 쓰이는 SQL 상황별 쿼리 꿀팁 | Be Geeky">
+      <meta itemprop="description" content="SQL Server를 사용하면서 "이건 어떻게 구현하지"라 생각하거나 자꾸 까먹는 쿼리 구문들이 있는데, 이를 정리해보았습니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          유용하게 쓰이는 SQL 상황별 쿼리 꿀팁
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-03-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-07T00:00:00+09:00">2021-03-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-02 23:59:04" itemprop="dateModified" datetime="2023-05-02T23:59:04+09:00">2023-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DB/Tips/" itemprop="url" rel="index"><span itemprop="name">Tips</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">SQL Server를 사용하면서 "이건 어떻게 구현하지"라 생각하거나 자꾸 까먹는 쿼리 구문들이 있는데, 이를 정리해보았습니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>SQL Server를 사용하면서 &quot;이건 어떻게 구현하지&quot;라 생각하거나 자꾸 까먹는 쿼리 구문들이 있는데, 이를 정리해보았습니다.</li>
+<li>자세하게는
+<ul>
+<li>IP 주소를 파싱하는 쿼리</li>
+<li>차집합 쿼리 성능 비교</li>
+<li>테이블 형태 바꾸는 쿼리 살펴보고자 합니다.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="parsename-cast-sql-ip-주소-추출-정렬"><a class="markdownIt-Anchor" href="#parsename-cast-sql-ip-주소-추출-정렬"></a> PARSENAME &amp; CAST: SQL IP 주소 추출 &amp; 정렬</h2>
+<p>IP 주소는 <code>xxx.xxx.xxx.xxx</code>의 형태를 가지고 구분자인 <code>.</code>을 기준으로 4 단위로 되어있고 각 단위는 1~255의 숫자를 가집니다.<br />
+이를 IP 주소대로 정렬하면 <code>VARCHAR</code> 형으로 인식하기 때문에 원하는 대로 정렬되지 않습니다.</p>
+<p>이를 위해 IP주소를 구분자를 기준으로 추출하여 이를 <code>ORDER BY</code> 절에 넣는다면 원하는 대로 정렬할 수 있습니다. 예를 들어 <code>112.156.30.44</code>라는 IP 주소가 있다면 다음과 같이 구분자 <code>.</code>을 기준으로 IP 주소를 추출할 수 있습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CAST</span>(PARSENAME(아이피주소, <span class="number">4</span>) <span class="keyword">AS</span> <span class="type">BIGINT</span>) <span class="operator">-</span> <span class="number">1</span>번째 IP: <span class="number">112</span></span><br><span class="line"><span class="built_in">CAST</span>(PARSENAME(아이피주소, <span class="number">3</span>) <span class="keyword">AS</span> <span class="type">BIGINT</span>) <span class="operator">-</span> <span class="number">2</span>번째 IP: <span class="number">156</span></span><br><span class="line"><span class="built_in">CAST</span>(PARSENAME(아이피주소, <span class="number">2</span>) <span class="keyword">AS</span> <span class="type">BIGINT</span>) <span class="operator">-</span> <span class="number">3</span>번째 IP: <span class="number">30</span></span><br><span class="line"><span class="built_in">CAST</span>(PARSENAME(아이피주소, <span class="number">1</span>) <span class="keyword">AS</span> <span class="type">BIGINT</span>) <span class="operator">-</span> <span class="number">4</span>번째 IP: <span class="number">44</span></span><br></pre></td></tr></table></figure>
+<p><code>PARSENAME</code>은 본래 DB 정보를 추출하는 함수인데, DB 주소가 IP 주소랑 비슷하게 구분자 <code>.</code>으로 나뉘어지기 때문에 IP 주소에도 적용 가능합니다.<br />
+<code>PARSENAME ('object_name', object_piece)</code>은 두 개의 인자를 갖는데,</p>
+<ul>
+<li>'object_name’은 검색할 대상</li>
+<li>object_piece는 object_name에서 반환할 개체의 부분입니다. 다음과 같은 값을 가질 수 있습니다.
+<ul>
+<li>1 = 개체 이름</li>
+<li>2 = 스키마 이름</li>
+<li>3 = 데이터베이스 이름</li>
+<li>4 = 서버이름</li>
+</ul>
+</li>
+</ul>
+<p>서버가 [Server1], 데이터베이스는 [Temp], 스키마는 [dbo], 개체는 [Table_01]이라면 해당 테이블은 <code>[Server1].[Temp].[dbo].[Table_01]</code> 형태로 접근할 수 있습니다. 이에 <code>PARSENAME</code>을 사용하면</p>
+<ul>
+<li><code>PARSENAME([Server1].[Temp].[dbo].[Table_01], 1)</code>이면 Table_01을 반환</li>
+<li><code>PARSENAME([Server1].[Temp].[dbo].[Table_01], 2)</code>이면 dbo를 반환</li>
+<li><code>PARSENAME([Server1].[Temp].[dbo].[Table_01], 3)</code>이면 Temp을 반환</li>
+<li><code>PARSENAME([Server1].[Temp].[dbo].[Table_01], 4)</code>이면 Server1 반환</li>
+</ul>
+<p>하게 됩니다. 그렇기 때문에 IP주소도 마찬가지로 테이블 주소처럼 사용할 수 있는 것입니다.</p>
+<hr />
+<h2 id="차집합-쿼리-not-in-outer-join-except-비교"><a class="markdownIt-Anchor" href="#차집합-쿼리-not-in-outer-join-except-비교"></a> 차집합 쿼리 NOT IN, OUTER JOIN, EXCEPT 비교</h2>
+<p>차집합을 사용하는 방법은 여러 가지가 존재하는데 어떤 쿼리가 가장 효율적일지에 대한 판단이 안 설 때가 있습니다. 이에<br />
+<a target="_blank" rel="noopener" href="https://blog.naver.com/visualdb/50028645471">김정선님의 차집합 구하기, 어떤 쿼리가 좋을까?</a> 글을 보고 쿼리별 성능 정보에 대해 자세히 이해할 수 있었습니다.</p>
+<p>차집합이란 테이블 A에는 없는데 B에는 있는 정보를 구하고 싶을 때 사용합니다. 이에 쓸 수 있는 대표적인 쿼리는 NOT IN, OUTER JOIN, EXCEPT가 있고 이를 더 구체적으로 나누면 다음과 같습니다.</p>
+<ul>
+<li>NOT IN</li>
+<li>NOT IN + 상관 서브 쿼리</li>
+<li>NOT IN + 상관 서브 쿼리 + TOP 1</li>
+<li>상관 서브 쿼리 + TOP 1 + IS NULL</li>
+<li>OUTER JOIN + IS NULL</li>
+<li>EXCEPT + 서브 쿼리</li>
+</ul>
+<p>해당 쿼리를 **Customer 테이블 (91행)**과 **Order 테이블 (830행)**로 설명하려 합니다. (아마도) Customer 테이블은 고객들의 정보를 담은 테이블이고, Order 테이블은 고객들의 주문 내역을 담은 테이블입니다. 그렇기 때문에 두 테이블 모두 고객들을 식별할 수 있는 식별자 (<code>CustomerID</code>)를 갖게 됩니다.</p>
+<p>저희의 목적은 <strong>주문 내역이 없는 고객이 몇 명이나 되는지</strong>입니다. 그렇기 때문에 여러 차집합 쿼리를 통해서 Customer테이블에는 있으나 Order 테이블에는 없는 고객들 리스트를 확인하고자 합니다.</p>
+<hr />
+<h3 id="not-in"><a class="markdownIt-Anchor" href="#not-in"></a> NOT IN</h3>
+<blockquote>
+<p>총평: Bad</p>
+</blockquote>
+<p><code>NOT IN</code> 쿼리는 가장 간단한 쿼리이지만 실행계획은 복잡합니다. Nested Loop 조인으로 인해 실제 I/O는 매우 많은 검색 수와 읽기 수를 보여주고 있으므로 성능이 좋지 않습니다.</p>
+<p>참고로 SQL에서 조인을 수행할 때 실행 계획에 따라 크게 <strong>세 가지</strong>로 조인을 수행합니다. 각 조인에 따라 실행 속도가 크게 차이가 날 수 있기 때문에 쿼리를 최적화해 알맞은 조인을 선택하는 것이 중요합니다. 각 조인별 특징은 다음과 같습니다.</p>
+<ul>
+<li>
+<p>Nested Loop Join (NL Join)</p>
+<ul>
+<li>좁은 범위에 유리한 성능을 보여줌</li>
+<li>조인을 순차적으로 처리하며, 데이터에 랜덤하게 접근 (random access)</li>
+<li>후행 테이블(Driven)에는 조인을 위한 인덱스 생성 필요</li>
+<li>실행속도 = 선행 테이블 사이즈 * 후행 테이블 접근횟수</li>
+</ul>
+<p><img src="../../images/sql-NLjoin.gif" alt="" /></p>
+</li>
+<li>
+<p>Merge Join (Sort Merge Join)</p>
+<ul>
+<li>연결을 위해 데이터에 랜덤하게 액세스하지 않고 스캔을 하면서 수행</li>
+<li>양쪽 테이블 처리 범위를 각자 접근해 정렬한 결과를 차례대로 스캔</li>
+<li>마땅한 인덱스가 존재하지 않고 조인 연산자가 &quot;=&quot;가 아닌 경우 NL 조인보다 유리</li>
+</ul>
+<p><img src="../../images/sql-mergejoin.gif" alt="" /></p>
+</li>
+<li>
+<p>Hash Join</p>
+<ul>
+<li>해싱 함수 기법을 활용해 조인을 수행</li>
+<li>조인 대상이 되는 두 테이블 중에서 작은 테이블을 읽어 해시 영역에 해시 테이블을 생성하고 큰 집합을 읽어 해시 테이블을 탐색하면서 조인하는 방식</li>
+<li>다만 해시 테이블을 생성하는 비용이 수반되기 때문에 해시 영역에 들어가는 테이블이 작을 때 효과적</li>
+</ul>
+<p><img src="../../images/sql-hashjoin.gif" alt="" /></p>
+</li>
+</ul>
+<p>NOT IN 을 이용한 쿼리는 다음과 같습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> Customer</span><br><span class="line"><span class="keyword">where</span> customerID <span class="keyword">NOT</span> <span class="keyword">IN</span> (</span><br><span class="line">    <span class="keyword">select</span> customerID </span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">Order</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="not-in-상관-서브-쿼리"><a class="markdownIt-Anchor" href="#not-in-상관-서브-쿼리"></a> NOT IN + 상관 서브 쿼리</h3>
+<blockquote>
+<p>총평: Not Bad</p>
+</blockquote>
+<p>위의 서브 쿼리를 상관 서브 쿼리로 변경해 쿼리 상에서 직접적으로 Order 테이블과 Customer 테이블 간의 관계를 제한하였습니다. 여기서 <strong>상관 서브 쿼리</strong>는 바깥쪽 쿼리의 컬럼 중 하나가 안쪽 서브쿼리의 조건에 이용되는 처리 방식을 의미합니다. 그 결과, 조인 연산자를 Nested Loop 조인으로 선택했을 때 과도한 I/O를 해결하기 위한 대체 방안으로 Merge Join을 선택하게 됩니다. 그러나 Merge Join을 하기 위해서 인덱스 스캔을 하느라 전체 데이터를 액세스하고 있기 때문에 그렇게 좋다고 볼 순 없기 때문에 Not Bad! 입니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> </span><br><span class="line"><span class="keyword">from</span> Customer <span class="keyword">as</span> c</span><br><span class="line"><span class="keyword">where</span> </span><br><span class="line">    customerID <span class="keyword">NOT</span> <span class="keyword">IN</span> (                   <span class="comment">--&gt; NOT IN</span></span><br><span class="line">        <span class="keyword">select</span> customerID </span><br><span class="line">        <span class="keyword">from</span> <span class="keyword">Order</span> <span class="keyword">as</span> o</span><br><span class="line">        <span class="keyword">where</span> o.CustomerID <span class="operator">=</span> c.CustomerID <span class="comment">--&gt; 상관 서브 쿼리</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="not-in-상관-서브-쿼리-top-1"><a class="markdownIt-Anchor" href="#not-in-상관-서브-쿼리-top-1"></a> NOT IN + 상관 서브 쿼리 + TOP 1</h3>
+<blockquote>
+<p>총평: Very Good!</p>
+</blockquote>
+<p>아래 쿼리의 실행 계획을 확인해보면 내부 입력인 Order 테이블에 대해 Index Seek / Top / Filter의 연산자 순서를 거친 후에 Nested Loops 조인을 하게 됩니다.<br />
+이를 통해 반복적인 랜덤 I/O를 줄입니다. Merge Join에 비해 Nested Loop의 Stream 방식이 훨씬 응답 속도가 빠르기 때문에 필요한 데이터만 액세스하고 응답 속도도 빠르기 때문에 성능 상 우수한 쿼리입니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> Customer <span class="keyword">as</span> c</span><br><span class="line"><span class="keyword">where</span> customerID <span class="keyword">NOT</span> <span class="keyword">IN</span> (</span><br><span class="line">    <span class="keyword">select</span> top <span class="number">1</span> customerID           <span class="comment">--&gt; top 1</span></span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">Order</span> <span class="keyword">as</span> o</span><br><span class="line">    <span class="keyword">where</span> o.CustomerID <span class="operator">=</span> c.customerID <span class="comment">--&gt; 상관 서브 쿼리</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>참고로 위 쿼리에서 <code>NOT IN</code>대신 <code>NOT EXISTS</code>를 사용하면 NL Join 대신 <strong>Merge Join</strong>으로 처리되지만, 전체 데이터를 조인으로 결합시키지 않고 결합에 필요한 데이터만 처리하게 됩니다. 결과적으로 <code>NOT IN + 상관 서브 쿼리</code>보다 약간 개선된 쿼리라 볼 수 있습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> Customer <span class="keyword">as</span> c</span><br><span class="line"><span class="keyword">where</span> customerID <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> (</span><br><span class="line">    <span class="keyword">select</span> top <span class="number">1</span> customerID           <span class="comment">--&gt; top 1</span></span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">Order</span> <span class="keyword">as</span> o</span><br><span class="line">    <span class="keyword">where</span> o.CustomerID <span class="operator">=</span> c.customerID <span class="comment">--&gt; 상관 서브 쿼리</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="상관-서브-쿼리-top-1-is-null"><a class="markdownIt-Anchor" href="#상관-서브-쿼리-top-1-is-null"></a> 상관 서브 쿼리 + TOP 1 + IS NULL</h3>
+<blockquote>
+<p>총평: Very Good</p>
+</blockquote>
+<p>해당 쿼리도 <code>NOT IN + 상관 서브 쿼리 + TOP 1</code>와 비슷하게 NL Join을 사용하고 Index Seek / Top 연산자를 이용해 검색 제한 조건을 처리할 수 있기 때문에 Very Good입니다.<br />
+다만 where절에서 CustomerID 컬럼을 명시하지 않아서 쿼리가 직관적이진 않은 것 같네요.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> Customer <span class="keyword">as</span> c</span><br><span class="line"><span class="keyword">where</span> (</span><br><span class="line">    <span class="keyword">select</span> top <span class="number">1</span> customerID</span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">Order</span> <span class="keyword">as</span> o</span><br><span class="line">    <span class="keyword">where</span> o.CustomerID <span class="operator">=</span> c.CustomerID</span><br><span class="line">) <span class="keyword">is</span> <span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="outer-join-is-null"><a class="markdownIt-Anchor" href="#outer-join-is-null"></a> OUTER JOIN + IS NULL</h3>
+<blockquote>
+<p>총평: Very Bad!</p>
+</blockquote>
+<p>해당 쿼리는 제가 자주 사용하던 가장 쉬운 쿼리인데요. Merge 조인으로 처리되어 I/O는 작지만 실행 계획을 보면 문제가 있음을 알 수 있습니다. 내부 입력에 해당하는 Order 테이블에서 조인 조건을 만족하는 830건을 모두 left join으로 결합하고, 그 결과 832건을 도출한 뒤에 마지막 filter 연산자에서 <code>CustomerID is null</code> 조건으로 실제 행 수인 두 건을 만족하게 됩니다.<br />
+결국 조인을 다 한 후에 where 절에서 null인 행만 필터링한다는 점에서 불필요한 데이터를 액세스하게 되기 때문에 좋은 쿼리라 볼 수 없습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> c.<span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> Customer <span class="keyword">as</span> C</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">join</span> Orders <span class="keyword">as</span> O</span><br><span class="line"><span class="keyword">on</span> c.CustomerID <span class="operator">=</span> o.CustomerID</span><br><span class="line"><span class="keyword">where</span> o.CustomerID <span class="keyword">is</span> <span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="except-상관-서브-쿼리"><a class="markdownIt-Anchor" href="#except-상관-서브-쿼리"></a> EXCEPT + 상관 서브 쿼리</h3>
+<blockquote>
+<p>총평: Not Good</p>
+</blockquote>
+<p>수학적 개념인 차집합을 정확히 표현한 것이 <code>EXCEPT</code> 문입니다. 이 쿼리에서는 <code>CustomerID</code>만 select하고 있지만, 조인이나 서브쿼리로 실제 결과 집합으로 필요한 Customer 테이블의 다른 컬럼들을 처리해야 하기 떄문에 부가적인 I/O가 더해지기 때문에 성능은 Not Good입니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> CustomerID </span><br><span class="line"><span class="keyword">from</span> Customer</span><br><span class="line"><span class="keyword">EXCEPT</span></span><br><span class="line"><span class="keyword">select</span> CustomerID</span><br><span class="line"><span class="keyword">from</span> <span class="keyword">Order</span></span><br></pre></td></tr></table></figure>
+<p>결과적으로 <code>NOT IN + 상관 서브 쿼리 + TOP 1</code>의 성능이 가장 좋으니, 성능 개선이 필요한 쿼리들이 있다면 이를 잘 활용해봐야겠습니다 😃</p>
+<hr />
+<h2 id="테이블-형태-바꾸기"><a class="markdownIt-Anchor" href="#테이블-형태-바꾸기"></a> 테이블 형태 바꾸기</h2>
+<p>엑셀에서 피벗 테이블 (Pivot table)을 사용하셨다면 테이블 형태를 변형하는 것에 대한 이해가 쉬울 것 같습니다. 피벗 테이블은 긴 형태로 된 테이블의 데이터를 요약하는 통계표입니다.</p>
+<p>예를 들어, 아래 이미지에서 연도, 월에 따른 어떤 횟수를 담은 테이블이 있을 때, 이를 피벗 테이블로 만들면 우측 그림과 같습니다. 이렇게 피벗 테이블은 긴 테이블을 넓은 테이블로 요약하기 때문에 이해하기 쉽게 “Long To Wide” 테이블을 만드는 작업이라 하겠습니다. 이와 반대로 &quot;Long to Wide&quot;를 만드는 작업도 있겠죠? 이를 <strong>unpivot</strong>한다고 말합니다.</p>
+<p><img src="../../images/sql-pivot.png" alt="" /></p>
+<p>각각의 경우에 대해 SQL 쿼리로 어떻게 구현하는지 확인해봅시다.</p>
+<hr />
+<h3 id="long-to-wide-pivot-테이블-만들기"><a class="markdownIt-Anchor" href="#long-to-wide-pivot-테이블-만들기"></a> Long to Wide (Pivot) 테이블 만들기</h3>
+<p>이를 쿼리로 구현하면 <code>pivot</code> 을 사용하고, 그 안에 min, avg, sum과 같은 그룹 함수를 사용해야 합니다. 기존의 select 절에 다음과 같이 추가합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> #data</span><br><span class="line">pivot (</span><br><span class="line">    그룹함수 (집계 컬럼) <span class="keyword">for</span> 피벗 대상 컬럼 <span class="keyword">in</span> (피벗 컬럼 값)</span><br><span class="line">) <span class="keyword">as</span> pvt</span><br></pre></td></tr></table></figure>
+<p>위 사진에서 피벗의 대상이 되는 컬럼은 <strong>연도</strong>이고, 피벗 컬럼 값은 2013과 2014입니다.또한 집계 컬럼은 <strong>횟수</strong>가 됩니다. 따라서 쿼리를 작성하면 다음과 같습니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> #data</span><br><span class="line">PIVOT (</span><br><span class="line">    <span class="comment">-- 그룹함수 (집계 컬럼) for 피벗 대상 컬럼 in (피벗 컬럼 값)</span></span><br><span class="line">    <span class="built_in">sum</span>(횟수) <span class="keyword">for</span> 연도 <span class="keyword">in</span> ([<span class="number">2013</span>],[<span class="number">2014</span>])</span><br><span class="line">) <span class="keyword">as</span> pvt</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="wide-to-long-unpivot-테이블-만들기"><a class="markdownIt-Anchor" href="#wide-to-long-unpivot-테이블-만들기"></a> Wide to Long (Unpivot) 테이블 만들기</h3>
+<p>이를 반대로 pivot 형태로 요약되어 있는 컬럼을 Long하게 늘어뜨리는 경우 다음과 같이 쿼리를 작성합니다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 월, 연도, 횟수</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> 월, [<span class="number">2013</span>], [<span class="number">2014</span>]</span><br><span class="line">    <span class="keyword">FROM</span> pvt) p  </span><br><span class="line">UNPIVOT  </span><br><span class="line">   (횟수 <span class="keyword">FOR</span> 연도 <span class="keyword">IN</span> ([<span class="number">2013</span>],[<span class="number">2014</span>])  </span><br><span class="line">)<span class="keyword">AS</span> unpvt</span><br></pre></td></tr></table></figure>
+<p>저도 해당 쿼리를 외우진 못하지만 항상 어딘가에 저장해놓고 필요할 때마다 쓰고 있네요 ^^</p>
+<p>이상으로 세 가지 SQL 상황별 쿼리 꿀팁을 알아보았습니다!</p>
+<hr />
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://needjarvis.tistory.com/162">https://needjarvis.tistory.com/162</a></li>
+<li><a target="_blank" rel="noopener" href="http://wiki.gurubee.net/pages/viewpage.action?pageId=26740416">http://wiki.gurubee.net/pages/viewpage.action?pageId=26740416</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.naver.com/visualdb/50028645471">https://blog.naver.com/visualdb/50028645471</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/[object%20Object]/2021-03-07-sqltips/" title="유용하게 쓰이는 SQL 상황별 쿼리 꿀팁">http://assaeunji.github.io/[object Object]/2021-03-07-sqltips/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/parsing/" rel="tag"><i class="fa fa-tag"></i> parsing</a>
+              <a href="/tags/sql/" rel="tag"><i class="fa fa-tag"></i> sql</a>
+              <a href="/tags/db/" rel="tag"><i class="fa fa-tag"></i> db</a>
+              <a href="/tags/easy-guide/" rel="tag"><i class="fa fa-tag"></i> easy-guide</a>
+              <a href="/tags/query-optimization/" rel="tag"><i class="fa fa-tag"></i> query-optimization</a>
+              <a href="/tags/pivot/" rel="tag"><i class="fa fa-tag"></i> pivot</a>
+              <a href="/tags/honeytip/" rel="tag"><i class="fa fa-tag"></i> honeytip</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2021-02-21-causal2/" rel="prev" title="인과 관계 분석 시리즈 (5): 회귀 불연속 설계법 (Regression Discontinuity Design)과 이중 차분법 (DiD)">
+                  <i class="fa fa-chevron-left"></i> 인과 관계 분석 시리즈 (5): 회귀 불연속 설계법 (Regression Discontinuity Design)과 이중 차분법 (DiD)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%5Bobject%20Object%5D/2021-04-03-glump/" rel="next" title="2021년 1/4분기 회고: 글럼프 탈출이 시급하다">
+                  2021년 1/4분기 회고: 글럼프 탈출이 시급하다 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>
