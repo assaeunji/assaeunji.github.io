@@ -25,7 +25,7 @@
     <meta name="description" content="고정 IP를 EC2 인스턴스에 연결하는 방법에 대해 알아봅니다.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기">
-<meta property="og:url" content="http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/index.html">
+<meta property="og:url" content="http://assaeunji.github.io/aws/2020-03-30-elastic-ip/index.html">
 <meta property="og:site_name" content="Be Geeky">
 <meta property="og:description" content="고정 IP를 EC2 인스턴스에 연결하는 방법에 대해 알아봅니다.">
 <meta property="og:locale" content="en_US">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://assaeunji.github.io/images/elasticIP-3.png">
 <meta property="og:image" content="http://assaeunji.github.io/images/elasticIP-4.png">
 <meta property="article:published_time" content="2020-03-29T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T14:39:08.938Z">
+<meta property="article:modified_time" content="2023-05-20T02:48:57.638Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="aws">
 <meta property="article:tag" content="cloud">
@@ -44,11 +44,11 @@
 <meta name="twitter:image" content="http://assaeunji.github.io/images/elasticIP-1.png">
 
 
-<link rel="canonical" href="http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/">
+<link rel="canonical" href="http://assaeunji.github.io/aws/2020-03-30-elastic-ip/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/","path":"/AWS/2020-03-30-elastic-ip/","title":"AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/aws/2020-03-30-elastic-ip/","path":"/aws/2020-03-30-elastic-ip/","title":"AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기 | Be Geeky</title>
@@ -98,7 +98,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">15</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -142,7 +142,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/aws/2020-03-30-elastic-ip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -218,7 +218,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 23:39:08" itemprop="dateModified" datetime="2023-05-02T23:39:08+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-20 11:48:57" itemprop="dateModified" datetime="2023-05-20T11:48:57+09:00">2023-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/AWS/" itemprop="url" rel="index"><span itemprop="name">AWS</span></a>
+          <a href="/categories/aws/" itemprop="url" rel="index"><span itemprop="name">aws</span></a>
         </span>
     </span>
 
@@ -292,7 +292,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/" title="AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기">http://assaeunji.github.io/AWS/2020-03-30-elastic-ip/</a>
+      <a href="http://assaeunji.github.io/aws/2020-03-30-elastic-ip/" title="AWS EC2 인스턴스에 고정 IP (Elastic IP) 연결하기">http://assaeunji.github.io/aws/2020-03-30-elastic-ip/</a>
   </li>
   <li class="post-copyright-license">
       <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -311,12 +311,12 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/Machine-Learning/2020-03-29-gamebot/" rel="prev" title="Abusing Detection in Online Games [1]- Game Bot Detection with Machine Learning">
+                <a href="/machine-learning/2020-03-29-gamebot/" rel="prev" title="Abusing Detection in Online Games [1]- Game Bot Detection with Machine Learning">
                   <i class="fa fa-chevron-left"></i> Abusing Detection in Online Games [1]- Game Bot Detection with Machine Learning
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/Diary/2020-03-31-march/" rel="next" title="2020년 1/4분기 회고">
+                <a href="/diary/2020-03-31-march/" rel="next" title="2020년 1/4분기 회고">
                   2020년 1/4분기 회고 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>

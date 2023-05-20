@@ -24,12 +24,12 @@
 
     <meta property="og:type" content="article">
 <meta property="og:title" content="시계열 분석 시리즈 (2): AR &#x2F; MA &#x2F; ARIMA 모형, 어디까지 파봤니?">
-<meta property="og:url" content="http://assaeunji.github.io/Statistics/2021-08-23-arima/index.html">
+<meta property="og:url" content="http://assaeunji.github.io/statistics/2021-08-23-arima/index.html">
 <meta property="og:site_name" content="Be Geeky">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://assaeunji.github.io/images/arima-diglett.png">
 <meta property="article:published_time" content="2021-08-22T15:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-02T14:57:00.093Z">
+<meta property="article:modified_time" content="2023-05-20T02:51:01.332Z">
 <meta property="article:author" content="Eunji Lee">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="easy-guide">
@@ -38,11 +38,11 @@
 <meta name="twitter:image" content="http://assaeunji.github.io/images/arima-diglett.png">
 
 
-<link rel="canonical" href="http://assaeunji.github.io/Statistics/2021-08-23-arima/">
+<link rel="canonical" href="http://assaeunji.github.io/statistics/2021-08-23-arima/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/Statistics/2021-08-23-arima/","path":"/Statistics/2021-08-23-arima/","title":"시계열 분석 시리즈 (2): AR / MA / ARIMA 모형, 어디까지 파봤니?"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/statistics/2021-08-23-arima/","path":"/statistics/2021-08-23-arima/","title":"시계열 분석 시리즈 (2): AR / MA / ARIMA 모형, 어디까지 파봤니?"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>시계열 분석 시리즈 (2): AR / MA / ARIMA 모형, 어디까지 파봤니? | Be Geeky</title>
@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">15</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
   </ul>
 </nav>
 
@@ -136,7 +136,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -181,7 +181,7 @@
     </div>
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/Statistics/2021-08-23-arima/">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/statistics/2021-08-23-arima/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -217,7 +217,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-05-02 23:57:00" itemprop="dateModified" datetime="2023-05-02T23:57:00+09:00">2023-05-02</time>
+      <time title="Modified: 2023-05-20 11:51:01" itemprop="dateModified" datetime="2023-05-20T11:51:01+09:00">2023-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -225,7 +225,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Statistics/" itemprop="url" rel="index"><span itemprop="name">Statistics</span></a>
+          <a href="/categories/statistics/" itemprop="url" rel="index"><span itemprop="name">statistics</span></a>
         </span>
     </span>
 
@@ -548,7 +548,7 @@ ARIMA(p,d,q) 모형은 ARMA (p,q) 모형에서 d번 차분한 값이라는 말�
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://assaeunji.github.io/Statistics/2021-08-23-arima/" title="시계열 분석 시리즈 (2): AR &#x2F; MA &#x2F; ARIMA 모형, 어디까지 파봤니?">http://assaeunji.github.io/Statistics/2021-08-23-arima/</a>
+      <a href="http://assaeunji.github.io/statistics/2021-08-23-arima/" title="시계열 분석 시리즈 (2): AR &#x2F; MA &#x2F; ARIMA 모형, 어디까지 파봤니?">http://assaeunji.github.io/statistics/2021-08-23-arima/</a>
   </li>
   <li class="post-copyright-license">
       <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -566,12 +566,12 @@ ARIMA(p,d,q) 모형은 ARMA (p,q) 모형에서 d번 차분한 값이라는 말�
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/Statistics/2021-08-08-stationarity/" rel="prev" title="시계열 분석 시리즈 (1): 정상성 (Stationarity) 뽀개기">
+                <a href="/statistics/2021-08-08-stationarity/" rel="prev" title="시계열 분석 시리즈 (1): 정상성 (Stationarity) 뽀개기">
                   <i class="fa fa-chevron-left"></i> 시계열 분석 시리즈 (1): 정상성 (Stationarity) 뽀개기
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/Statistics/2021-09-08-arimapdq/" rel="next" title="시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식">
+                <a href="/statistics/2021-09-08-arimapdq/" rel="next" title="시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식">
                   시계열 분석 시리즈 (3): auto_arima를 잘 쓰기 위한 배경 지식 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
