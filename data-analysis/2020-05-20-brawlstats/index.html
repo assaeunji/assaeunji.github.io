@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="마침 Python의 brawlstats 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python brawlstats으로 브롤 스타즈 전투 기록 수집하기">
+<meta property="og:url" content="http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="마침 Python의 brawlstats 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/brawl-officialapi.png">
+<meta property="article:published_time" content="2020-05-19T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-20T02:48:52.740Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="aws">
+<meta property="article:tag" content="ec2">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="brawlstats">
+<meta property="article:tag" content="brawlstars">
+<meta property="article:tag" content="parsing">
+<meta property="article:tag" content="data-collection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/brawl-officialapi.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/","path":"/data-analysis/2020-05-20-brawlstats/","title":"Python brawlstats으로 브롤 스타즈 전투 기록 수집하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python brawlstats으로 브롤 스타즈 전투 기록 수집하기 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text"> Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%86%A0%ED%81%B0-%EB%B0%9C%EA%B8%89-%EB%B0%8F-python-brawlstats-%EC%84%A4%EC%B9%98"><span class="nav-number">2.</span> <span class="nav-text"> 토큰 발급 및 Python brawlstats 설치</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aws-ec2-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-%EC%A0%84%ED%88%AC%EA%B8%B0%EB%A1%9D-%ED%8C%8C%EC%8B%B1%ED%95%98%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text"> AWS EC2 가상환경에서 전투기록 파싱하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get_battle_logs-%EC%B5%9C%EA%B7%BC-25%EA%B1%B4%EC%9D%98-%EC%A0%84%ED%88%AC-%EA%B8%B0%EB%A1%9D-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><span class="nav-number">3.1.</span> <span class="nav-text"> get_battle_logs: 최근 25건의 전투 기록 불러오기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get_profile-%EC%9C%A0%EC%A0%80-%EC%A0%95%EB%B3%B4-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> get_profile: 유저 정보 불러오기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%EC%9C%BC%EB%A1%9C-%EC%A0%84%ED%88%AC-%EA%B8%B0%EB%A1%9D-%ED%8C%8C%EC%8B%B1%ED%95%98%EA%B8%B0"><span class="nav-number">3.3.</span> <span class="nav-text"> Python으로 전투 기록 파싱하기</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aws-ec2-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-crontab%EC%9C%BC%EB%A1%9C-%EC%A3%BC%EA%B8%B0%EC%A0%81%EC%9C%BC%EB%A1%9C-%EC%A0%84%ED%88%AC%EA%B8%B0%EB%A1%9D-%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text"> AWS EC2 가상환경에서 crontab으로 주기적으로 전투기록 저장하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">5.</span> <span class="nav-text"> References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    
+    <div class="post-gallery-image">
+      <img src="/../../images/brawl-officialapi.png" itemprop="contentUrl">
+    </div>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python brawlstats으로 브롤 스타즈 전투 기록 수집하기 | Be Geeky">
+      <meta itemprop="description" content="마침 Python의 brawlstats 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python brawlstats으로 브롤 스타즈 전투 기록 수집하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-20T00:00:00+09:00">2020-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-20 11:48:52" itemprop="dateModified" datetime="2023-05-20T11:48:52+09:00">2023-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/data-analysis/" itemprop="url" rel="index"><span itemprop="name">data-analysis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">마침 Python의 brawlstats 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>마침 Python의 <code>brawlstats</code> 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.</li>
+<li>관련 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/brawlstars-analysis">이 곳</a>에서 확인하실 수 있습니다.</li>
+</ul>
+<hr />
+<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<pre><code> 이 맵은 이 조합 (ex. 탱, 딜, 힐)이다!
+ 이 브롤러의 스타 파워 or 가젯은 이 맵에서 매우 강력하다 / 미약하다!
+ 플레이 시간이 길수록 이길 확률은 낮아진다!
+</code></pre>
+<p>게임을 오래 하다 보면 위와 같이 가설을 갖곤 합니다. 브롤 스타즈 장기 유저 &amp; 나름의 데이터 분석가로서 이런 가설들을 실제로 검증하고 싶다는 생각을 항상 해왔습니다.</p>
+<p>마침 Python의 <code>brawlstats</code> 라이브러리가 브롤 스타즈 API wrapper를 제공하고 있어 전투 기록을 모으는 게 가능해졌습니다. 따라서 이 포스팅에서는 다음과 같이 전투 기록을 주기적으로 모으는 방법에 대해 설명하고자 합니다.</p>
+<ol>
+<li>Brawl Stars API 토큰 발급받기 &amp; Python <code>brawlstats</code> 설치하기</li>
+<li>AWS EC2 가상환경에서 전투기록 파싱하기</li>
+<li>AWS EC2 가상환경에서 crontab으로 주기적으로 전투기록 저장하기</li>
+</ol>
+<p>본격적으로 들어가기 전에 설명드릴 개념은 다음과 같습니다.</p>
+<p><img src="../../images/brawl-info.png" alt="" /></p>
+<ol>
+<li><strong>젬 그랩(Gem Grab)</strong>: 3 대 3으로 팀을 이루고, 팀 총합 보석을 10개 이상 얻고 카운트다운이 종료될 때까지 버틴 팀이 승리하는 게임</li>
+<li><strong>맵</strong>: 젬 그랩에서 싸우는 장소, 하루 정도 지나면 맵이 바뀌고, 맵에 따라 맞는 브롤러들이 다름</li>
+<li><strong>브롤러</strong>: 젬 그랩에서 싸우는 캐릭터, 유저 별로 가진 브롤러 중 하나를 택해 젬 그랩에 참여할 수 있음</li>
+<li><strong>트로피</strong>: 게임에서 이길 때마다 브롤러 트로피가 8씩 더해지고, 지면 브롤러의 랭크에 따라 감소됨</li>
+<li><strong>스타파워</strong> &amp; <strong>가젯</strong>
+<ol>
+<li>스타 파워는 브롤러 파워레벨이 10일 때 가지는 추가 능력 (패시브 스킬)</li>
+<li>가젯은 브롤러 파워레벨이 7 이상일 때 가지는 추가 능력이고 게임 당 2~3번씩 발동 가능. 보통은 스타 파워에 비해 미미하나 브롤러에 따라 매우 강력할 수 있음</li>
+</ol>
+</li>
+</ol>
+<hr />
+<h2 id="토큰-발급-및-python-brawlstats-설치"><a class="markdownIt-Anchor" href="#토큰-발급-및-python-brawlstats-설치"></a> 토큰 발급 및 Python <code>brawlstats</code> 설치</h2>
+<p>브롤스타즈가 기존에는 공식 API와 비공식 API를 둘 다 제공했는데 이제 <strong>공식 API</strong>로 통합되었습니다. <strong>토큰</strong>이란 파이썬 <code>brawlstats</code> 모듈에서 API에 접속하기 위한 비밀번호와 같은 것입니다. 자세한 과정은 다음과 같습니다.</p>
+<ol>
+<li>
+<p><a target="_blank" rel="noopener" href="https://developer.brawlstars.com/#/getting-started">브롤스타즈 공식 API</a>에 접속하고 가입합니다.</p>
+</li>
+<li>
+<p>My Keys &gt; Create New Key를 클릭합니다.</p>
+<p><img src="../../images/brawl-officialapi3.png" alt="" /></p>
+</li>
+<li>
+<p><strong>KEY NAME</strong>과 <strong>DESCRIPTION</strong>은 적당히 적으시면 되고, <strong>ALLOWED IP ADDRESS</strong>에는 브롤 스타즈 API에 접속할 때 사용하는 IP 주소를 적어줍니다. 이 주소 외에 다른 IP로 접속할 수 없습니다. 네이버에서 &quot;내 IP 주소&quot;라 검색하면 쉽게 현재 접속하고 있는 IP 주소를 알 수 있습니다.</p>
+</li>
+<li>
+<p><strong>Create Key</strong>를 클릭하면 토큰이 발급됩니다. 이 토큰은 외부에 공개하지 않도록 주의합시다. 이제 이 토큰을 텍스트 파일로 적당한 곳에 저장해놓습니다.</p>
+</li>
+<li>
+<p>리눅스 커맨드 창에 다음과 같이 <code>brawlstats</code> 모듈을 설치합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install brawlstats</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr />
+<h2 id="aws-ec2-가상환경에서-전투기록-파싱하기"><a class="markdownIt-Anchor" href="#aws-ec2-가상환경에서-전투기록-파싱하기"></a> AWS EC2 가상환경에서 전투기록 파싱하기</h2>
+<p>Python의 <code>brawlstats</code> 라이브러리에 대한 공식 문서는 <a target="_blank" rel="noopener" href="https://brawlstats.readthedocs.io/en/latest/">이 곳</a>에서 찾을 수 있습니다.</p>
+<p>전투 기록을 파싱하려면 앞서 발급받은 <strong>토큰</strong>과 내 게임 <strong>태그</strong>가 필요합니다. 게임 태그는 브롤 스타즈에 접속해서 <strong>좌측 상단</strong>의 제 닉네임을 클릭하시면 확인할 수 있습니다.<br />
+아래 사진에서 <code>#URC00YYV</code>가 제 게임 태그입니다.</p>
+<p><img src="../../images/brawl-tag.png" alt="" /></p>
+<p>전투 기록을 불러오려면 태그 가장 앞에 있는 <code>#</code>을 제외하고 입력하셔야 합니다. 다음 코드에서 <code>tag</code>에 해당합니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> brawlstats</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"></span><br><span class="line"><span class="comment"># token 저장 경로</span></span><br><span class="line">token = <span class="built_in">open</span>(Path(<span class="string">&quot;C:/Users/user/Downloads/token.txt&quot;</span>)).read().strip()</span><br><span class="line">tag = <span class="string">&quot;URC00YYV&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># API 접속</span></span><br><span class="line">client = brawlstats.Client(token)</span><br></pre></td></tr></table></figure>
+<p>제 경우 위에서 발급받은 토큰을 <code>Downloads</code> 폴더에 <code>token.txt</code> 텍스트 형태로 넣어놓고 불러왔습니다.</p>
+<hr />
+<h3 id="get_battle_logs-최근-25건의-전투-기록-불러오기"><a class="markdownIt-Anchor" href="#get_battle_logs-최근-25건의-전투-기록-불러오기"></a> <code>get_battle_logs</code>: 최근 25건의 전투 기록 불러오기</h3>
+<p><img src="../../images/brawl-newest.jpg" alt="" /></p>
+<p><code>brawlstats</code>의 <code>get_battle_logs</code> 함수를 이용하면 위와 같은 최근 25건의 전투 기록을 로그 형태로 불러올 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">battles=client.get_battle_logs(tag)</span><br></pre></td></tr></table></figure>
+<p><code>client</code>에 <code>get_battle_logs</code>함수를 적용하면 해당 <code>tag</code>를 가진 유저의 최근 25 건의 전투 기록을 불러옵니다. <code>battles</code>를 출력하면 <code>&lt;brawlstats.models.BattleLog at 0x1633c36f408&gt;</code>라 클래스 정보가 나오고, <code>battles[0]</code>로 가장 최근 게임 정보를 확인하면 다음과 같이 Box 형태로 출력됩니다. (<s>하필 또 진 기록이네요…하핫</s>)</p>
+<details>
+<summary>펼쳐 보기</summary>
+<div markdown="1">
+<br/>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&lt;Box: </span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&#x27;battle_time&#x27;</span>: <span class="string">&#x27;20200518T063643.000Z&#x27;</span>, </span><br><span class="line">    <span class="string">&#x27;event&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;id&#x27;</span>: <span class="number">15000114</span>, </span><br><span class="line">        <span class="string">&#x27;mode&#x27;</span>: <span class="string">&#x27;gemGrab&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;map&#x27;</span>: <span class="string">&#x27;Escape Velocity&#x27;</span></span><br><span class="line">             &#125;,</span><br><span class="line">   <span class="string">&#x27;battle&#x27;</span>: </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&#x27;mode&#x27;</span>: <span class="string">&#x27;gemGrab&#x27;</span>, </span><br><span class="line">        <span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;ranked&#x27;</span>, </span><br><span class="line">        <span class="string">&#x27;result&#x27;</span>: <span class="string">&#x27;defeat&#x27;</span>, </span><br><span class="line">        <span class="string">&#x27;duration&#x27;</span>: <span class="number">88</span>, </span><br><span class="line">        <span class="string">&#x27;trophy_change&#x27;</span>: -<span class="number">6</span>, </span><br><span class="line">        <span class="string">&#x27;star_player&#x27;</span>: </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#9G20VPG&#x27;</span>, </span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;엘르트 바바리안&#x27;</span>, </span><br><span class="line">            <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000013</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;POCO&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">599</span>&#125;</span><br><span class="line">        &#125;, </span><br><span class="line">        <span class="string">&#x27;teams&#x27;</span>: </span><br><span class="line">        [</span><br><span class="line">            [</span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#PQ292Q88&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Yamada(極)&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000034</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;JACKY&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">9</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">595</span>&#125;</span><br><span class="line">                &#125;, </span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#URC00YYV&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;응찌&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000013</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;POCO&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">595</span>&#125;</span><br><span class="line">                &#125;, </span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#9CJ02PV89&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;アリの餌食&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000004</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;RICO&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">629</span>&#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ], </span><br><span class="line"></span><br><span class="line">            [</span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#9G20VPG&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;엘르트 바바리안&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000013</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;POCO&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">599</span>&#125;</span><br><span class="line">                &#125;, </span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#8GYVRJ0CC&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;찌님&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000017</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;TARA&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">9</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">609</span>&#125;</span><br><span class="line">                &#125;, </span><br><span class="line">                &#123;</span><br><span class="line">                 <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#9VP99RRC&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;グリズリー森山&#x27;</span>, </span><br><span class="line">                 <span class="string">&#x27;brawler&#x27;</span>: &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000004</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;RICO&#x27;</span>, <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;trophies&#x27;</span>: <span class="number">594</span>&#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&gt;</span><br></pre></td></tr></table></figure>
+</div>
+</details>
+<p>이 기록은 브롤 스타즈 <strong>전투 기록</strong>의 첫 번째에 대응됩니다. <code>&lt;Box&gt;</code>형태로 되어 있는 전투 기록을 살펴보면 다음의 내용을 포함하고 있습니다.</p>
+<ol>
+<li>battle_time: 전투 시간 (UTC +0:00)</li>
+<li>event: 게임 모드의 정보
+<ul>
+<li>id: 게임 모드의 id</li>
+<li>mode: 게임 모드</li>
+<li>map: 젬 그랩의 맵</li>
+</ul>
+</li>
+<li>battle: 전투 기록
+<ol>
+<li>mode: 게임 모드</li>
+<li>type: 게임 타입</li>
+<li>result: victory (승)/defeat (패)</li>
+<li>duration: 게임 지속 시간 (초)</li>
+<li>trophy_change: 게임 결과로 인한 내 캐릭터의 트로피 변화</li>
+<li>star_player: 스타플레이어, 이긴 팀에서 1명 뽑힘
+<ol>
+<li>tag: 스타플레이어의 태그</li>
+<li>name: 스타플레이어의 이름</li>
+<li>brawler: 스타플레이어의 브롤러</li>
+<li>teams: 팀 정보
+<ol>
+<li>우리 팀
+<ol>
+<li>팀원 1</li>
+<li>팀원 2</li>
+<li>팀원 3</li>
+</ol>
+</li>
+<li>상대 팀
+<ol>
+<li>팀원 4</li>
+<li>팀원 5</li>
+<li>팀원 6</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>의 정보들을 담고 있습니다.</p>
+<hr />
+<h3 id="get_profile-유저-정보-불러오기"><a class="markdownIt-Anchor" href="#get_profile-유저-정보-불러오기"></a> <code>get_profile</code>: 유저 정보 불러오기</h3>
+<p><img src="../../images/brawl-user.png" alt="" /></p>
+<p><code>brawlstats</code>의 <code>get_profile</code>함수를 이용하면 위와 같이 <strong>모드별 승리 횟수</strong>나 <strong>브롤러 보유 정보</strong>에 대해 불러올 수 있습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">profile = client.get_profile(tag)</span><br></pre></td></tr></table></figure>
+<p><code>profile</code>을 출력하면 <code>&lt;Player object name='응찌' tag='#URC00YYV'&gt;</code>라 나오고, <code>profile.raw_data</code>라 입력하면 다음과 같이 제 모든 게임 정보들이 나옵니다.</p>
+<details>
+<summary>펼쳐 보기</summary>
+<div markdown="1">
+<br/>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#URC00YYV&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;응찌&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;nameColor&#x27;</span>: <span class="string">&#x27;0xffffce89&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;trophies&#x27;</span>: <span class="number">13455</span>,</span><br><span class="line"> <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">13686</span>,</span><br><span class="line"> <span class="string">&#x27;highestPowerPlayPoints&#x27;</span>: <span class="number">300</span>,</span><br><span class="line"> <span class="string">&#x27;expLevel&#x27;</span>: <span class="number">133</span>,</span><br><span class="line"> <span class="string">&#x27;expPoints&#x27;</span>: <span class="number">92316</span>,</span><br><span class="line"> <span class="string">&#x27;isQualifiedFromChampionshipChallenge&#x27;</span>: <span class="literal">False</span>,</span><br><span class="line"> <span class="string">&#x27;3vs3Victories&#x27;</span>: <span class="number">5907</span>,</span><br><span class="line"> <span class="string">&#x27;soloVictories&#x27;</span>: <span class="number">2</span>,</span><br><span class="line"> <span class="string">&#x27;duoVictories&#x27;</span>: <span class="number">9</span>,</span><br><span class="line"> <span class="string">&#x27;bestRoboRumbleTime&#x27;</span>: <span class="number">0</span>,</span><br><span class="line"> <span class="string">&#x27;bestTimeAsBigBrawler&#x27;</span>: <span class="number">0</span>,</span><br><span class="line"> <span class="string">&#x27;club&#x27;</span>: &#123;<span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;#CPUPP8LC&#x27;</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;츠냥응찌월드&#x27;</span>&#125;,</span><br><span class="line"> <span class="string">&#x27;brawlers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000000</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;SHELLY&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">15</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">319</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">323</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000001</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;COLT&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">542</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">559</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000138</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Magnum Special&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000077</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Slick Boots&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000273</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Speedloader&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000002</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BULL&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">11</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">176</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">178</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000003</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BROCK&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">22</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">523</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">635</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000079</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Incendiary&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000150</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Rocket No. Four&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000004</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;RICO&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">4</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">16</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">363</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">371</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000006</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BARLEY&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">8</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">518</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">536</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000007</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;JESSIE&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">22</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">601</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">646</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000083</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Energize&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000149</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Shocky&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000008</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;NITA&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">22</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">573</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">605</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000136</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Hyper Bear&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000084</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Bear With Me&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000009</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;DYNAMIKE&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">7</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">543</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">561</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000010</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;EL PRIMO&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">7</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">15</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">325</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">325</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000011</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;MORTIS&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">1</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">40</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">40</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000012</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;CROW&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">8</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">548</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">567</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000243</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Defense Booster&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000013</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;POCO&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">22</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">543</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">641</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000144</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Screeching Solo&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000089</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Da Capo!&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000267</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Tuning Fork&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000014</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BO&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">22</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">623</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">640</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000148</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Snare a Bear&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000090</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Circling Eagle&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000263</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Super Totem&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000015</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;PIPER&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">18</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">399</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">422</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000016</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;PAM&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">7</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">506</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">524</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000018</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;DARRYL&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">8</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">111</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">111</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000019</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;PENNY&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">23</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">567</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">666</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000142</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Balls of Fire&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000099</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Last Blast&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000248</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Pocket Detonator&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000020</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;FRANK&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">17</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">406</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">416</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000021</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;GENE&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">7</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">542</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">542</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000252</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Lamp Blowout&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000022</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;TICK&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">525</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">591</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000114</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Well Oiled&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000253</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Backup Mine&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000024</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;ROSA&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">8</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">518</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">537</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000025</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;CARL&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">10</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">505</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">578</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000129</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Power Throw&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000145</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Protective Pirouette&#x27;</span>&#125;],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000026</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BIBI&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">3</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">14</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">283</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">289</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000027</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;8-BIT&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">6</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">519</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">527</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000029</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;BEA&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">4</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">16</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">348</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">352</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000030</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;EMZ&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">9</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">519</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">565</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000031</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;MR. P&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">8</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">21</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">565</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">565</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: [&#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">23000269</span>, <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Service Bell&#x27;</span>&#125;]&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000032</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;MAX&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">5</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">18</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">403</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">427</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;,</span><br><span class="line">  &#123;<span class="string">&#x27;id&#x27;</span>: <span class="number">16000034</span>,</span><br><span class="line">   <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;JACKY&#x27;</span>,</span><br><span class="line">   <span class="string">&#x27;power&#x27;</span>: <span class="number">6</span>,</span><br><span class="line">   <span class="string">&#x27;rank&#x27;</span>: <span class="number">20</span>,</span><br><span class="line">   <span class="string">&#x27;trophies&#x27;</span>: <span class="number">502</span>,</span><br><span class="line">   <span class="string">&#x27;highestTrophies&#x27;</span>: <span class="number">502</span>,</span><br><span class="line">   <span class="string">&#x27;starPowers&#x27;</span>: [],</span><br><span class="line">   <span class="string">&#x27;gadgets&#x27;</span>: []&#125;]&#125;</span><br></pre></td></tr></table></figure>
+</div>
+</details>
+<hr />
+<h3 id="python으로-전투-기록-파싱하기"><a class="markdownIt-Anchor" href="#python으로-전투-기록-파싱하기"></a> Python으로 전투 기록 파싱하기</h3>
+<p>따라서 이를 이용해 젬 그랩의 전투 기록을 파싱하는 함수는 다음과 같습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_single_user</span>(<span class="params">self,tag</span>):</span><br><span class="line">    parsed_logs = []</span><br><span class="line">    battles = self.client.get_battle_logs(tag)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 25건의 전투에 대해 반복</span></span><br><span class="line">    <span class="keyword">for</span> battle <span class="keyword">in</span> battles:</span><br><span class="line">        <span class="comment"># 젬그랩 모드만 추출</span></span><br><span class="line">        <span class="keyword">if</span> battle[<span class="string">&quot;event&quot;</span>][<span class="string">&quot;mode&quot;</span>] == <span class="string">&quot;gemGrab&quot;</span>:</span><br><span class="line">            </span><br><span class="line">            battle_info = &#123;</span><br><span class="line">                <span class="string">&quot;battle_time&quot;</span>: dateutil.parser.parse(battle[<span class="string">&#x27;battle_time&#x27;</span>]).astimezone(pytz.timezone(<span class="string">&quot;Asia/Seoul&quot;</span>)),</span><br><span class="line">                <span class="string">&quot;map_id&quot;</span>: battle[<span class="string">&#x27;event&#x27;</span>][<span class="string">&#x27;id&#x27;</span>],</span><br><span class="line">                <span class="string">&quot;battle_map&quot;</span>: battle[<span class="string">&#x27;event&#x27;</span>][<span class="string">&#x27;map&#x27;</span>],</span><br><span class="line">                <span class="string">&quot;duration&quot;</span>: battle[<span class="string">&#x27;battle&#x27;</span>][<span class="string">&#x27;duration&#x27;</span>]</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            star_player_tag = battle[<span class="string">&#x27;battle&#x27;</span>][<span class="string">&#x27;star_player&#x27;</span>][<span class="string">&#x27;tag&#x27;</span>]</span><br><span class="line">            teams           = battle[<span class="string">&#x27;battle&#x27;</span>][<span class="string">&#x27;teams&#x27;</span>]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># battle의 2개의 팀에 대해 반복</span></span><br><span class="line">            <span class="keyword">for</span> team <span class="keyword">in</span> teams:</span><br><span class="line"></span><br><span class="line">                <span class="comment"># players: 해시태그 (#)만 제외한 팀 내의 3 명의 유저의 태그</span></span><br><span class="line">                players = [log[<span class="string">&#x27;tag&#x27;</span>][<span class="number">1</span>:] <span class="keyword">for</span> log <span class="keyword">in</span> team]</span><br><span class="line">                side = <span class="number">1</span> <span class="keyword">if</span> tag <span class="keyword">in</span> players <span class="keyword">else</span> <span class="number">0</span> <span class="comment"># 1: 우리 팀, 2: 상대 팀</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># 1개 팀 내의 3명의 유저에 대해 반복</span></span><br><span class="line">                <span class="keyword">for</span> player <span class="keyword">in</span> team:</span><br><span class="line"></span><br><span class="line">                    <span class="comment"># 유저마다 프로파일을 가져오고 브롤러 정보 트로피에 따라 정렬</span></span><br><span class="line">                    player_info     = self.client.get_profile(player[<span class="string">&#x27;tag&#x27;</span>][<span class="number">1</span>:])</span><br><span class="line">                    player_brawlers = <span class="built_in">sorted</span>(player_info.brawlers, key = <span class="keyword">lambda</span> x: x[<span class="string">&#x27;trophies&#x27;</span>],reverse=<span class="literal">True</span>)</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment"># 유저가 가진 브롤러 중 해당 게임에 쓴 브롤러의 정보 (가젯 및 스타파워 여부)를 가져옴</span></span><br><span class="line">                    <span class="keyword">for</span> brawler <span class="keyword">in</span> player_brawlers:</span><br><span class="line">                        <span class="keyword">if</span> brawler[<span class="string">&quot;id&quot;</span>] == player[<span class="string">&quot;brawler&quot;</span>][<span class="string">&quot;id&quot;</span>]:</span><br><span class="line">                            gadget     = <span class="number">1</span> <span class="keyword">if</span> brawler[<span class="string">&quot;gadgets&quot;</span>] <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">                            star_power = <span class="number">1</span> <span class="keyword">if</span> brawler[<span class="string">&quot;star_powers&quot;</span>] <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment"># 팀 정보 저장</span></span><br><span class="line">                    team_info = &#123;</span><br><span class="line">                            <span class="string">&quot;player_tag&quot;</span> : player[<span class="string">&#x27;tag&#x27;</span>],</span><br><span class="line">                            <span class="string">&quot;player_name&quot;</span>: player[<span class="string">&quot;name&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;player_trophies&quot;</span>: player_info.trophies,</span><br><span class="line">                            <span class="string">&quot;player_top_brawler&quot;</span>: player_brawlers[<span class="number">0</span>][<span class="string">&quot;name&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;star_player&quot;</span>: <span class="number">1</span> <span class="keyword">if</span> player[<span class="string">&quot;tag&quot;</span>] == star_player_tag <span class="keyword">else</span> <span class="number">0</span>,</span><br><span class="line">                            <span class="string">&quot;team&quot;</span>: side,</span><br><span class="line">                            <span class="string">&quot;result&quot;</span>: battle[<span class="string">&quot;battle&quot;</span>][<span class="string">&quot;result&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;brawler_id&quot;</span>: player[<span class="string">&quot;brawler&quot;</span>][<span class="string">&quot;id&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;brawler_name&quot;</span>: player[<span class="string">&quot;brawler&quot;</span>][<span class="string">&quot;name&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;brawler_power&quot;</span>: player[<span class="string">&quot;brawler&quot;</span>][<span class="string">&quot;power&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;brawler_star_power&quot;</span>: star_power,</span><br><span class="line">                            <span class="string">&quot;brawler_gadget&quot;</span>: gadget,</span><br><span class="line">                            <span class="string">&quot;brawler_trophies&quot;</span>: player[<span class="string">&quot;brawler&quot;</span>][<span class="string">&quot;trophies&quot;</span>]</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment"># battle_info와 team_info merge 후 parsed_logs 리스트에 append</span></span><br><span class="line">                    parsed_logs.append(&#123;**battle_info,**team_info&#125;)</span><br><span class="line">    <span class="keyword">return</span> parsed_logs</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/brawl-data.png" alt="" /></p>
+<p>이렇게 저장된 정보는 총 17개의 변수를 가지고, 유저 당 최대 150개 (25번의 전투 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 6명)의 행을 갖게 됩니다.<br />
+이를 확장해 여러 유저의 전투 기록을 파싱하는 코드를 다음과 같이 작성했습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_all_users</span>(<span class="params">self,tags</span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment"># tags가 하나일 경우</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">type</span>(tags) ==<span class="built_in">str</span>:</span><br><span class="line">        parsed_logs = parse_single_user(self,tags)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># tags가 리스트 형태로 제공될 경우 (여러 유저의 태그일 경우)</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        parsed_logs = []</span><br><span class="line">          </span><br><span class="line">        <span class="keyword">for</span> tag <span class="keyword">in</span> tqdm(tags[<span class="number">1</span>:]):</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                parsed_logs.extend(parse_single_user(self,tag))</span><br><span class="line">            <span class="keyword">except</span>:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> parsed_logs</span><br></pre></td></tr></table></figure>
+<p>가끔 로그를 모으다 오류가 나는 경우가 있어 그 경우는 <code>try</code>와 <code>except</code>구문으로 <code>for</code>문을 멈추지 않고 다음 유저로 넘어가도록 했습니다.</p>
+<hr />
+<h2 id="aws-ec2-가상환경에서-crontab으로-주기적으로-전투기록-저장하기"><a class="markdownIt-Anchor" href="#aws-ec2-가상환경에서-crontab으로-주기적으로-전투기록-저장하기"></a> AWS EC2 가상환경에서 crontab으로 주기적으로 전투기록 저장하기</h2>
+<p>윈도우에서도 작업 스케줄러나 cron으로 원하는 시간마다 파이썬 코드가 실행되도록 예약 작업을 할 수 있지만 (<a target="_blank" rel="noopener" href="http://hleecaster.com/task-scheduling-in-windows-using-cron/">참조</a>), 항상 컴퓨터를 켜놓아야 되는 부담 때문에 AWS EC2 가상환경에서 crontab을 이용하기로 했습니다. crontab에 대한 자세한 설명과 사용 방법은 <a href="https://assaeunji.github.io/aws/2020-05-18-crontab/">이 포스팅</a>을 참조하시면 됩니다. crontab을 이용해 주기적으로 전투기록을 저장하는 방법은 다음과 같습니다.</p>
+<ol>
+<li>
+<p>위의 함수들을 <code>brawlparser</code>라는 <code>Class</code>에 저장해놓고 <code>bsparser.py</code>로 저장</p>
+</li>
+<li>
+<p><code>main.py</code>에 <code>crontab</code>을 실행할 파서 작성</p>
+</li>
+<li>
+<p>AWS EC2 커맨드 창에서 <code>crontab -e</code>로 crontab에 진입</p>
+</li>
+<li>
+<p><code>Shift + G</code>, <code>i</code>를 차례대로 누름 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 다음과 같이 작성 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> <code>Esc</code>, <code>:wq</code> 차례대로 눌러 crontab 저장</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0 17 * * * sudo python3 main.py --token_path token --output_dir ./rankers-data --tag URC00YYV --tag_path rankers.csv</span><br><span class="line">0 17 * * * sudo python3 main.py --token_path token --output_dir ./my-data --tag URC00YYV</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>데이터를 저장할 경로인 <code>output_dir</code>로 rankers-data 폴더와 my-data 폴더 생성</p>
+</li>
+</ol>
+<p><code>main.py</code>는 다음과 같이 argument로 4개를 입력하도록 만들었습니다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> bsparser <span class="keyword">import</span> brawlparser</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_datetime</span>(<span class="params">fmt=<span class="string">&quot;%Y%m%d%H%M&quot;</span></span>):</span><br><span class="line"> <span class="keyword">return</span> datetime.strftime(datetime.now(), fmt)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_parser</span>(<span class="params">_=<span class="literal">None</span></span>):</span><br><span class="line"> parser = argparse.ArgumentParser()</span><br><span class="line"> parser.add_argument(<span class="string">&quot;--token_path&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, <span class="built_in">help</span>=<span class="string">&quot;path of API token&quot;</span>)</span><br><span class="line"> parser.add_argument(<span class="string">&quot;--output_dir&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, <span class="built_in">help</span>=<span class="string">&quot;output directory&quot;</span>)</span><br><span class="line"> parser.add_argument(<span class="string">&quot;--tag_path&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, <span class="built_in">help</span>=<span class="string">&quot;path of tags&quot;</span>)</span><br><span class="line"> parser.add_argument(<span class="string">&quot;--tag&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span>, <span class="built_in">help</span>=<span class="string">&quot;initial tag&quot;</span>)</span><br><span class="line"> <span class="keyword">return</span> parser</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line"> args, _ = get_parser().parse_known_args()</span><br><span class="line"> tags = pd.read_csv(Path(args.tag_path).expanduser())[<span class="string">&#x27;0&#x27;</span>].tolist() <span class="keyword">if</span> args.tag_path <span class="keyword">else</span> args.tag</span><br><span class="line"></span><br><span class="line"> <span class="built_in">print</span>(args)</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># expanduser(): 절대경로로 대체</span></span><br><span class="line"> init        = brawlparser(Path(args.token_path).expanduser(), args.tag)</span><br><span class="line"> all_logs    = init.parse_all_users(tags)</span><br><span class="line"> </span><br><span class="line"> df_all_logs = pd.DataFrame(all_logs)</span><br><span class="line"> df_all_logs.to_csv(Path(args.output_dir).expanduser().joinpath(<span class="string">f&quot;log_<span class="subst">&#123;get_datetime()&#125;</span>.csv&quot;</span>), index=<span class="literal">False</span>) </span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>token_path</code>: 앞서 발급받은 토큰의 경로</li>
+<li><code>output_dir</code>: 데이터를 저장하는 경로</li>
+<li><code>tag_path</code>: 태그가 있는 경로. 저는 상위 200명의 랭커들의 태그를 <code>rankers.csv</code>에 저장해놓고, 이를 <code>tags</code>로 불러왔습니다.</li>
+<li><code>tag</code>: Python 브롤 스타즈 API에 접속할 태그. 저는 제 태그인 <code>URC00YYV</code>를 넣었습니다.</li>
+</ul>
+<p>만약 제 전투기록만 불러오고 싶다면 <code>tag_path</code>의 flag를 쓰지 않으면 됩니다! 이 후 crontab에는 매일 오후 5시 (젬그랩 맵이 바뀌는 시간)에 저장하도록 했습니다.<br />
+전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/assaeunji/brawlstars-analysis">이 곳</a>에서 확인하실 수 있습니다. 이렇게 한 열흘 간 데이터를 모아서 여러 주제로 분석해볼 예정입니다. 재밌는 인사이트가 나오면 좋겠군요!</p>
+<hr />
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
+<li>브롤스타즈 공식 API <a target="_blank" rel="noopener" href="https://developer.brawlstars.com/#/getting-started"><code>[link]</code></a></li>
+<li>Python BrawlStats Library Document <a target="_blank" rel="noopener" href="https://brawlstats.readthedocs.io/en/latest/"><code>[link]</code></a></li>
+<li>novdov님의 브롤스타즈 Python API로 전투 기록 확인하기 <a target="_blank" rel="noopener" href="https://novdov.github.io/data%20anaylsis/2019/08/18/Brawl-Stars-API/"><code>[link]</code></a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/" title="Python brawlstats으로 브롤 스타즈 전투 기록 수집하기">http://assaeunji.github.io/data-analysis/2020-05-20-brawlstats/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/aws/" rel="tag"><i class="fa fa-tag"></i> aws</a>
+              <a href="/tags/ec2/" rel="tag"><i class="fa fa-tag"></i> ec2</a>
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+              <a href="/tags/brawlstats/" rel="tag"><i class="fa fa-tag"></i> brawlstats</a>
+              <a href="/tags/brawlstars/" rel="tag"><i class="fa fa-tag"></i> brawlstars</a>
+              <a href="/tags/parsing/" rel="tag"><i class="fa fa-tag"></i> parsing</a>
+              <a href="/tags/data-collection/" rel="tag"><i class="fa fa-tag"></i> data-collection</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/aws/2020-05-18-crontab/" rel="prev" title="AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기">
+                  <i class="fa fa-chevron-left"></i> AWS EC2 (Linux Ubuntu)에서 crontab으로 Python 코드 자동화하기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/statistics/2020-06-21-matching/" rel="next" title="인과 관계 분석 시리즈 (3): 성향 점수 매칭 (Propensity Score Matching)과 층화 (Stratification)">
+                  인과 관계 분석 시리즈 (3): 성향 점수 매칭 (Propensity Score Matching)과 층화 (Stratification) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 글은 NDC (Nexon Developers Conference) 에서 관심 있던 주제인 A&#x2F;B 테스트를 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NDC 후기: 실전에서 사용하는 A&#x2F;B 테스트">
+<meta property="og:url" content="http://assaeunji.github.io/review/2020-03-03-ndcabtest/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="이 글은 NDC (Nexon Developers Conference) 에서 관심 있던 주제인 A&#x2F;B 테스트를 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-1.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-3.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-4.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-5.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-6.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/pubg-8.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-0.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-1.jpg">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-3.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-4.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-5.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-6.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-7.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-8.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-9.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-10.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-11.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-12.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/cookie-conclusion.png">
+<meta property="article:published_time" content="2020-03-02T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-20T02:49:02.593Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="ndc">
+<meta property="article:tag" content="A&#x2F;B test">
+<meta property="article:tag" content="review">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/pubg-1.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/review/2020-03-03-ndcabtest/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/review/2020-03-03-ndcabtest/","path":"/review/2020-03-03-ndcabtest/","title":"NDC 후기: 실전에서 사용하는 A/B 테스트"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NDC 후기: 실전에서 사용하는 A/B 테스트 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pubg-%EA%B7%B8%EC%B9%98%EB%A7%8C-%EC%9D%B4%EB%A0%87%EA%B2%8C-%ED%95%98%EC%A7%80-%EC%95%8A%EC%9C%BC%EB%A9%B4-ab-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%8B%9C%EC%BC%9C%EC%A3%BC%EC%A7%80-%EC%95%8A%EB%8A%94%EA%B1%B8"><span class="nav-number">1.</span> <span class="nav-text"> PUBG: 그치만 이렇게 하지 않으면 A&#x2F;B 테스트 시켜주지 않는걸</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ab-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B7%B8%EB%83%A5-%EB%90%98%EB%8A%94-%EC%A4%84-%EC%95%8C%EC%95%98%EC%A7%80"><span class="nav-number">1.1.</span> <span class="nav-text"> A&#x2F;B 테스트 그냥 되는 줄 알았지</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%ED%97%98%EC%9D%98-%EC%8B%9C%EC%9E%91%EC%9D%80-%ED%8C%94-%ED%95%A0%EC%9D%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0"><span class="nav-number">1.2.</span> <span class="nav-text"> 실험의 시작은 팔 할이 데이터</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A7%81%EC%A0%91-%EB%A7%8C%EB%93%9C%EB%8A%94-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8"><span class="nav-number">1.3.</span> <span class="nav-text"> 직접 만드는 데이터 파이프라인</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pubg%EC%9D%98-ab-%ED%85%8C%EC%8A%A4%ED%8A%B8"><span class="nav-number">1.4.</span> <span class="nav-text"> PUBG의 A&#x2F;B 테스트</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8D%B0%EB%B8%8C%EC%8B%9C%EC%8A%A4%ED%84%B0%EC%A6%88-%EC%96%B4%EB%A8%B8%EB%8B%98-ab-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EB%8C%81%EC%9C%BC%EB%A1%9C-%EB%93%A4%EC%9D%B4%EC%8B%AD%EC%8B%9C%EC%98%A4"><span class="nav-number">2.</span> <span class="nav-text"> 데브시스터즈: 어머님, A&#x2F;B 테스트를 댁으로 들이십시오</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%B4%88%EA%B8%89-%EC%8A%A4%ED%83%80%ED%84%B0-%ED%8C%A8%ED%82%A4%EC%A7%80"><span class="nav-number">2.1.</span> <span class="nav-text"> 초급 스타터 패키지</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%83%81%ED%92%88-%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%9D%98-%EA%B3%A0%EB%AF%BC"><span class="nav-number">2.2.</span> <span class="nav-text"> 상품 기획자의 고민</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%ED%97%98-%EA%B8%B0%ED%9A%8D"><span class="nav-number">2.3.</span> <span class="nav-text"> 실험 기획</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%ED%97%98%EA%B5%B0-%EB%82%98%EB%88%84%EA%B8%B0"><span class="nav-number">2.4.</span> <span class="nav-text"> 실험군 나누기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%97%AC%EB%9F%AC-%EC%8B%A4%ED%97%98-%EB%8F%99%EC%8B%9C%EC%97%90-%ED%95%98%EA%B8%B0"><span class="nav-number">2.5.</span> <span class="nav-text"> 여러 실험 동시에 하기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ab-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B0%9C%EB%B0%9C"><span class="nav-number">2.6.</span> <span class="nav-text"> A&#x2F;B 테스트 개발</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%ED%97%98-%EA%B2%B0%EA%B3%BC"><span class="nav-number">2.7.</span> <span class="nav-text"> 실험 결과</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">2.8.</span> <span class="nav-text"> 결론</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8A%90%EB%82%80-%EC%A0%90"><span class="nav-number">3.</span> <span class="nav-text"> 느낀 점</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/review/2020-03-03-ndcabtest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NDC 후기: 실전에서 사용하는 A/B 테스트 | Be Geeky">
+      <meta itemprop="description" content="이 글은 NDC (Nexon Developers Conference) 에서 관심 있던 주제인 A/B 테스트를 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NDC 후기: 실전에서 사용하는 A/B 테스트
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-03-03 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-03T00:00:00+09:00">2020-03-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-20 11:49:02" itemprop="dateModified" datetime="2023-05-20T11:49:02+09:00">2023-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/review/" itemprop="url" rel="index"><span itemprop="name">review</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">이 글은 NDC (Nexon Developers Conference) 에서 관심 있던 주제인 A/B 테스트를 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>이 글은 <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0021.html#c=NDC2019&amp;k%5B%5D=A%2FB">NDC (Nexon Developers Conference)</a> 홈페이지에서 YouTube 영상을 보고 관심 있던 주제인 A/B 테스트를 현업에서 어떻게 사용하는 지에 대해 정리한 글입니다.</li>
+<li>다음 방침에 따라 권리자명과 홈페이지를 출처로 밝힘을 알립니다.</li>
+</ul>
+<blockquote>
+<p><strong>NDC 저작권 방침</strong>: 저작물을 개인 블로그, 페이스북 등 SNS에 게재하길 원하시는 경우에는 반드시 권리자명 및 본 홈페이지를 출처로 명시하여야 하고, 해당 저작물을 변형시키지 않는 전제 하에서 게재하실 수 있습니다.</p>
+</blockquote>
+<hr />
+<h2 id="pubg-그치만-이렇게-하지-않으면-ab-테스트-시켜주지-않는걸"><a class="markdownIt-Anchor" href="#pubg-그치만-이렇게-하지-않으면-ab-테스트-시켜주지-않는걸"></a> <strong>PUBG: 그치만 이렇게 하지 않으면 A/B 테스트 시켜주지 않는걸</strong></h2>
+<p><img src="../../images/pubg-1.png" alt="" /></p>
+<ul>
+<li>강연자: 이현섭</li>
+<li>링크: <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0012.html#c=NDC2019&amp;t%5B%5D=%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D">NDC 2019 Replay 이현섭님 발표</a></li>
+</ul>
+<hr />
+<h3 id="ab-테스트-그냥-되는-줄-알았지"><a class="markdownIt-Anchor" href="#ab-테스트-그냥-되는-줄-알았지"></a> <strong>A/B 테스트 그냥 되는 줄 알았지</strong></h3>
+<ul>
+<li>A/B 테스트는 그렇게 복잡한 건 아님, 두 가지 시안을 두고 사용자를 랜덤으로 나눠 어떤 시안이 나은 지 의사결정하는 방법</li>
+<li>A/B 테스트 수행을 통해 <strong>객관적인 이용자 경험을 측정</strong>하고, <strong>데이터 기반 의사결정</strong> (추천시스템, 이탈 예측)을 하는 것이 목적</li>
+<li>But, A/B 테스트를 제대로 하기는 생각보다 어렵다!</li>
+</ul>
+<hr />
+<h3 id="실험의-시작은-팔-할이-데이터"><a class="markdownIt-Anchor" href="#실험의-시작은-팔-할이-데이터"></a> <strong>실험의 시작은 팔 할이 데이터</strong></h3>
+<p>🌳 <strong>A/B 테스트 시 문제점</strong></p>
+<ul>
+<li>실험 <strong>정확도</strong>가 떨어질 경우 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span> 실험을 오래한다!</li>
+<li>서비스에 영향을 미칠까 불안하다 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span> 실험군 비율을 줄이면 된다!</li>
+<li>데이터 파이프라인이 없다! <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span> 직접 ETL 하면 됩니다.</li>
+</ul>
+<p>🌳 <strong>문제는 로그가 없을 경우 답이 없다!</strong></p>
+<ul>
+<li>로그를 찍고, 한 곳에 모으고, 원하는 metric을 뽑아내는 분석 과정이 필요</li>
+<li>이 과정이 구글이 해주는 Pipeline과 유사!
+<ul>
+<li>Firebase (웹/ 모바일 클라이언트 로그 수집) - Google Analytics - Google BigQuery</li>
+</ul>
+</li>
+<li>따라서 구글에서 쓰는 schema를 따라했음</li>
+</ul>
+<p><img src="../../images/pubg-2.png" alt="" /></p>
+<hr />
+<h3 id="직접-만드는-데이터-파이프라인"><a class="markdownIt-Anchor" href="#직접-만드는-데이터-파이프라인"></a> <strong>직접 만드는 데이터 파이프라인</strong></h3>
+<p><strong>Q. 데이터를 어떻게 수집할 것인가?</strong></p>
+<ol>
+<li>이용자 행동 변화에 <strong>실시간</strong> 대응할 수 있고</li>
+<li>트래픽에 대응해 <strong>확장 가능</strong>한</li>
+<li>운영 인력 없이 <strong>24/7</strong> 작동하는</li>
+</ol>
+<p>데이터 파이프 라인이 필요</p>
+<p><strong>1. 실시간성</strong></p>
+<blockquote>
+<p>“지난 일주일동안 총 노출 수를 알고 싶어요”<br />
+&quot; ARPU, ARPPU를 일별로 계산해주세요&quot;</p>
+</blockquote>
+<ul>
+<li>정해진 시간마다 배치 프로세싱을 하면 해결됨</li>
+<li>문제는 다음과 같은 요구 사항!</li>
+</ul>
+<blockquote>
+<p>“결제가 갑자기 줄어들면 <strong>10분 안에</strong> 알고 싶어요”<br />
+&quot; 이용자 클릭이 추천에 <strong>즉시</strong> 적용되게 해주세요&quot;</p>
+</blockquote>
+<ul>
+<li>이 경우는 배치 프로세싱을 돌릴 수 없음</li>
+</ul>
+<p>따라서 데이터 하나하나 들어오는 대로 처리할 수 있는 <mark style='background-color: #fff5b1'> 실시간 스트리밍 필요! </mark></p>
+<p><strong>2. 확장 가능성</strong></p>
+<ul>
+<li>
+<p>100만 동시 접속 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 매 초마다 로그 발생 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 평균 1kb 로그가 발생한다 가정했을 때 시간 당 <strong>3.6TB</strong>의 로그가 쌓임</p>
+</li>
+<li>
+<p>이를 위해 <strong>Scale-up</strong> = 서버를 키운다! BUT 1TB는 무리</p>
+<p><img src="../../images/pubg-3.png" alt="" /></p>
+</li>
+<li>
+<p>어쨌든 <strong>Scale-Out</strong> = 서버를 늘린다!</p>
+<ul>
+<li>작은 시스템을 여러 개 그려서 데이터 부하를 분산하는 방법<br />
+<img src="../../images/pubg-4.png" alt="" /></li>
+</ul>
+</li>
+<li>
+<p>단순히 서버와 데이터 프로세싱을 Scale-out을 하는 건 다름: 데이터의 경우 어떤 부분에서 장애가 발생하고 장애가 발생한 부분에서 복구 과정을 해줘야함</p>
+</li>
+<li>
+<p>따라서, 데이터 <strong>분산 처리</strong>는 더 난이도 있음</p>
+</li>
+</ul>
+<p>🌳 <strong>1과 2의 문제 해결하기: 실시간 스트리밍 + 분산 처리 = Apache Flink</strong></p>
+<p><img src="../../images/pubg-5.png" alt="" /></p>
+<ul>
+<li>Apache Flink를 한 마디로 요약하면, <mark style='background-color: #fff5b1'> 데이터 스트림을 위한 분산 처리 엔진 </mark></li>
+</ul>
+<p><img src="../../images/pubg-6.png" alt="" /></p>
+<ul>
+<li>Spark는 원래 분산 처리 엔진 / Flink는 처음부터 스트림 처리 엔진</li>
+</ul>
+<p><strong>3. 운영 이슈: 24/7 작동하도록</strong></p>
+<ul>
+<li>트래픽, 점검 해야할 게 많음</li>
+<li>해법: <strong>아마존</strong>
+<ul>
+<li>장애 대응은 <strong>관리형</strong> 서비스가
+<ul>
+<li>리소스를 띠우고, 초기화, 운영, 장애, 복구 등 라이프 사이클을 아마존이 책임지고 복구를 해줌!!</li>
+<li>Amazon EMR, Amazon Kinesis, Amazon DynamoDB, Amazon RDS, Amazon SQS</li>
+</ul>
+</li>
+<li>서버 관리는 <strong>서버리스 서비스</strong>가
+<ul>
+<li>AWS Lambda, AWS Fargate, Amazon Dynamo DB, Amazon Aurora</li>
+</ul>
+</li>
+<li>모니터링은 <strong>모니터링 서비스</strong>가
+<ul>
+<li>Amazon CloudWatch, Amazon ES Service, Datadog<br />
+해결해준다!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>아마존이 하면 개발자는 뭘 하나? 돈을 낸다…!ㅋㅋㅋ</li>
+</ul>
+<hr />
+<h3 id="pubg의-ab-테스트"><a class="markdownIt-Anchor" href="#pubg의-ab-테스트"></a> <strong>PUBG의 A/B 테스트</strong></h3>
+<p><img src="../../images/pubg-8.png" alt="다이어그램" /></p>
+<ul>
+<li>아직 풀어야 하는 문제들: 비용 최적화, 배포 자동화</li>
+</ul>
+<p>🌳 <strong>A/B 테스트의 미래</strong></p>
+<ul>
+<li>Multi-Armed Bandit: A/B 테스트와 항상 붙는 알고리즘, A안과 B안을 살펴봤을 때 A안의 선호도가 높아진다면 굳이 50%:50%의 비율로 A와 B를 나눌 필요가 없음 -&gt; 이 비율을 최적화</li>
+<li>추천 시스템</li>
+<li>단순한 측정 플랫폼을 넘어서 가치있는 컨텐츠를 학습하고 제공</li>
+</ul>
+<hr />
+<h2 id="데브시스터즈-어머님-ab-테스트를-댁으로-들이십시오"><a class="markdownIt-Anchor" href="#데브시스터즈-어머님-ab-테스트를-댁으로-들이십시오"></a> <strong>데브시스터즈: 어머님, A/B 테스트를 댁으로 들이십시오</strong></h2>
+<ul>
+<li>강연자: 오우택, 김민수</li>
+<li>링크: <a target="_blank" rel="noopener" href="http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0021.html#c=NDC2019&amp;t%5B%5D=%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D&amp;p=2">NDC Replay 오우택, 김민수님 발표</a></li>
+</ul>
+<p><img src="../../images/cookie-0.png" alt="" /></p>
+<p>🌳 <strong>쿠키런: 오븐브레이크</strong></p>
+<ul>
+<li>1억명 사랑해준 쿠키런의 2번째 런게임</li>
+<li>16년에 런칭</li>
+</ul>
+<hr />
+<h3 id="초급-스타터-패키지"><a class="markdownIt-Anchor" href="#초급-스타터-패키지"></a> <strong>초급 스타터 패키지</strong></h3>
+<p><img src="../../images/cookie-1.jpg" alt="" /></p>
+<ul>
+<li>유저가 처음 사용하는 유료 상품</li>
+<li>신규 유저를 위한 혜택은 <strong>구매 시간 제한</strong>이 있음</li>
+<li>게임에 과금을 한 번 시작하면 계속 하는 경향이 있기 때문에 첫 구매가 중요!</li>
+</ul>
+<p><mark style='background-color: #fff5b1'> Q.시간 제한이 있는 상품의 판매 시간을 어떻게 설정해야 가장 많이 팔릴까?</mark>에 대한 대답이 이 발표의 목적!</p>
+<hr />
+<h3 id="상품-기획자의-고민"><a class="markdownIt-Anchor" href="#상품-기획자의-고민"></a> <strong>상품 기획자의 고민</strong></h3>
+<ul>
+<li>
+<p>1시간, 1일, 3일을 노출했을 때 어떤 판매 시간이 최적일까?</p>
+<p><img src="../../images/cookie-2.png" alt="" /></p>
+</li>
+<li>
+<p>만약 각 아이디어를 날짜에 따라 개별적으로 실험할 경우</p>
+</li>
+</ul>
+<p><img src="../../images/cookie-3.png" alt="" /></p>
+<ul>
+<li>기획자 별로 타당한 이유로 시간 제한을 다르게 생각</li>
+<li>BUT, 날짜에 따라 어떻게 배치하느냐에 따라 공휴일 or 국가적 특성으로 인해 랜덤하게 선택되지 않음</li>
+<li><strong>외부 변인 통제</strong>가 불가능!</li>
+</ul>
+<p>🌳 <strong>그래서, A/B 테스트 방법론 도입!</strong></p>
+<ul>
+<li>서로 다른 N가지 방법간의 효과의 차이를 밝히기 위한 통계적 디자인 패턴</li>
+<li>외부 변인 통제의 문제를 극복</li>
+</ul>
+<hr />
+<h3 id="실험-기획"><a class="markdownIt-Anchor" href="#실험-기획"></a> <strong>실험 기획</strong></h3>
+<ul>
+<li>A/B 테스트는 다섯 가지를 정해야함: 최상위 의도, 유의미한 차이, 실험 대상, 그룹의 개수, 실험 기간 설정</li>
+</ul>
+<p><strong>1. 최상위 의도: 실험을 해서 어떤 수치를 더 낫게 만드려 하는 지?</strong></p>
+<ul>
+<li><strong>판매량</strong></li>
+<li><s>재방문률</s></li>
+<li><s>전환률</s></li>
+</ul>
+<p><strong>2. 유의미한 차이</strong></p>
+<ul>
+<li><s>5% 증가?</s></li>
+<li><strong>10% 증가?</strong></li>
+<li><s>50% 증가?</s></li>
+</ul>
+<p><strong>3. 실험 대상</strong></p>
+<ul>
+<li>판매 시간 제한 실험이 만국 공통의 문제라 생각해서 <strong>전세계 유저</strong>를 대상으로 함</li>
+</ul>
+<p><strong>4. 그룹의 개수</strong></p>
+<ul>
+<li>최소 2개 그룹 이상 설정</li>
+<li>이 경우 3개 그룹!</li>
+</ul>
+<p><strong>5. 실험 기간 설정</strong></p>
+<ul>
+<li>실험 기간을 설정할 때는 최소한의 <strong>비즈니스 사이클</strong>을 포함해야함
+<ul>
+<li>따라서, 주말, 평일의 매출이 크기 때문에 주말을 포함하도록 함</li>
+<li>한 번은 우연일 수도 있으니 <strong>2주</strong></li>
+</ul>
+</li>
+</ul>
+<p>판매량이 통계적으로 유의미한 차이를 보이는 그룹이 있는가?</p>
+<hr />
+<h3 id="실험군-나누기"><a class="markdownIt-Anchor" href="#실험군-나누기"></a> <strong>실험군 나누기</strong></h3>
+<ul>
+<li>게임 유저가 6명이 있다고 가정했을 때, 실험군의 크기를 2명 씩 <strong>균등</strong>하게 분배하는 게 중요</li>
+</ul>
+<p><strong>1. 로그인하는 순서대로?</strong></p>
+<p><img src="../../images/cookie-4.png" alt="" /></p>
+<ul>
+<li>1시간 -&gt; 1일 -&gt; 3일 로그인 순서대로 균등하게 배정
+<ul>
+<li>BUT, 이런 방법은 로그인 순서를 기록해야하는 문제</li>
+<li>실험이 여러 개로 늘어나면 대처하기 어려움</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 유저를 숫자로 맵핑?</strong></p>
+<ul>
+<li>
+<p>유저 아이디 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span> 해시값으로 변환<br />
+<img src="../../images/cookie-5.png" alt="" /></p>
+</li>
+<li>
+<p>해시값을 기준으로 그룹 배정</p>
+<ul>
+<li>3333 미만 1시간 그룹</li>
+<li>6666 미만 1일 그룹</li>
+<li>6666 이상 3일 그룹</li>
+</ul>
+</li>
+</ul>
+<p><strong>Q. 만약 구매력이 좋은 유저가 한 그룹에 몰리는 문제가 생기면?</strong></p>
+<ul>
+<li>
+<p>실험군의 성질이 <strong>동질</strong>한 지 판단</p>
+<ul>
+<li>예를 들어, <strong>레벨</strong>의 경우 그룹 별로 레벨의 분포가 비슷해야 함 (저레벨 - 중간 레벨 - 고레벨)</li>
+</ul>
+</li>
+<li>
+<p>그럼 동질해야 하는 성질은?</p>
+<ul>
+<li>국가 분포</li>
+<li>스테이지 도달률</li>
+<li>과금 비율</li>
+<li>레벨 분포</li>
+</ul>
+</li>
+<li>
+<p>실험군이 통계적으로 동질한 지 검증: 카이제곱 분포</p>
+</li>
+</ul>
+<p>🌳 <strong>결론: 동질한 유저들에게 균등하게 판매 시간을 보여준다.</strong></p>
+<ul>
+<li>각 그룹별로 국가 분포, 스테이지 도달률, 과금 비율, 레벨 분포가 동질한 지 검정</li>
+</ul>
+<p><img src="../../images/cookie-6.png" alt="" /></p>
+<hr />
+<h3 id="여러-실험-동시에-하기"><a class="markdownIt-Anchor" href="#여러-실험-동시에-하기"></a> <strong>여러 실험 동시에 하기</strong></h3>
+<p><img src="../../images/cookie-7.png" alt="" /></p>
+<ul>
+<li>만약 A/B 테스트를 하는데 판매 시간이 거의 끝나갈 때 쯤 &quot;마감 임박&quot;을 한다면?</li>
+<li>판매 기간 + 마감 임박 두 가지의 실험을 해야 하는 문제가 있음</li>
+</ul>
+<p>🌳 <strong>실험의 적용 범위 설정</strong></p>
+<p><img src="../../images/cookie-8.png" alt="" /></p>
+<ul>
+<li>유저가 동시에 다른 실험에 노출되면 안된다.</li>
+<li>유저를 10,000개의 작은 그룹으로 나눈다.</li>
+<li>유저 해시값으로 바꾸고</li>
+<li>실험의 적용 범위를 그룹들의 범위로 설정
+<ul>
+<li>판매기간 실험은 0~4,999</li>
+<li>마감 임박 실험은 5,000~9,999</li>
+<li>이러면 실험이 절반의 유저에게 배정</li>
+<li>한 유저는 한 그룹만: 판매 기간 실험을 본 유저는 마감 임박 실험을 못 보도록, 마감 임박 실험을 본 유저는 판매 기간 실험을 못 보도록 <strong>독립</strong>적으로 배정</li>
+</ul>
+</li>
+</ul>
+<p>🌳 <strong>해시값의 문제</strong></p>
+<ul>
+<li>판매기간 실험을 0~4,999의 해시값을 가진 유저만 배정하면 3일 그룹 전체와 1일 그룹 일부가 실험 적용 범위에 포함되지 않는 문제!</li>
+</ul>
+<p><img src="../../images/cookie-9.png" alt="" /></p>
+<ul>
+<li>실험마다 실험군 기준이 달라지게 조정: 해시값을 변환하기 전에 테스트 이름을 유저아이디에 붙여서 해결</li>
+</ul>
+<p><img src="../../images/cookie-10.png" alt="" /></p>
+<hr />
+<h3 id="ab-테스트-개발"><a class="markdownIt-Anchor" href="#ab-테스트-개발"></a> <strong>A/B 테스트 개발</strong></h3>
+<ul>
+<li>실제 게임 개발자가 손 쉽게 실험할 수 있도록 플랫폼 개발!</li>
+</ul>
+<p>🌳 <strong>DevPlay 플랫폼 소개</strong></p>
+<ul>
+<li>모바일 게임을 유저에게 서비스하기 위한 공통 기능을 제공하는 모바일 게임 플랫폼: 게임 푸시 등 운영에 필요한 플랫폼</li>
+</ul>
+<p>🌳 <strong>A/B 테스트 플랫폼 플로우</strong></p>
+<p><img src="../../images/cookie-11.png" alt="" /></p>
+<ol>
+<li>게임 개발자는 콘솔을 통해 실험을 조회, 설정</li>
+<li>플랫폼 서버의 데이터 베이스에 해당 정보 저장: 게임 유저가 로그인할 때 마다 A/B 테스트 로직에 따라 배정됨
+<ul>
+<li>용감한 쿠키가 로그인하면 1일 그룹에 설정해주세요</li>
+</ul>
+</li>
+<li>데이터 파이프라인: 게임의 플레이 로그, 로그인, 결제 로그를 합침</li>
+</ol>
+<ul>
+<li>어떤 실험군에서 상품이 더 판매 되는 지</li>
+<li>어떤 실험군에서 더 게임을 오래 하는 지</li>
+</ul>
+<hr />
+<h3 id="실험-결과"><a class="markdownIt-Anchor" href="#실험-결과"></a> <strong>실험 결과</strong></h3>
+<ul>
+<li>2주의 시간이 지나고 상품이 얼마나 팔렸을까?</li>
+</ul>
+<p><img src="../../images/cookie-12.png" alt="" /></p>
+<ul>
+<li>숫자만 봤을 때는 3일 그룹이 가장 좋다고 말하기가 어려움</li>
+<li><strong>직관적으로</strong> 결과 측정을 할 수 있어야 한다.</li>
+<li>통계적 모델링을 통한 <strong>베이지안 확률</strong> 계산: 3일 그룹이 가장 좋을 확률은 96%이다.</li>
+</ul>
+<hr />
+<h3 id="결론"><a class="markdownIt-Anchor" href="#결론"></a> <strong>결론</strong></h3>
+<p>문제 상황 -&gt; 실험 기획 (A/B 테스트) -&gt; 균등, 균질한 집단 -&gt; 플랫폼 개발 -&gt; 유의미한 결과 전달</p>
+<ul>
+<li>A/B 테스트는 통계를 근거로 합리적인 의사결정을 할 수 있는 실험 방법론</li>
+<li>DevPlay 플랫폼에 적용시켜 다양한 게임에 실험 적용</li>
+<li>슈퍼셀 - 브롤스타즈: A/B 테스트 진행</li>
+</ul>
+<hr />
+<h2 id="느낀-점"><a class="markdownIt-Anchor" href="#느낀-점"></a> <strong>느낀 점</strong></h2>
+<p><img src="../../images/cookie-conclusion.png" alt="" /><br />
+<a target="_blank" rel="noopener" href="https://www.google.com/url?sa=i&amp;source=images&amp;cd=&amp;ved=2ahUKEwikoKaS8v3nAhVUyIsBHSSoA6UQjRx6BAgBEAQ&amp;url=https%3A%2F%2Fgongu-s2.tistory.com%2F1130&amp;psig=AOvVaw2GjW5qn4n3zFf60ml1sxI9&amp;ust=1583309872952036">이미지 링크</a><br />
+{:.figure}</p>
+<ol>
+<li>A/B 테스트의 본질은 파이프라인의 개발
+<ul>
+<li>PUBG 발표에서 로그 데이터를 구축하는 것을 보면서 데이터 파이프라인의 구조를 이해하고 공부할 필요가 있음을 느꼈습니다.</li>
+<li>다만, 아직 어떻게 구조화되어 있는 지 감이 잘 안 와서 이를 정리하고 공부하는 걸 고르는 것도 좋지 않을까 싶습니다. (기존에는 NoSQL의 mongoDB를 배울까 했는데 흠… 고민이 되네요…!)</li>
+</ul>
+</li>
+<li>베이지안 확률의 사용
+<ul>
+<li>데브시스터즈 발표에서 베이지안 확률을 진짜 명확하게 써준 사례여서 흥미로웠습니다. 제가 정리한 <a href="2020-03-02-abtest.md">베이지안 A/B 테스트 글</a>처럼 비슷한 확률 분포들을 사용해서 계산하지 않았을까 싶네요.</li>
+</ul>
+</li>
+<li>A/B 테스트? MAB?
+<ul>
+<li>A/B 테스트보다 MAB가 배치 확률을 최적화해준다는 점에서 더 많이 쓰일 줄 알았는데 생각보다 현업에서 많이 A/B 테스트를 쓰고 있다는 점이 인상깊었습니다.</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/review/2020-03-03-ndcabtest/" title="NDC 후기: 실전에서 사용하는 A&#x2F;B 테스트">http://assaeunji.github.io/review/2020-03-03-ndcabtest/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ndc/" rel="tag"><i class="fa fa-tag"></i> ndc</a>
+              <a href="/tags/a-b-test/" rel="tag"><i class="fa fa-tag"></i> A/B test</a>
+              <a href="/tags/review/" rel="tag"><i class="fa fa-tag"></i> review</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/bayesian/2020-03-02-abtest/" rel="prev" title="Bayesian AB Test">
+                  <i class="fa fa-chevron-left"></i> Bayesian AB Test
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/db/2020-03-03-sql/" rel="next" title="SQL 참고 자료">
+                  SQL 참고 자료 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

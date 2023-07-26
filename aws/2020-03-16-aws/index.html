@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta property="og:type" content="article">
+<meta property="og:title" content="AWS EC2 가상 서버 접속하기">
+<meta property="og:url" content="http://assaeunji.github.io/aws/2020-03-16-aws/index.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-ec2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-launchinst.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step1.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step3.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step4.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step5.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step6.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-step7-2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-ec2fin.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-xshell.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-xshell2.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-ipv4.png">
+<meta property="og:image" content="http://assaeunji.github.io/images/aws-connect2.png">
+<meta property="article:published_time" content="2020-03-15T15:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-20T02:49:00.590Z">
+<meta property="article:author" content="Eunji Lee">
+<meta property="article:tag" content="aws">
+<meta property="article:tag" content="cloud">
+<meta property="article:tag" content="ec2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://assaeunji.github.io/images/aws-ec2.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/aws/2020-03-16-aws/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/aws/2020-03-16-aws/","path":"/aws/2020-03-16-aws/","title":"AWS EC2 가상 서버 접속하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AWS EC2 가상 서버 접속하기 | Be Geeky</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-aws-amazon-web-service"><span class="nav-number">1.</span> <span class="nav-text"> What is AWS (Amazon Web Service)?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-aws"><span class="nav-number">2.</span> <span class="nav-text"> Why AWS?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aws-ec2"><span class="nav-number">3.</span> <span class="nav-text"> AWS EC2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#instances"><span class="nav-number">3.1.</span> <span class="nav-text"> Instances</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows%EC%97%90%EC%84%9C-%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EB%A1%9C-%EC%A0%91%EC%86%8D"><span class="nav-number">4.</span> <span class="nav-text"> Windows에서 리눅스 인스턴스로 접속</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://assaeunji.github.io/aws/2020-03-16-aws/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eunji Lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Be Geeky">
+      <meta itemprop="description" content="Hobby = Specialty">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="AWS EC2 가상 서버 접속하기 | Be Geeky">
+      <meta itemprop="description" content="이 글은 AWS에서 EC2 가상 서버에 접속하는 방법에 대한 글입니다.,생활코딩 AWS 강의를 보며 직접 실습해보았습니다.">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AWS EC2 가상 서버 접속하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-03-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-16T00:00:00+09:00">2020-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-05-20 11:49:00" itemprop="dateModified" datetime="2023-05-20T11:49:00+09:00">2023-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/aws/" itemprop="url" rel="index"><span itemprop="name">aws</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">이 글은 AWS에서 EC2 가상 서버에 접속하는 방법에 대한 글입니다.,생활코딩 AWS 강의를 보며 직접 실습해보았습니다.</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>이 글은 AWS에서 EC2 가상 서버에 접속하는 방법에 대한 글입니다.</li>
+<li><a target="_blank" rel="noopener" href="https://opentutorials.org/course/2717">생활코딩 AWS 강의</a>를 보며 직접 실습해보았습니다.</li>
+</ul>
+<hr />
+<h2 id="what-is-aws-amazon-web-service"><a class="markdownIt-Anchor" href="#what-is-aws-amazon-web-service"></a> <strong>What is AWS (Amazon Web Service)?</strong></h2>
+<p>AWS는 아마존 회사에서 제공하는 클라우드 컴퓨팅 서비스입니다. <strong>클라우드 컴퓨팅</strong>이란 인터넷을 통해 <strong>IT 리소스</strong>(ex. 물리적 서버, 네트워크)와 <strong>애플리케이션</strong>(ex. 데이터분석)을 원할 때 언제든지 사용한 만큼만 요금을 내는 서비스입니다. 인터넷에 연결되어 있는 거대한 컴퓨터를 사용한다!고 생각하시면 됩니다.</p>
+<hr />
+<h2 id="why-aws"><a class="markdownIt-Anchor" href="#why-aws"></a> <strong>Why AWS?</strong></h2>
+<p>최근 가고 싶은 회사들을 알아보던 중 &quot;Data Scientist&quot;에 대한 공고 설명에 AWS (Amazon Web Service) 나 GCP (Google Cloud Platform)과 같은 클라우드 사용 경험, Spark 혹은 Hadoop, SQL 사용 경험에 대한 경력을 우대한다는 것을 느꼈습니다.</p>
+<p>저는 이러한 경험이 일절 없었고 실제로 데이터가 어떻게 수집되어서 tabular한 형태로 저장되는 지 몰랐기 때문에 이를 실제로 알아보는 게 중요하다 생각이 들었습니다.</p>
+<hr />
+<h2 id="aws-ec2"><a class="markdownIt-Anchor" href="#aws-ec2"></a> <strong>AWS EC2</strong></h2>
+<p><img src="../../images/aws-ec2.png" alt="" /></p>
+<p>EC2는 아마존에서 제공하는 인스턴스를 임대하는 서비스로 Elastic Compute Cloud의 준말입니다.<br />
+가장 먼저 해야 하는 일은 “가용지역” (Available Zone)을 설정하는 것입니다.<br />
+가용지역은 AWS 페이지의 우측 상단에서 지정할 수 있으며 이를 <code>Seoul (ap-northeast-2)</code>로 지정합니다.</p>
+<hr />
+<h3 id="instances"><a class="markdownIt-Anchor" href="#instances"></a> <strong>Instances</strong></h3>
+<p>인스턴스는 쉽게 설명하자면 가상 컴퓨터 환경입니다. 인스턴스 하나 당 가상 컴퓨터 하나를 임대한 꼴과 같습니다.<br />
+따라서 AWS의 EC2 서비스를 이용하기 위해서 인스턴스를 생성해야 합니다.<br />
+인스턴스 생성을 통해 가상 서버를 만드는 방법을 알아봅시다.</p>
+<p><strong>Step0. 인스턴스 시작</strong></p>
+<p><img src="../../images/aws-launchinst.png" alt="" /></p>
+<p>먼저 인스턴스 생성을 위해 <code>EC2 대시보드</code> 화면에서 <code>인스턴스</code> 메뉴를 클릭하고 <code>인스턴스 시작</code> 버튼을 누릅니다.</p>
+<p><strong>Step 1. AMI (Amazon Machine Image) 선택하기</strong></p>
+<p><img src="../../images/aws-step1.png" alt="" /></p>
+<p>AMI는 서버를 저장한 형식이라 생각하시면 됩니다.<br />
+Amazon Linux는 아마존이 AWS에 최적화된 리눅스를 개발한 AMI입니다.<br />
+Windows Server가 있는데 이는 SQL Server가 포함되어 있어서 Free tier에서는 무료가 아닙니다.</p>
+<p>저는 AMI 중 세 번째 <code>Ubuntu Server 18.04</code>를 선택했습니다.</p>
+<p><strong>Step 2. 인스턴스 유형 선택</strong></p>
+<p><img src="../../images/aws-step2.png" alt="" /></p>
+<p>가장 저렴하고 성능이 낮은 <code>유형</code>은 <code>nano</code>이지만 저희는 <code>t2.micro</code>를 사용합니다.</p>
+<ul>
+<li>vCPUs: CPU 개수, <code>v</code>는 <code>virtual</code> (가상) CPU라는 뜻</li>
+<li>메모리: 몇 GB의 메모리를 가지고 있는 지!</li>
+<li>네트워크 성능: 가격과 스펙에 따라 차등이 있음</li>
+</ul>
+<blockquote>
+<p><strong>NOTE</strong></p>
+</blockquote>
+<ul>
+<li>AWS 프리티어 EC2의 가격정책은 EC2 t2.micro 750시간으로 되어 있음 -&gt; 한 대의 인스턴스를 한 번도 끄지 않고 쭉 써도 1년 간 무료!</li>
+<li>임대하는 인스턴스에 SSD 30GB까지 + 200만건 이상이면 과금</li>
+<li><strong>온 디맨드 인스턴스</strong>: 필요할 때는 컴퓨터를 키고, 없을 때는 꺼서 가격을 절감하도록 해야 함</li>
+<li><strong>예약 인스턴스</strong>: 할인권을 구매하는 것, 서버를 운영할 때 1년 365일</li>
+</ul>
+<p><strong>Step 3. 인스턴스 세부 정보 구성</strong></p>
+<p><img src="../../images/aws-step3.png" alt="" /></p>
+<p>프리티어에서 인스턴스는 1개까지 무료입니다.<br />
+모든 설정을 Default값으로 하고 <code>다음: 스토리지 추가</code>를 클릭합니다.<br />
+종료 방식을 <code>중지</code>로 설정하면 저장 비용만 과금됩니다.</p>
+<p><strong>Step 4: 스토리지 추가</strong></p>
+<p><img src="../../images/aws-step4.png" alt="" /></p>
+<p>프리티어에서 30GB까지는 무료이지만 리눅스 형식 상 8GB를 사용합니다.</p>
+<ul>
+<li>볼륨 유형: 장착하는 저장장치의 형식을 지정</li>
+<li>종료시 삭제: 컴퓨터를 종료할 때 저장 장치가 같이 삭제되길 원하면 체크, 체크를 하지 않으면 과금될 수도 있음</li>
+</ul>
+<p><strong>Step 5: 태그 추가</strong></p>
+<p><img src="../../images/aws-step5.png" alt="" /></p>
+<p>인스턴스에 대한 설명을 붙이는 부분입니다.<br />
+저는 3개의 태그를 추가했습니다.</p>
+<p><strong>Step 6. 보안 그룹 구성</strong></p>
+<p><img src="../../images/aws-step6.png" alt="" /></p>
+<p>보안 그룹은 인터넷을 접속할 수 있는 걸 허용하고 막는 역할을 합니다. 즉, 제한된 방법(유형)을 통해서 우리의 인스턴스에 접속할 수 있도록 보안 그룹을 구성하는 것입니다.<br />
+먼저 <code>새 보안 그룹을 생성</code>하고, <code>보안 그룹 이름</code>과 <code>설명</code>을 써줍니다.</p>
+<p>이후 <code>유형</code>을 설정합니다. <code>유형</code>은 보안 그룹에 대한 정책들을 고르는 사항으로 만든 인스턴스에 접속하는 여러 가지 방법을 제시합니다. 예를 들어 원격제어를 위해서, ftp로 파일을 인스턴스로 업로드, 웹서버에 접속하기 위해 브라우저를 통해 접속하는 등 목적에 따라 <code>유형</code>을 다르게 설정합니다.<br />
+<code>유형</code> 중 <code>SSH</code>는 SecureShell을 의미하고, 리눅스/유닉스 계열의 원격 제어 방법이 SSH입니다!<br />
+만약 인스턴스를 통해 웹서버를 구축하고자 한다면 <code>HTTP</code>를 사용합니다.</p>
+<p>마지막으로 <code>소스</code>를 정합니다. 저는 <code>소스</code>를 <code>내 IP</code>로 하면 고정 IP에서만 웹서버가 구동되는 것이기 때문에 <code>위치 무관</code>으로 선택했습니다.</p>
+<p><strong>Step 7. 인스턴스 시작 검토</strong><br />
+<img src="../../images/aws-step7-2.png" alt="" /></p>
+<p>인스턴스를 생성한 정보를 검토하는 화면입니다. 인스턴스를 생성하면 다음과 같이 키 페어를 선택하는 화면이 뜹니다.<br />
+<code>새 키 페어를 생성</code>해 키 페어 이름을 만들고 <code>키 페어 다운로드</code>를 클릭합니다.<br />
+다운로드 받은 파일은 <code>.pem</code> 확장자로 되어있습니다. 이를 안전한 곳에 저장하는 것이 좋기 때문에 <code>C:\</code>드라이브 내의 폴더를 하나 만들어 그 안에 저장했습니다.</p>
+<p><img src="../../images/aws-ec2fin.png" alt="" /></p>
+<hr />
+<h2 id="windows에서-리눅스-인스턴스로-접속"><a class="markdownIt-Anchor" href="#windows에서-리눅스-인스턴스로-접속"></a> <strong>Windows에서 리눅스 인스턴스로 접속</strong></h2>
+<p>리눅스 인스턴스에 SSH 방식으로 원격제어를 하려면 Windows에서 SSH로 접속할 수 있는 “원격제어” 프로그램이 필요합니다.<br />
+이를 위해 SSH 클라이언트인 <strong>Xshell</strong>를 사용합니다.</p>
+<p><img src="../../images/aws-xshell.png" alt="" /></p>
+<p><a target="_blank" rel="noopener" href="https://www.netsarang.com/ko/free-for-home-school/">넷사랑</a> 페이지에서 가정 및 학교 내 사용자는 무료로 Xshell을 다운받으실 수 있습니다.</p>
+<p><img src="../../images/aws-xshell2.png" alt="" /></p>
+<p>이제 Xshell을 열어 <code>새로 만들기</code>버튼을 클릭합니다.<br />
+<code>이름</code>에는 <code>webserver</code>를, <code>호스트</code>에는 AWS에서 <code>IPv4 퍼블릭 IP</code>를 입력합니다. 이 IP의 위치는 아래 사진에서 찾을 수 있습니다.<br />
+<img src="../../images/aws-ipv4.png" alt="" /></p>
+<p>이제 메뉴 중 <code>사용자 인증</code>을 클릭합니다.<br />
+<code>사용자 이름</code>은 <code>ubuntu</code>로 지정합니다. 만약 접속하는 컴퓨터가 다른 리눅스 체제라면 <code>ubuntu</code> 대신 <code>ec2-user</code>라는 ID를 사용해야 합니다.<br />
+<code>방법</code>을 <code>Public key</code>로 바꿔준 후 <code>사용자 키</code>에서 <code>찾아보기</code>를 클릭한 후 <code>가져오기</code>를 클릭합니다.<br />
+이후 Step 7에서 다운받은 <code>.pem</code>파일을 찾아 가져와 <code>확인</code>을 누릅니다.</p>
+<p>마지막으로 <code>암호</code>는 없도록 설정한 후 <code>연결</code>을 누릅니다.<br />
+그럼 아래와 같은 경고 메세지가 뜨는데요. <code>수락 및 저장</code>을 클릭합니다.</p>
+<p><img src="../../images/aws-connect2.png" alt="" /></p>
+<p>그럼 <code>XShell</code>에서 다음과 같은 글을 보면 성공입니다!</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-1057-aws x86_64)</span><br></pre></td></tr></table></figure>
+<p><code>exit</code>를 누르면 이 가상 서버에서 나올 수 있습니다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Eunji Lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://assaeunji.github.io/aws/2020-03-16-aws/" title="AWS EC2 가상 서버 접속하기">http://assaeunji.github.io/aws/2020-03-16-aws/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/aws/" rel="tag"><i class="fa fa-tag"></i> aws</a>
+              <a href="/tags/cloud/" rel="tag"><i class="fa fa-tag"></i> cloud</a>
+              <a href="/tags/ec2/" rel="tag"><i class="fa fa-tag"></i> ec2</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/machine-learning/2020-03-10-anomaly/" rel="prev" title="Introduction to Deep Anomaly Detection">
+                  <i class="fa fa-chevron-left"></i> Introduction to Deep Anomaly Detection
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/aws/2020-03-19-aws-scalability/" rel="next" title="AWS Scalability & Elastic Load Balancer (ELB) 이해하기">
+                  AWS Scalability & Elastic Load Balancer (ELB) 이해하기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>

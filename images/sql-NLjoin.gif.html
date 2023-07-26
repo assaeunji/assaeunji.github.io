@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"assaeunji.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Visualizing Nested Loops Joins And Understanding Their Implications                                               {&quot;@context&quot;: &quot;https:&#x2F;&#x2F;schema.org&quot;, &quot;@type&quot;: &quot;BreadcrumbList&quot;, &quot;item">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Be Geeky">
+<meta property="og:url" content="http://assaeunji.github.io/images/sql-NLjoin.gif.html">
+<meta property="og:site_name" content="Be Geeky">
+<meta property="og:description" content="Visualizing Nested Loops Joins And Understanding Their Implications                                               {&quot;@context&quot;: &quot;https:&#x2F;&#x2F;schema.org&quot;, &quot;@type&quot;: &quot;BreadcrumbList&quot;, &quot;item">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bertwagner.com/theme/images/logo-header.png">
+<meta property="og:image" content="https://bertwagner.com/wp-content/uploads/2018/12/image-1.png">
+<meta property="og:image" content="https://bertwagner.com/wp-content/uploads/2018/12/Nested-Loop-Join-50fps-1.gif">
+<meta property="og:image" content="https://bertwagner.com/wp-content/uploads/2018/12/nest-loops-sorted-50fps-2.gif">
+<meta property="og:image" content="https://bertwagner.com/theme/images/youtube%2064px.png">
+<meta property="og:image" content="https://bertwagner.com/theme/images/twitter%2064px.png">
+<meta property="og:image" content="https://bertwagner.com/theme/images/github%2064px.png">
+<meta property="article:published_time" content="2023-05-02T05:25:57.789Z">
+<meta property="article:modified_time" content="2023-04-23T02:13:52.000Z">
+<meta property="article:author" content="Eunji Lee">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bertwagner.com/theme/images/logo-header.png">
+
+
+<link rel="canonical" href="http://assaeunji.github.io/images/sql-NLjoin.gif">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":true,"permalink":"http://assaeunji.github.io/images/sql-NLjoin.gif.html","path":"images/sql-NLjoin.gif.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Be Geeky
+</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Be Geeky</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">124</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">63</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">
+      
+       Visualizing Nested Loops Joins And Understanding Their Implications
+      
+     </span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.1.</span> <span class="nav-text">
+       What Physical Join Operators Tell Us
+      </span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.2.</span> <span class="nav-text">
+       Nested Loops Join
+      </span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.3.</span> <span class="nav-text">
+       What Do Nested Loops Joins Reveal?
+      </span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.3.1.</span> <span class="nav-text">
+      Social
+     </span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.3.2.</span> <span class="nav-text">
+      Notification Signup
+     </span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.3.3.</span> <span class="nav-text">
+      Search
+     </span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eunji Lee</p>
+  <div class="site-description" itemprop="description">Hobby = Specialty</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">124</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/assaeunji" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;assaeunji" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="Pelican" name="generator"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Visualizing Nested Loops Joins And Understanding Their Implications
+  </title>
+  <link href="https://bertwagner.com/theme/css/main.css" rel="stylesheet"/>
+  <link href="https://dev.bertwagner.com/atom.xml" rel="alternate" title="Data with Bert Atom Feed" type="application/atom+xml"/>
+  <link href="https://dev.bertwagner.com/rss.xml" rel="alternate" title="Data with Bert RSS Feed" type="application/rss+xml"/>
+  <script async="" data-domain="bertwagner.com" defer="" src="https://stats.bertwagner.com/js/index.js">
+  </script>
+  <link href="https://bertwagner.com/theme/images/site-icon-32x32.png" rel="icon" sizes="32x32"/>
+  <link href="https://bertwagner.com/theme/images/site-icon-192x192.png" rel="icon" sizes="192x192"/>
+  <link href="https://bertwagner.com/theme/images/site-icon-180x180.png" rel="apple-touch-icon"/>
+  <meta content="https://bertwagner.com/theme/images/site-icon-270x270.png" name="msapplication-TileImage">
+   <meta content="This post is the first in a series about physical join operators (be sure to check out part 2 - merge joins, and part 3 - hash match joins). Watch..." name="description"/>
+  </meta>
+  <link href="https://bertwagner.com/posts/visualizing-nested-loops-joins-and-understanding-their-implications/" rel="canonical"/>
+  <script type="application/ld+json">
+   {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Data with Bert", "item": "https://bertwagner.com"}, {"@type": "ListItem", "position": 2, "name": "Posts", "item": "https://bertwagner.com/posts"}, {"@type": "ListItem", "position": 3, "name": "Visualizing nested loops joins and understanding their implications", "item": "https://bertwagner.com/posts/visualizing-nested-loops-joins-and-understanding-their-implications"}, {"@type": "ListItem", "position": 4, "name": "Index", "item": "https://bertwagner.com/posts/visualizing-nested-loops-joins-and-understanding-their-implications/index.html"}]}
+  </script>
+  <script type="application/ld+json">
+   {"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "Bert Wagner"}, "publisher": {"@type": "Organization", "name": "Data with Bert"}, "headline": "Visualizing Nested Loops Joins And Understanding Their Implications", "about": "SQL/Performance Tuning/Execution Plans", "datePublished": "2018-12-11 07:00"}
+  </script>
+ </head>
+ <body>
+  <main>
+   <header>
+    <div>
+     <a target="_blank" rel="noopener" href="https://bertwagner.com">
+      <img id="logo-header" src="https://bertwagner.com/theme/images/logo-header.png"/>
+     </a>
+    </div>
+    <nav id="menu" role="navigation">
+     <label for="tm" id="toggle-menu">
+      Navigation
+      <span class="drop-icon">
+       ▾
+      </span>
+     </label>
+     <input id="tm" type="checkbox"/>
+     <ul class="main-menu clearfix">
+      <li>
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/categories.html">
+        Categories
+        <span class="drop-icon">
+         ▾
+        </span>
+        <label class="drop-icon" for="sm1" title="Toggle Drop-down">
+         ▾
+        </label>
+       </a>
+       <input id="sm1" type="checkbox"/>
+       <ul class="sub-menu">
+        <li>
+         <a target="_blank" rel="noopener" href="https://bertwagner.com/category/meta.html">
+          Meta
+         </a>
+        </li>
+        <li>
+         <a target="_blank" rel="noopener" href="https://bertwagner.com/category/professional-development.html">
+          Professional Development
+          <span class="drop-icon">
+           ▾
+          </span>
+          <label class="drop-icon" for="sm22" title="Toggle Drop-down">
+           ▾
+          </label>
+         </a>
+         <input id="sm22" type="checkbox"/>
+         <ul class="sub-menu">
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/professional-development/presenting.html">
+            Presenting
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a target="_blank" rel="noopener" href="https://bertwagner.com/category/programming.html">
+          Programming
+         </a>
+        </li>
+        <li>
+         <a target="_blank" rel="noopener" href="https://bertwagner.com/category/python.html">
+          Python
+         </a>
+        </li>
+        <li>
+         <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql.html">
+          SQL
+          <span class="drop-icon">
+           ▾
+          </span>
+          <label class="drop-icon" for="sm26" title="Toggle Drop-down">
+           ▾
+          </label>
+         </a>
+         <input id="sm26" type="checkbox"/>
+         <ul class="sub-menu">
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/azure.html">
+            Azure
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/community.html">
+            Community
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/dbatools.html">
+            dbatools
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development.html">
+            Development
+            <span class="drop-icon">
+             ▾
+            </span>
+            <label class="drop-icon" for="sm34" title="Toggle Drop-down">
+             ▾
+            </label>
+           </a>
+           <input id="sm34" type="checkbox"/>
+           <ul class="sub-menu">
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/dates.html">
+              Dates
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/dynamic-sql.html">
+              Dynamic SQL
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/json.html">
+              JSON
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/recursive-queries.html">
+              Recursive Queries
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/sql-injection.html">
+              SQL Injection
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/temporal-tables.html">
+              Temporal Tables
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/window-functions.html">
+              Window Functions
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/development/xml.html">
+              XML
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/internals.html">
+            Internals
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning.html">
+            Performance Tuning
+            <span class="drop-icon">
+             ▾
+            </span>
+            <label class="drop-icon" for="sm36" title="Toggle Drop-down">
+             ▾
+            </label>
+           </a>
+           <input id="sm36" type="checkbox"/>
+           <ul class="sub-menu">
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning/execution-plans.html">
+              Execution Plans
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning/indexing.html">
+              Indexing
+             </a>
+            </li>
+            <li>
+             <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning/query-rewrites.html">
+              Query Rewrites
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/quirks.html">
+            Quirks
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/ssms.html">
+            SSMS
+           </a>
+          </li>
+          <li>
+           <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/tsqltuesday.html">
+            TSqlTuesday
+           </a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/pages/about/">
+        About
+       </a>
+      </li>
+      <li>
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/pages/contact/">
+        Contact
+       </a>
+      </li>
+     </ul>
+    </nav>
+   </header>
+   <section>
+    <article>
+     <h1 class="article-title">
+      <a target="_blank" href="https://bertwagner.com/posts/visualizing-nested-loops-joins-and-understanding-their-implications/" rel="bookmark noopener" title="Permalink to Visualizing Nested Loops Joins And Understanding Their Implications">
+       Visualizing Nested Loops Joins And Understanding Their Implications
+      </a>
+     </h1>
+     <div class="article-info">
+      <div class="published-date" title="2018-12-11T07:00:00-05:00">
+       Published Tue 11 December 2018 in
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql.html">
+        SQL
+       </a>
+       &gt;
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning.html">
+        Performance Tuning
+       </a>
+       &gt;
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/category/sql/performance-tuning/execution-plans.html">
+        Execution Plans
+       </a>
+      </div>
+     </div>
+     <div class="article-content">
+      <p>
+       <em>
+        This post is the first in a series about physical join operators (be sure to check out
+        <a target="_blank" rel="noopener" href="https://bertwagner.com/2018/12/18/visualizing-merge-join-internals-and-understanding-their-implications/">
+         part 2 - merge joins
+        </a>
+        , and
+        <a target="_blank" rel="noopener" href="https://bertwagner.com/2019/01/02/visualizing-hash-match-join-internals-and-understanding-their-implications/">
+         part 3 - hash match joins
+        </a>
+        ).
+       </em>
+      </p>
+      <div class="youtube-container">
+       <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="youtube-video" frameborder="0" src="https://www.youtube-nocookie.com/embed/0arjvMJihJo">
+       </iframe>
+      </div>
+      <p>
+       <a target="_blank" rel="noopener" href="https://youtu.be/0arjvMJihJo">
+        Watch this week's video on YouTube
+       </a>
+      </p>
+      <h2>
+       What Physical Join Operators Tell Us
+      </h2>
+      <p>
+       Everyone has their own method of reading an execution plan when performance tuning a slow SQL query.  One of the first things I like to look at are what kind of join operators are being used:
+      </p>
+      <p>
+       <img alt="image-1" class="wp-image-6864" src="https://bertwagner.com/wp-content/uploads/2018/12/image-1.png"/>
+      </p>
+      <p>
+       These three little icons may not seem like the most obvious place to begin troubleshooting a slow query, but with larger plans especially I like starting with a quick glance at the join operators because they allow you to infer a lot about what SQL Server thinks about your data.
+      </p>
+      <p>
+       This will be a three part series where we'll learn how each join algorithm works and what they can reveal about our upstream execution plan operators.
+      </p>
+      <h2>
+       Nested Loops Join
+      </h2>
+      <p>
+       <img alt="Nested-Loop-Join-50fps-1" class="wp-image-6878" src="https://bertwagner.com/wp-content/uploads/2018/12/Nested-Loop-Join-50fps-1.gif"/>
+      </p>
+      <p>
+       Nested loops joins work like this: SQL Server takes the first value from our first table (our "outer" table -
+       <a target="_blank" rel="noopener" href="https://bertwagner.com/2017/11/21/does-the-join-order-of-my-tables-matter/">
+        by default SQL Server decides for us which table of the two this will be
+       </a>
+       ), and compares it to every value in our second "inner" table to see if they match.
+      </p>
+      <p>
+       Once every inner value has been checked, SQL Server moves to the next value in the outer table and the process repeats until every value from our outer table has been compared to every value in our inner table.
+      </p>
+      <p>
+       This description is a worst case example of the performance of a nested loop join.  Several optimizations exist that can make the join more efficient.  For example, if the inner table join values are sorted (because of an index you created or a spool that SQL Server created), SQL Server can process the rows much faster:
+      </p>
+      <p>
+       <img alt="nest-loops-sorted-50fps-2" class="wp-image-7020" src="https://bertwagner.com/wp-content/uploads/2018/12/nest-loops-sorted-50fps-2.gif"/>
+      </p>
+      <p>
+       In the above animation, the inner input is a index sorted on the join key, allowing SQL Server to seek directly to the rows it needs, reducing the total number of comparisons that need to be made
+      </p>
+      <p>
+       For more in-depth explanations of the internals and optimizations of nested loops joins, I recommend reading
+       <a target="_blank" rel="noopener" href="https://blogs.msdn.microsoft.com/craigfr/2006/07/26/nested-loops-join/">
+        this post by Craig Freedman
+       </a>
+       as well as
+       <a target="_blank" rel="noopener" href="https://sqlserverfast.com/epr/nested-loops/">
+        Hugo Kornelis's reference on nested loops
+       </a>
+       .
+      </p>
+      <h2>
+       What Do Nested Loops Joins Reveal?
+      </h2>
+      <p>
+       Knowing the internals of how a nested loops join works allows us to infer what the optimizer thinks about our data and the join's upstream operators, helping us focus our performance tuning efforts.
+      </p>
+      <p>
+       Here are a few scenarios to consider the next time you see a nested loops join being used in your execution plan:
+      </p>
+      <ul>
+       <li>
+        Nested loops joins are CPU intensive; at worst, every row needs to be compared to every other row and this can take some time.  This means when you see a nested loops join, SQL Server
+        <em>
+         probably
+        </em>
+        thinks that one of the two inputs is relatively small.
+       </li>
+       <li>
+        <p>
+         ... and if one of the inputs
+         <em>
+          is
+         </em>
+         relatively small, great!  If instead you see upstream operators that are moving large amounts of data, you may have a estimation problem going on in this area of the plan and may need to update stats/add indexes/refactor the query to have SQL Server provide better estimates (and maybe a more appropriate join).
+        </p>
+       </li>
+       <li>
+        <p>
+         Nested loops sometimes accompany RID or key lookups.  I always check for one of these because they often leave room for some performance improvements:
+        </p>
+        <ul>
+         <li>
+          If a RID lookup exists, it's usually easy enough to add a clustered index to that underlying table to squeeze out some extra performance.
+         </li>
+        </ul>
+       </li>
+       <li>
+        <p>
+         If either RID or key lookup exist, I always check what columns are being returned to see if a smaller index could be used instead (by including a column in a key/column of an existing index) or if the query can be refactored to not bring back those columns (eg. get rid of the SELECT *).
+        </p>
+       </li>
+       <li>
+        <p>
+         Nested loops joins do not require data to be sorted on input.  However, performance can improve with an indexed inner data source (see animation above), and SQL Server might choose a more efficient operator if the inputs are both sorted.
+        </p>
+        <ul>
+         <li>
+          At the very least, nested loops joins make me think to check whether the input data isn't sorted because of some upstream transformations, or because of missing indexes.
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <p>
+       So while nested loops in your plans will always require more investigation, looking at them and the operators around them can provide some good insight into what SQL Server thinks about your data.
+      </p>
+     </div>
+    </article>
+   </section>
+   <aside>
+    <div class="sidebar-group">
+     <h3>
+      Social
+     </h3>
+     <div id="social-container">
+      <div class="social-group">
+       <a target="_blank" rel="noopener" href="https://youtube.com/bertwagner">
+        <img class="social-icon" src="https://bertwagner.com/theme/images/youtube 64px.png"/>
+        YouTube
+       </a>
+      </div>
+      <div class="social-group">
+       <a target="_blank" rel="noopener" href="https://twitter.com/bertwagner">
+        <img class="social-icon" src="https://bertwagner.com/theme/images/twitter 64px.png"/>
+        Twitter
+       </a>
+      </div>
+      <div class="social-group">
+       <a target="_blank" rel="noopener" href="https://github.com/bertwagner">
+        <img class="social-icon" src="https://bertwagner.com/theme/images/github 64px.png"/>
+        GitHub
+       </a>
+      </div>
+     </div>
+    </div>
+    <div class="sidebar-group">
+     <h3>
+      Notification Signup
+     </h3>
+     <p>
+      Receive new posts and videos in your inbox.
+     </p>
+     <form action="https://bertwagner.us8.list-manage.com/subscribe/post?u=a5b47beaf6a8a12d00c7ee009&amp;id=12db04bbd9" class="validate" id="mc-embedded-subscribe-form" method="post" name="mc-embedded-subscribe-form" novalidate="" target="_blank">
+      <label for="mce-EMAIL">
+       Email:
+      </label>
+      <input class="required email" id="mce-EMAIL" name="EMAIL" type="email" value=""/>
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div aria-hidden="true" style="position: absolute; left: -5000px;">
+       <input name="b_a5b47beaf6a8a12d00c7ee009_12db04bbd9" tabindex="-1" type="text" value=""/>
+      </div>
+      <button id="mailchimp-subscribe" type="submit">
+       Subscribe
+      </button>
+     </form>
+    </div>
+    <div class="sidebar-group">
+     <h3>
+      Search
+     </h3>
+     <form action="https://duckduckgo.com/" method="GET">
+      <input name="sites" type="hidden" value="bertwagner.com">
+       <input name="ia" type="hidden" value="web">
+        <label>
+         Search:
+        </label>
+        <input class="search-field" name="q" placeholder="Search …" type="search" value="">
+         <button id="site-search" type="submit">
+          Search
+         </button>
+        </input>
+       </input>
+      </input>
+     </form>
+    </div>
+   </aside>
+   <footer>
+    Data with Bert / Proudly generated with Pelican
+   </footer>
+  </main>
+ </body>
+</html>
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eunji Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/katex.min.css" integrity="sha256-gMRN4/6qeELzO1wbFa8qQLU8kfuF2dnAPiUoI0ATjx8=" crossorigin="anonymous">
+  <script class="next-config" data-name="katex" type="application/json">{"copy_tex_js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.4/contrib/copy-tex.min.js","integrity":"sha256-Us54+rSGDSTvIhKKUs4kygE2ipA0RXpWWh0/zLqw3bs="}}</script>
+  <script src="/js/third-party/math/katex.js"></script>
+
+
+
+</body>
+</html>
